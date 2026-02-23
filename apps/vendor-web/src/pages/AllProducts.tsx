@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useProducts } from "@/context/ProductContext";
-
 const AllProducts = () => {
   const { products, setProducts } = useProducts();
 

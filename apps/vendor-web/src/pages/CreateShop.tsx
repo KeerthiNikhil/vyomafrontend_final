@@ -1,9 +1,8 @@
 import { useState } from "react";
-import StepBasic from "../../components/shops/CreateShop/StepBasic";
-import StepContact from "../../components/shops/CreateShop/StepContact";
-import StepLegal from "../../components/shops/CreateShop/StepLegal";
-import StepReview from "../../components/shops/CreateShop/StepReview";
-
+import StepBasic from "@/components/Shops/CreateShop/StepBasic";
+import StepContact from "@/components/Shops/CreateShop/StepContact";
+import StepLegal from "@/components/Shops/CreateShop/StepLegal";
+import StepReview from "@/components/Shops/CreateShop/StepReview";
 
 
 const CreateShop = () => {

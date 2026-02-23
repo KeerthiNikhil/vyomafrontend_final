@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
-import VendorLayout from "@/layouts/VendorLayout";
+import VendorLayout from "apps/vendor-web/src/layouts/VendorLayout";
 
 /* ================= PUBLIC ================= */
 import Home from "@/pages/Home";
@@ -19,8 +19,8 @@ import Reviews from "@/pages/vendor/Reviews";
 import Customers from "@/pages/vendor/Customers";
 import Payments from "@/pages/vendor/Payments";
 import ShopDetails from "@/pages/vendor/ShopDetails";
-import AllProducts from "@/pages/vendor/AllProducts";
-import { ProductProvider } from "@/context/ProductContext";
+import AllProducts from "apps/vendor-web/src/pages/AllProducts";
+import { ProductProvider } from "apps/vendor-web/src/context/ProductContext";
 
 const AppRoutes = () => {
   return (
