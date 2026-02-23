@@ -15,7 +15,7 @@ const QuickExplore = () => {
           { label: "Budget Friendly", emoji: "💰" },
           { label: "Family Friendly", emoji: "👨‍👩‍👧‍👦" },
           { label: "Pets & Farm", emoji: "🐶" },
-          { label: "cafe", } 
+          { label: "cafe", emoji:"̥"} 
         ].map((item) => (
           <div
             key={item.label}

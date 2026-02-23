@@ -47,14 +47,14 @@ const Cart = () => {
           {cart.map((item) => (
             <div
               key={item.id}
-              className="flex gap-4 py-6 border-b last:border-b-0"
+              className="flex gap-4 py-6 border-b-4 border-gray-200 last:border-b-0"
             >
               {/* IMAGE (CLICKABLE) */}
               <Link to={`/product/${item.id}`}>
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-28 h-28 object-contain border rounded cursor-pointer"
+                  className="w-28 h-28 object-contain  rounded cursor-pointer"
                 />
               </Link>
 

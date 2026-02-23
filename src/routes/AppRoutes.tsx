@@ -29,42 +29,7 @@ const AppRoutes = () => {
       {/* ================= PUBLIC ================= */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/search" element={<SearchResults />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Route>
 
-      {/* ================= VENDOR ================= */}
-         <Route
-           path="/vendor"
-           element={
-           <ProductProvider>
-           <VendorLayout />
-           </ProductProvider>
-           }
-           >
-
-        {/* Dashboard */}
-        <Route index element={<VendorDashboard />} />
-        <Route path="dashboard" element={<VendorDashboard />} />
-
-        {/* Shop */}
-        <Route path="create-shop" element={<CreateShop />} />
-        <Route path="shop-details" element={<ShopDetails />} />
-
-        {/* Catalog */}
-        <Route path="categories" element={<Categories />} />
-        <Route path="products" element={<AllProducts />} />
-        <Route path="disabled-products" element={<DisabledProducts />} />
-
-        {/* Orders */}
-        <Route path="orders/pending" element={<PendingOrders />} />
-        <Route path="orders/delivered" element={<DeliveredOrders />} />
-
-        {/* Other */}
-        <Route path="reviews" element={<Reviews />} />
-        <Route path="customers" element={<Customers />} />
-        <Route path="payments" element={<Payments />} />
 
       </Route>
 

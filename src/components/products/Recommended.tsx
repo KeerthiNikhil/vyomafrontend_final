@@ -2,16 +2,17 @@ import ProductCard from "@/components/products/ProductCard";
 import { products } from "@/data/products";
 
 const Recommended = () => {
-  const recommendedProducts = products.filter(
+  const groceryProducts = products.filter(
     (item) => item.category === "grocery"
   );
 
   return (
-    <section className="pt-0 py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-1 ">
+      <div className="max-w-7xl mx-auto px-0">
 
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">
+          <h2 className="text-xl sm:text-2xl font-bold mb-1">
+
             Recommended For You
           </h2>
 
@@ -20,26 +21,19 @@ const Recommended = () => {
           </p>
         </div>
 
-        <div className="
-          grid
-          grid-cols-2
-          gap-4
-          sm:grid-cols-2
-          md:grid-cols-3
-          lg:grid-cols-5
-        ">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
 
-          {recommendedProducts.map((item) => (
-            <ProductCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              price={item.price}
-              image={item.image}
-              size="small"
-            />
+          {groceryProducts.map((item) => (
+           <ProductCard
+  id={item.id}
+  name={item.name}
+  price={item.price}
+  image={item.image}
+  weight="200 g"
+ 
+/>
+
           ))}
-
         </div>
 
       </div>

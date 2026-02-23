@@ -5,22 +5,29 @@ type ShopCardProps = {
 
 const ShopCard = ({ name, image }: ShopCardProps) => {
   return (
-    <div className="flex flex-col items-center gap-3 cursor-pointer">
-      
-      {/* Bigger Image */}
-      <div className="w-48 h-32 sm:w-52 sm:h-36 md:w-56 md:h-40 
-                      overflow-hidden rounded-2xl shadow-sm">
+    <div className="flex flex-col items-center cursor-pointer">
+
+      {/* Image */}
+      <div className="
+        relative
+        w-[130px] h-[110px]
+        sm:w-[180px] sm:h-[150px]
+        rounded-xl sm:rounded-2xl
+        overflow-hidden
+        group
+      ">
         <img
           src={image}
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
       {/* Name */}
-      <p className="text-sm sm:text-base font-medium text-gray-800 text-center">
+      <p className="mt-2 text-xs sm:text-sm font-medium text-gray-800 text-center">
         {name}
       </p>
+
     </div>
   );
 };

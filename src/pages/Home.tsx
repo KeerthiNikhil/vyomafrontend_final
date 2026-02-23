@@ -7,10 +7,13 @@ import HotSelling from "@/components/products/HotSelling";
 import Recommended from "@/components/products/Recommended";
 import AdCarousel from "@/components/carousel/AdCarousel";
 import QuickExplore from "@/components/home/QuickExplore";
+import MidAdCarousel from "@/components/carousel/MidAdCarousel"
 
 
 const Home = () => {
   return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
     <div className="space-y-16">
       <HeroCarousel />
       <ServiceHighlights />
@@ -19,9 +22,11 @@ const Home = () => {
       <AdCarousel />
       <FeaturedCategories />
       <HotSelling />
+      <MidAdCarousel />
       <Recommended />
        <QuickExplore />
     </div>
+    </section>
   );
 };
 

@@ -7,6 +7,7 @@ import milk from "@/assets/images/product/milk.jpg";
 import snacks from "@/assets/images/product/snacks.jpg";
 import rice from "@/assets/images/product/rice.jpg";
 import bread from "@/assets/images/product/bread.jpg";
+import burger from "@/assets/images/product/burger.jpg";
 
 export const products = [
   {
@@ -89,5 +90,14 @@ export const products = [
     category: "grocery",
     description: "Soft bakery bread",
     weight: "400g",
+  },
+  {
+    id: 10,
+    name: "Cheese Burger",
+    price: 180,
+    image: burger,
+    category: "grocery",
+    description: "Delicious And Testy Cheese Burger",
+    weight: "medium",
   },
 ];

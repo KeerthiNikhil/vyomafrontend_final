@@ -16,40 +16,47 @@ const shops = [
 
 const TopShops = () => {
   return (
-    <section className="pt-5 pb-0py-10 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-           <h2 className="text-2xl font-bold text-royal">
-            Top Shops
-          </h2>
+    <section className="mt-6 mb-8">
 
-  
-        </div>
+  {/* Header */}
+  <div className="flex items-center justify-between mb-4">
+    <h2 className="text-xl sm:text-2xl font-bold text-royal">
+      Top Shops
+    </h2>
+  </div>
 
-        {/* Shops */}
-        <div className="flex gap-5 overflow-x-auto scrollbar-hide">
-          {shops.map((shop, index) => (
-            <ShopCard
-              key={index}
-              name={shop.name}
-              image={shop.image}
-            />
-          ))}
-        </div>
+  {/* Scroll Row */}
+ <div
+  className="
+    flex gap-5.5
+    overflow-x-auto
+    scrollbar-hide
+    snap-x snap-mandatory
+    scroll-smooth
+    pb-2
+    ml-1
+  "
+  style={{ WebkitOverflowScrolling: "touch" }}
+>
+  {shops.map((shop, index) => (
+    <div
+      key={index}
+      className={`
+        snap-start flex-shrink-0
+        w-[130px] sm:w-[170px]
+        ${index === 0 ? "ml-1" : ""}
+        ${index === shops.length - 1 ? "mr-1" : ""}
+      `}
+    >
+      <ShopCard name={shop.name} image={shop.image} />
+    </div>
+  ))}
+</div>
 
-        {/* Mobile View All Button */}
-        <div className="mt-6 md:hidden flex justify-center">
-          <button className="px-6 py-2 rounded-full border border-gray-300 
-                             text-sm font-medium text-gray-700 
-                             hover:bg-gray-100 transition">
-            View All Shops
-          </button>
-        </div>
 
-      </div>
-    </section>
+
+
+</section>
   );
 };
 

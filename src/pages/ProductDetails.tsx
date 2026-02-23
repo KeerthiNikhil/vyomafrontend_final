@@ -1,182 +1,201 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useCart } from "@/context/CartContext";
-import { Button } from "@/components/ui/button";
-import { Minus, Plus } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
-import WishlistButton from "@/components/common/WishlistButton";
+import { Minus, Plus, Star } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 import { products } from "@/data/products";
-
+import { Button } from "@/components/ui/button";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { addToCart } = useCart();
   const [qty, setQty] = useState(1);
 
-  const product = products.find(
-  (p) => p.id === Number(id)
-);
-
+  const product = products.find((p) => p.id === Number(id));
 
   if (!product) {
-    return (
-      <div className="p-10 text-center text-lg font-semibold">
-        Product not found
-      </div>
-    );
+    return <div className="p-10 text-center">Product not found</div>;
   }
 
-  /* DELIVERY DATE */
-  const deliveryDate = () => {
-    const date = new Date();
-    date.setDate(date.getDate() + 3);
-    return date.toDateString();
-  };
-
-  /* RELATED PRODUCTS */
-  const relatedProducts = products.filter(
-    (item) =>
-      item.category === product.category &&
-      item.id !== product.id
-  );
-
-  /* ADD TO CART */
   const handleAddToCart = () => {
-    for (let i = 0; i < qty; i++) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-      });
-    }
-  };
-
-  /* BUY NOW */
-  const handleBuyNow = () => {
-    handleAddToCart();
-    navigate("/checkout");
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      
+    });
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-10">
-      <div className="grid md:grid-cols-2 gap-10">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* IMAGE */}
-        <div className="relative bg-white rounded-lg shadow p-6">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-96 object-contain"
-          />
+      <div className="grid lg:grid-cols-3 gap-8">
 
-          <WishlistButton
-            product={{
-              id: product.id,
-              name: product.name,
-              price: product.price,
-              image: product.image,
-            }}
-          />
-        </div>
-
-        {/* INFO */}
-        <div>
-          <h1 className="text-3xl font-bold mb-2">
-            {product.name}
-          </h1>
-
-          <p className="text-gray-600 mb-3">
-            {product.description}
-          </p>
-
-          <p className="text-sm mb-2">
-            Weight: {product.weight}
-          </p>
-
-          <p className="text-2xl font-bold text-blue-600 mb-2">
-            ₹{product.price}
-          </p>
-
-          <p className="text-sm text-green-600 mb-4">
-            🚚 Delivery by {deliveryDate()}
-          </p>
-
-          {/* QUANTITY */}
-          <div className="flex items-center gap-4 mb-6">
-            <button
-              onClick={() => setQty(Math.max(1, qty - 1))}
-              className="border p-2 rounded hover:bg-gray-100"
-            >
-              <Minus size={16} />
-            </button>
-
-            <span className="font-medium">{qty}</span>
-
-            <button
-              onClick={() => setQty(qty + 1)}
-              className="border p-2 rounded hover:bg-gray-100"
-            >
-              <Plus size={16} />
-            </button>
+        {/* LEFT IMAGE SECTION */}
+        <div className="bg-white rounded-xl p-6 shadow-sm">
+          <div className="h-[350px] flex items-center justify-center">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full object-contain"
+            />
           </div>
 
-          {/* BUTTONS */}
+          {/* Thumbnail Row */}
+          <div className="flex gap-3 mt-4">
+            <div className="w-16 h-16 border rounded-md" />
+            <div className="w-16 h-16 border rounded-md" />
+            <div className="w-16 h-16 border rounded-md" />
+          </div>
+        </div>
+
+        {/* CENTER PRODUCT INFO */}
+        <div className="space-y-5">
+
+          <h1 className="text-2xl font-bold">{product.name}</h1>
+
+          {/* Rating */}
+          <div className="flex items-center gap-2 text-yellow-500">
+            <Star size={18} fill="currentColor" />
+            <span className="text-sm text-gray-700">4.4 (78 reviews)</span>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-bold text-black">
+              ₹{product.price}
+            </span>
+            <span className="text-gray-400 line-through">
+              ₹{product.price + 500}
+            </span>
+            <span className="text-green-600 text-sm font-medium">
+              20% off
+            </span>
+          </div>
+
+          {/* Quantity */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium">Quantity:</span>
+            <div className="flex items-center border rounded-md">
+              <button
+                onClick={() => setQty(Math.max(1, qty - 1))}
+                className="px-3 py-1"
+              >
+                <Minus size={16} />
+              </button>
+              <span className="px-4">{qty}</span>
+              <button
+                onClick={() => setQty(qty + 1)}
+                className="px-3 py-1"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Buttons */}
           <div className="flex gap-4">
             <Button
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3"
               onClick={handleAddToCart}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
               Add to Cart
             </Button>
 
-            <Button
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3"
-              onClick={handleBuyNow}
-            >
+            <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white">
               Buy Now
             </Button>
           </div>
+
+          {/* Features Accordion */}
+          <div className="border rounded-xl divide-y mt-6">
+            <details className="p-4 cursor-pointer">
+              <summary className="font-medium">Description</summary>
+              <p className="text-sm text-gray-600 mt-2">
+                {product.description}
+              </p>
+            </details>
+
+            <details className="p-4 cursor-pointer">
+              <summary className="font-medium">Specifications</summary>
+              <p className="text-sm text-gray-600 mt-2">
+                Weight: {product.weight}
+              </p>
+            </details>
+
+            <details className="p-4 cursor-pointer">
+              <summary className="font-medium">Warranty</summary>
+              <p className="text-sm text-gray-600 mt-2">
+                1 Year Manufacturer Warranty
+              </p>
+            </details>
+          </div>
         </div>
-      </div>
 
-      {/* RELATED PRODUCTS */}
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">
-          Related Products
-        </h2>
+        {/* RIGHT OFFER BOX */}
+        <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {relatedProducts.map((item) => (
-            <div
-              key={item.id}
-              className="border rounded-lg p-4 text-center hover:shadow transition cursor-pointer"
-              onClick={() => navigate(`/product/${item.id}`)}
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="h-32 mx-auto object-contain"
-              />
-              <p className="mt-2 font-medium">
-                {item.name}
-              </p>
-              <p className="text-blue-600 font-semibold">
-                ₹{item.price}
-              </p>
+          <div className="border rounded-lg p-4">
+            <h3 className="font-semibold mb-3">Available Offers</h3>
+            <p className="text-sm text-gray-600">
+              Buy 2 or more & get extra 5% off
+            </p>
+            <p className="text-sm text-gray-600">
+              Free Delivery Available
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <Button className="w-full bg-blue-600 text-white">
+              Go to Cart
+            </Button>
+
+            <Button className="w-full bg-orange-500 text-white">
+              Buy Now
+            </Button>
+          </div>
+
+          <div className="border rounded-lg p-4">
+            <h3 className="font-semibold mb-3">Payment Options</h3>
+            <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+              <p>✔ UPI</p>
+              <p>✔ Cards</p>
+              <p>✔ COD</p>
+              <p>✔ Net Banking</p>
             </div>
-          ))}
+          </div>
         </div>
+
       </div>
 
-      {/* REVIEWS */}
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">
-          Reviews
+      {/* REVIEWS SECTION */}
+      <div className="mt-16 bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold mb-6">
+          Ratings & Reviews
         </h2>
-        <p className="text-gray-500">
-          No reviews yet.
-        </p>
+
+        <div className="flex items-center gap-6 mb-6">
+          <span className="text-3xl font-bold">4.4</span>
+          <span className="text-sm text-gray-600">
+            78 Reviews
+          </span>
+        </div>
+
+        <div className="space-y-4">
+          <div className="border-t pt-4">
+            <p className="font-medium">Dr. Sharma</p>
+            <p className="text-sm text-gray-600">
+              Excellent product. Very reliable and easy to use.
+            </p>
+          </div>
+
+          <div className="border-t pt-4">
+            <p className="font-medium">Dr. Patel</p>
+            <p className="text-sm text-gray-600">
+              Good quality product. Works as expected.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

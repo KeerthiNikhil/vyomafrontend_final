@@ -9,10 +9,11 @@ import foods from "@/assets/images/categories/foods.jpg";
 
 const FeaturedCategories = () => {
   return (
-    <section className="pt-2 py-10">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="pt-2 py-10 mb-0">
+      <div className="max-w-7xl mx-auto px-0">
 
-        <h2 className="text-2xl font-bold text-royal pb-6">
+       <h2 className="text-xl sm:text-2xl font-bold mb-1 pb-4">
+
           Featured Categories
         </h2>
 

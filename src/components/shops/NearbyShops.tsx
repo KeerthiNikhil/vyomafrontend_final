@@ -6,6 +6,7 @@ import shop2 from "@/assets/images/shops/shop2.jpg";
 import shop3 from "@/assets/images/shops/shop3.jpg";
 import shop4 from "@/assets/images/shops/shop4.jpg";
 import shop5 from "@/assets/images/shops/shop5.jpg";
+import shop6 from "@/assets/images/shops/shop6.jpg";
 
 // ✅ SHOP DATA (later replace with API)
 const shops = [
@@ -44,19 +45,28 @@ const shops = [
     rating: 4.6,
     image: shop5,
   },
+    {
+    shopId: "Super Market",
+    name: "Quick Buy",
+    location: "Balmata",
+    rating: 5.0,
+    image: shop6,
+  },
 ];
 
 const NearbyShops = () => {
   return (
-    <section className="pt-0 pb-8 bg-royal-light">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="pt-0 pb-8 bg-royal-light mb-4">
+      <div className="max-w-7xl mx-auto px-0">
 
         {/* Heading */}
-        <h2 className="text-2xl font-bold mb-1">
+        <h2 className="text-xl sm:text-2xl font-bold mb-1">
+
           Shops Near You
         </h2>
 
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-500 text-xs sm:text-base mb-4">
+
           Trusted stores around Mangalore & Surathkal
         </p>
 

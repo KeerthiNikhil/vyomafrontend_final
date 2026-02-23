@@ -1,54 +1,60 @@
-import * as React from "react";
+import * as React from "react"
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 
-import img2 from "@/assets/images/ad3.jpg";
-import img3 from "@/assets/images/ad4.jpg";
-import img4 from "@/assets/images/ad5.jpg";
+import img1 from "@/assets/images/banner2.jpg.jpeg"
+import img2 from "@/assets/images/banner1.jpg"
+import img3 from "@/assets/images/banner3.jpg"
 
-const ads = [img2, img3, img4];
+const ads = [img1, img2, img3]
 
 const AdCarousel = () => {
   const autoplay = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: false })
-  );
+    Autoplay({
+      delay: 3000,
+      stopOnInteraction: false,
+    })
+  )
 
   return (
-    <section className="mt-10">
-      <div className="max-w-7xl mx-auto px-6">
-        <Carousel
-          plugins={[autoplay.current]}
-          className="relative"
-        >
-          <CarouselContent>
-            {ads.map((img, index) => (
-              <CarouselItem key={index}>
-                
-                {/* AD BANNER */}
-                <div className="w-full h-[220px] sm:h-[260px] md:h-[300px] rounded-xl overflow-hidden">
-                  <img
-                    src={img}
-                    alt={`Advertisement ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+    <section className="mb-10">
+      <div className="max-w-7xl mx-auto">
 
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+        <div className="rounded-2xl overflow-hidden shadow-lg">
 
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          <Carousel
+            opts={{ loop: true }}
+            plugins={[autoplay.current]}
+            className="w-full"
+          >
+            <CarouselContent>
+              {ads.map((img, index) => (
+                <CarouselItem key={index}>
+
+                  {/* ⭐ Maintain 1200x400 ratio */}
+                  <div className="relative w-full aspect-[3/1] bg-gray-100">
+
+                    <img
+                      src={img}
+                      alt={`Advertisement ${index + 1}`}
+                      className="absolute inset-0 w-full h-full object-contain"
+                    />
+
+                  </div>
+
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+
+        </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default AdCarousel;
+export default AdCarousel

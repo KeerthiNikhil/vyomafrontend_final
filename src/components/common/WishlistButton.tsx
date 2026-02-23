@@ -13,15 +13,23 @@ type Props = {
 };
 
 const WishlistButton = ({ product }: Props) => {
-  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const liked = isInWishlist(product.id);
+
+  const handleToggle = () => {
+    if (liked) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  };
 
   return (
     <button
       onClick={(e) => {
         e.stopPropagation();
-        toggleWishlist(product);
+        handleToggle();
       }}
       className="
         absolute top-3 right-3
