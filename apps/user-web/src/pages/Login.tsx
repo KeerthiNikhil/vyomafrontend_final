@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Card, CardContent } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../../../apps/user-web/src/components/ui/card";
+import { Input } from "../../../apps/user-web/src/components/ui/input";
+import { Button } from "../../../apps/user-web/src/components/ui/button";
 
 const Login = () => {
   const navigate = useNavigate();
