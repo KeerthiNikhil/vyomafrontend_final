@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
   Bar,
@@ -70,45 +69,53 @@ const Payments = () => {
   ]);
 
   const totalRevenue = payments
-    .filter(p => p.status === "Paid")
+    .filter((p) => p.status === "Paid")
     .reduce((acc, p) => acc + p.amount, 0);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 bg-gray-50 min-h-screen">
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">Payments</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-xl sm:text-3xl font-bold">
+          Payments
+        </h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Track your earnings and revenue analytics
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Total Revenue</p>
-            <h2 className="text-3xl font-bold text-green-600">
+        <Card className="rounded-xl shadow-sm bg-white">
+          <CardContent className="p-3 sm:p-4">
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              Total Revenue
+            </p>
+            <h2 className="text-lg sm:text-2xl font-bold text-green-600 mt-1">
               ₹{totalRevenue}
             </h2>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Total Transactions</p>
-            <h2 className="text-3xl font-bold">
+        <Card className="rounded-xl shadow-sm bg-white">
+          <CardContent className="p-3 sm:p-4">
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              Total Transactions
+            </p>
+            <h2 className="text-lg sm:text-2xl font-bold mt-1">
               {payments.length}
             </h2>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Pending Payments</p>
-            <h2 className="text-3xl font-bold text-orange-500">
+        <Card className="rounded-xl shadow-sm bg-white col-span-2 lg:col-span-1">
+          <CardContent className="p-3 sm:p-4">
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              Pending Payments
+            </p>
+            <h2 className="text-lg sm:text-2xl font-bold text-orange-500 mt-1">
               {payments.filter(p => p.status === "Pending").length}
             </h2>
           </CardContent>
@@ -117,28 +124,36 @@ const Payments = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 
-        {/* Weekly Bar Chart */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">Weekly Revenue</h2>
-            <ResponsiveContainer width="100%" height={250}>
+        {/* Weekly Chart */}
+        <Card className="rounded-xl shadow-sm">
+          <CardContent className="p-4 sm:p-6">
+            <h2 className="font-semibold mb-4 text-sm sm:text-base">
+              Weekly Revenue
+            </h2>
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={weeklyData}>
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="revenue" fill="#3b82f6" radius={[6,6,0,0]} />
+                <Bar
+                  dataKey="revenue"
+                  fill="#3b82f6"
+                  radius={[6, 6, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Monthly Line Chart */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">Monthly Revenue</h2>
-            <ResponsiveContainer width="100%" height={250}>
+        {/* Monthly Chart */}
+        <Card className="rounded-xl shadow-sm">
+          <CardContent className="p-4 sm:p-6">
+            <h2 className="font-semibold mb-4 text-sm sm:text-base">
+              Monthly Revenue
+            </h2>
+            <ResponsiveContainer width="100%" height={220}>
               <LineChart data={monthlyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />

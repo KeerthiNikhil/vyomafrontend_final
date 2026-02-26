@@ -1,163 +1,122 @@
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
-interface Order {
-  id: number;
-  orderId: string;
-  customer: string;
-  total: number;
-  date: string;
-  address: string;
-  payment: string;
-  status: "Pending" | "Out for Delivery";
-  deliveryBoy?: string;
-}
-
-const deliveryStaff = ["Ravi", "Imran", "Suresh"];
+const pendingTrend = [
+  { day: "Mon", orders: 4 },
+  { day: "Tue", orders: 6 },
+  { day: "Wed", orders: 5 },
+  { day: "Thu", orders: 8 },
+  { day: "Fri", orders: 7 },
+  { day: "Sat", orders: 9 },
+  { day: "Sun", orders: 6 },
+];
 
 const PendingOrders = () => {
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: 1,
-      orderId: "#1026",
-      customer: "Ananya Shetty",
-      total: 850,
-      date: "21 Mar 2025",
-      address: "Bejai, Mangalore",
-      payment: "UPI",
-      status: "Pending",
-    },
-  ]);
-
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [selectedBoy, setSelectedBoy] = useState("");
-
-  const assignDelivery = () => {
-    if (!selectedOrder || !selectedBoy) return;
-
-    setOrders(prev =>
-      prev.map(order =>
-        order.id === selectedOrder.id
-          ? {
-              ...order,
-              deliveryBoy: selectedBoy,
-              status: "Out for Delivery",
-            }
-          : order
-      )
-    );
-
-    setSelectedOrder(null);
-    setSelectedBoy("");
-  };
-
-  const markDelivered = (id: number) => {
-    setOrders(prev => prev.filter(order => order.id !== id));
-  };
-
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
 
-      <h1 className="text-2xl font-bold">Pending Orders</h1>
+      {/* Page Header */}
+      <div>
+        <h1 className="text-2xl font-bold">
+          Pending Orders
+        </h1>
+        <p className="text-gray-500 text-sm">
+          Manage and track all pending deliveries
+        </p>
+      </div>
 
-      {orders.map(order => (
-        <Card key={order.id} className="rounded-2xl shadow-sm">
-          <CardContent className="p-6 flex justify-between items-start">
+      {/* Animated Warning Alert */}
+      <div className="animate-pulse bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg shadow">
+        ⚠ You have 6 pending orders. Update tracking details to avoid delays.
+      </div>
 
-            <div className="space-y-2">
-              <h3 className="font-semibold text-lg">{order.orderId}</h3>
-              <p className="text-sm text-muted-foreground">
-                {order.customer} • {order.date}
-              </p>
-              <p className="text-sm">📍 {order.address}</p>
-              <p className="text-sm">💳 {order.payment}</p>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
-              {order.deliveryBoy && (
-                <p className="text-sm text-blue-600">
-                  🚚 Assigned to: {order.deliveryBoy}
-                </p>
-              )}
-
-              <p className="font-bold text-lg mt-2">
-                ₹{order.total}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 items-end">
-
-              <Badge
-                className={
-                  order.status === "Pending"
-                    ? "bg-orange-100 text-orange-700"
-                    : "bg-blue-100 text-blue-700"
-                }
-              >
-                {order.status}
-              </Badge>
-
-              {order.status === "Pending" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setSelectedOrder(order)}
-                >
-                  Assign Delivery
-                </Button>
-              )}
-
-              {order.status === "Out for Delivery" && (
-                <Button
-                  size="sm"
-                  onClick={() => markDelivered(order.id)}
-                >
-                  Mark Delivered
-                </Button>
-              )}
-
-            </div>
-
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Total Pending</p>
+            <h2 className="text-2xl font-bold text-yellow-600 mt-1">6</h2>
           </CardContent>
         </Card>
-      ))}
 
-      {/* Assign Modal */}
-      <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Assign Delivery Boy</DialogTitle>
-          </DialogHeader>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Total Discount</p>
+            <h2 className="text-2xl font-bold mt-1">₹450</h2>
+          </CardContent>
+        </Card>
 
-          <div className="space-y-4 mt-4">
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Average Processing Time</p>
+            <h2 className="text-2xl font-bold mt-1">2.5 Days</h2>
+          </CardContent>
+        </Card>
 
-            <Select onValueChange={setSelectedBoy}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Delivery Person" />
-              </SelectTrigger>
-              <SelectContent>
-                {deliveryStaff.map((boy, index) => (
-                  <SelectItem key={index} value={boy}>
-                    {boy}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      </div>
 
-            <Button className="w-full" onClick={assignDelivery}>
-              Confirm Assignment
-            </Button>
+      {/* Trend Graph */}
+      <Card>
+        <CardContent className="p-6">
+          <h2 className="font-semibold mb-4">
+            Weekly Pending Trend
+          </h2>
 
-          </div>
-        </DialogContent>
-      </Dialog>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={pendingTrend}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="day" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="orders"
+                stroke="#f59e0b"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Orders Table */}
+      <div className="bg-white shadow rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-100 text-gray-600">
+            <tr>
+              <th className="p-3 text-left">Order ID</th>
+              <th className="p-3 text-left">Order Date</th>
+              <th className="p-3 text-left">Discount</th>
+              <th className="p-3 text-left">Status</th>
+              <th className="p-3 text-left">Tracking ID</th>
+              <th className="p-3 text-left">Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-t hover:bg-gray-50 transition">
+              <td className="p-3">#2001</td>
+              <td className="p-3">22 Feb 2026</td>
+              <td className="p-3">₹50</td>
+              <td className="p-3 text-yellow-600 font-medium">Pending</td>
+              <td className="p-3">TRK12345</td>
+              <td className="p-3">
+                <button className="bg-blue-900 hover:bg-blue-800 text-white px-3 py-1 rounded text-xs">
+                  Update
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
     </div>
   );

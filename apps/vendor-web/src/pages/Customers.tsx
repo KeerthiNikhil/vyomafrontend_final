@@ -1,167 +1,172 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Eye } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
-interface Customer {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  orders: number;
-  spent: number;
-  active: boolean;
-}
+const customerGrowth = [
+  { month: "Jan", customers: 10 },
+  { month: "Feb", customers: 18 },
+  { month: "Mar", customers: 25 },
+  { month: "Apr", customers: 32 },
+  { month: "May", customers: 40 },
+  { month: "Jun", customers: 55 },
+];
 
 const Customers = () => {
-  const [customers, setCustomers] = useState<Customer[]>([
+  const [search, setSearch] = useState("");
+
+  const customers = [
     {
       id: 1,
-      name: "Ananya Shetty",
-      email: "ananya@gmail.com",
+      name: "Rohit Sharma",
+      email: "rohit@gmail.com",
       phone: "9876543210",
-      orders: 12,
-      spent: 5400,
-      active: true,
+      address: "Mangalore",
+      status: "Active",
     },
     {
       id: 2,
-      name: "Rahul Kumar",
-      email: "rahul@gmail.com",
+      name: "Ananya Shetty",
+      email: "ananya@gmail.com",
       phone: "9123456780",
-      orders: 4,
-      spent: 980,
-      active: true,
+      address: "Udupi",
+      status: "Active",
     },
     {
       id: 3,
-      name: "Sneha Rao",
-      email: "sneha@gmail.com",
-      phone: "9988776655",
-      orders: 1,
-      spent: 200,
-      active: false,
+      name: "Rahul B",
+      email: "rahul@gmail.com",
+      phone: "9000000000",
+      address: "Manipal",
+      status: "Inactive",
     },
-  ]);
+  ];
 
-  const [selected, setSelected] = useState<Customer | null>(null);
-  const [search, setSearch] = useState("");
-
-  const filteredCustomers = customers.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+  const filteredCustomers = customers.filter((customer) =>
+    customer.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const toggleStatus = (id: number) => {
-    setCustomers(prev =>
-      prev.map(c =>
-        c.id === id ? { ...c, active: !c.active } : c
-      )
-    );
-  };
-
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">Customer Details</h1>
-        <p className="text-muted-foreground">
-          Manage your store customers
+        <h1 className="text-2xl font-bold">
+          Customers
+        </h1>
+        <p className="text-gray-500 text-sm">
+          Manage and monitor your customer base
         </p>
       </div>
 
-      {/* Search */}
-      <Input
-        placeholder="Search customer..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-sm"
-      />
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      {/* Customer Grid */}
-      <div className="grid md:grid-cols-3 gap-6">
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Total Customers</p>
+            <h2 className="text-2xl font-bold mt-1">
+              {customers.length}
+            </h2>
+          </CardContent>
+        </Card>
 
-        {filteredCustomers.map(customer => (
-          <Card key={customer.id} className="rounded-2xl shadow-sm hover:shadow-xl transition-all">
-            <CardContent className="p-6 space-y-4">
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Active Customers</p>
+            <h2 className="text-2xl font-bold text-green-600 mt-1">
+              {customers.filter(c => c.status === "Active").length}
+            </h2>
+          </CardContent>
+        </Card>
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg">
-                    {customer.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {customer.email}
-                  </p>
-                </div>
-
-                <Badge
-                  className={
-                    customer.active
-                      ? "bg-green-100 text-green-700"
-                      : "bg-gray-200 text-gray-600"
-                  }
-                >
-                  {customer.active ? "Active" : "Blocked"}
-                </Badge>
-              </div>
-
-              <div className="text-sm space-y-1">
-                <p>📦 Orders: {customer.orders}</p>
-                <p>💰 Total Spent: ₹{customer.spent}</p>
-                <p>📞 {customer.phone}</p>
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setSelected(customer)}
-                >
-                  <Eye size={16} className="mr-1" />
-                  View
-                </Button>
-
-                <Button
-                  size="sm"
-                  variant={customer.active ? "outline" : "default"}
-                  onClick={() => toggleStatus(customer.id)}
-                >
-                  {customer.active ? "Block" : "Unblock"}
-                </Button>
-              </div>
-
-            </CardContent>
-          </Card>
-        ))}
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Inactive Customers</p>
+            <h2 className="text-2xl font-bold text-red-500 mt-1">
+              {customers.filter(c => c.status === "Inactive").length}
+            </h2>
+          </CardContent>
+        </Card>
 
       </div>
 
-      {/* View Modal */}
-      <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Customer Details</DialogTitle>
-          </DialogHeader>
+      {/* Customer Growth Chart */}
+      <Card>
+        <CardContent className="p-6">
+          <h2 className="font-semibold mb-4">
+            Customer Growth
+          </h2>
 
-          {selected && (
-            <div className="space-y-3 mt-4">
-              <p><strong>Name:</strong> {selected.name}</p>
-              <p><strong>Email:</strong> {selected.email}</p>
-              <p><strong>Phone:</strong> {selected.phone}</p>
-              <p><strong>Total Orders:</strong> {selected.orders}</p>
-              <p><strong>Total Spent:</strong> ₹{selected.spent}</p>
-              <p>
-                <strong>Status:</strong>{" "}
-                {selected.active ? "Active" : "Blocked"}
-              </p>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={customerGrowth}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="customers"
+                stroke="#3b82f6"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Search Bar */}
+      <div className="max-w-sm">
+        <Input
+          placeholder="Search customer by name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {/* Customers Table */}
+      <div className="bg-white shadow rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-100 text-gray-600">
+            <tr>
+              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Email</th>
+              <th className="p-3 text-left">Phone</th>
+              <th className="p-3 text-left">Address</th>
+              <th className="p-3 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredCustomers.map((customer) => (
+              <tr key={customer.id} className="border-t hover:bg-gray-50 transition">
+                <td className="p-3 font-medium">{customer.name}</td>
+                <td className="p-3">{customer.email}</td>
+                <td className="p-3">{customer.phone}</td>
+                <td className="p-3">{customer.address}</td>
+                <td className="p-3">
+                  <span
+                    className={`px-2 py-1 text-xs rounded-full ${
+                      customer.status === "Active"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {customer.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
     </div>
   );
