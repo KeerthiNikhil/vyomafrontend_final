@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   BarChart,
   Bar,
@@ -6,30 +8,98 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
   CartesianGrid,
 } from "recharts";
 
+interface Order {
+  id: number;
+  orderId: string;
+  deliveryCharge: number;
+  date: string;
+  discount: number;
+  amount: number;
+  status: "Delivered";
+}
+
 const deliveryTrend = [
-  { day: "Mon", orders: 5 },
-  { day: "Tue", orders: 8 },
-  { day: "Wed", orders: 6 },
-  { day: "Thu", orders: 10 },
-  { day: "Fri", orders: 7 },
-  { day: "Sat", orders: 12 },
-  { day: "Sun", orders: 9 },
+  { day: "Mon", deliveries: 5 },
+  { day: "Tue", deliveries: 8 },
+  { day: "Wed", deliveries: 6 },
+  { day: "Thu", deliveries: 10 },
+  { day: "Fri", deliveries: 7 },
+  { day: "Sat", deliveries: 12 },
+  { day: "Sun", deliveries: 9 },
+];
+
+const revenueTrend = [
+  { day: "Mon", revenue: 2500 },
+  { day: "Tue", revenue: 3200 },
+  { day: "Wed", revenue: 1800 },
+  { day: "Thu", revenue: 4000 },
+  { day: "Fri", revenue: 2900 },
+  { day: "Sat", revenue: 5000 },
+  { day: "Sun", revenue: 3700 },
 ];
 
 const DeliveredOrders = () => {
-  return (
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+  const [search, setSearch] = useState("");
 
-      {/* Page Header */}
+  const [orders] = useState<Order[]>([
+    {
+      id: 1,
+      orderId: "#6001",
+      deliveryCharge: 50,
+      date: "27 Mar 2025",
+      discount: 100,
+      amount: 1500,
+      status: "Delivered",
+    },
+    {
+      id: 2,
+      orderId: "#6002",
+      deliveryCharge: 30,
+      date: "26 Mar 2025",
+      discount: 0,
+      amount: 900,
+      status: "Delivered",
+    },
+    {
+      id: 3,
+      orderId: "#6003",
+      deliveryCharge: 70,
+      date: "25 Mar 2025",
+      discount: 50,
+      amount: 2200,
+      status: "Delivered",
+    },
+  ]);
+
+  const filteredOrders = orders.filter((order) =>
+    order.orderId.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalRevenue = orders.reduce(
+    (acc, o) => acc + o.amount,
+    0
+  );
+
+  const totalDeliveryCharges = orders.reduce(
+    (acc, o) => acc + o.deliveryCharge,
+    0
+  );
+
+  return (
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-3xl font-bold">
           Delivered Orders
         </h1>
-        <p className="text-gray-500 text-sm">
-          Overview of successfully delivered orders
+        <p className="text-gray-500">
+          Track completed deliveries & revenue
         </p>
       </div>
 
@@ -38,81 +108,144 @@ const DeliveredOrders = () => {
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-gray-500 text-sm">Total Delivered</p>
-            <h2 className="text-2xl font-bold text-green-600 mt-1">57</h2>
+            <p className="text-sm text-gray-500">
+              Total Delivered
+            </p>
+            <h2 className="text-2xl font-bold">
+              {orders.length}
+            </h2>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-gray-500 text-sm">Total Revenue</p>
-            <h2 className="text-2xl font-bold mt-1">₹24,500</h2>
+            <p className="text-sm text-gray-500">
+              Total Revenue
+            </p>
+            <h2 className="text-2xl font-bold text-green-600">
+              ₹{totalRevenue}
+            </h2>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-gray-500 text-sm">Total Discount Given</p>
-            <h2 className="text-2xl font-bold text-red-500 mt-1">₹1,200</h2>
+            <p className="text-sm text-gray-500">
+              Delivery Charges Collected
+            </p>
+            <h2 className="text-2xl font-bold text-blue-600">
+              ₹{totalDeliveryCharges}
+            </h2>
           </CardContent>
         </Card>
 
       </div>
 
-      {/* Delivery Trend Graph */}
-      <Card>
-        <CardContent className="p-6">
-          <h2 className="font-semibold mb-4">
-            Weekly Delivery Performance
-          </h2>
+      {/* Graph Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={deliveryTrend}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Bar
-                dataKey="orders"
-                fill="#22c55e"
-                radius={[6, 6, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        {/* Delivery Trend */}
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
+              Weekly Delivery Trend
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={deliveryTrend}>
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Bar
+                  dataKey="deliveries"
+                  fill="#3b82f6"
+                  radius={[6, 6, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Revenue Trend */}
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
+              Revenue Trend
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={revenueTrend}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+      </div>
+
+      {/* Search */}
+      <div>
+        <Input
+          placeholder="Search by Order ID..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="max-w-xs"
+        />
+      </div>
 
       {/* Orders Table */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100 text-gray-600">
-            <tr>
-              <th className="p-3 text-left">Order ID</th>
-              <th className="p-3 text-left">Delivery Charges</th>
-              <th className="p-3 text-left">Order Date</th>
-              <th className="p-3 text-left">Discount</th>
-              <th className="p-3 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-t hover:bg-gray-50 transition">
-              <td className="p-3">#1001</td>
-              <td className="p-3">₹50</td>
-              <td className="p-3">22 Feb 2026</td>
-              <td className="p-3">₹20</td>
-              <td className="p-3 text-green-600 font-medium">Delivered</td>
-            </tr>
+      <Card>
+        <CardContent className="p-6 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-left">
+                <th className="py-3">Order ID</th>
+                <th>Delivery Charge</th>
+                <th>Date</th>
+                <th>Discount</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
 
-            <tr className="border-t hover:bg-gray-50 transition">
-              <td className="p-3">#1002</td>
-              <td className="p-3">₹0</td>
-              <td className="p-3">21 Feb 2026</td>
-              <td className="p-3">₹10</td>
-              <td className="p-3 text-green-600 font-medium">Delivered</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <tbody>
+              {filteredOrders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="border-b hover:bg-gray-50"
+                >
+                  <td className="py-3 font-medium">
+                    {order.orderId}
+                  </td>
+                  <td className="text-blue-600 font-semibold">
+                    ₹{order.deliveryCharge}
+                  </td>
+                  <td>{order.date}</td>
+                  <td>₹{order.discount}</td>
+                  <td className="font-semibold">
+                    ₹{order.amount}
+                  </td>
+                  <td>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                      Delivered
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+
+          </table>
+        </CardContent>
+      </Card>
 
     </div>
   );

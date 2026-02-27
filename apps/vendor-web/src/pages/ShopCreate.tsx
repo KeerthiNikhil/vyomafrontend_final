@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { MapPin } from "lucide-react";
@@ -7,6 +6,9 @@ import { toast } from "sonner";
 
 const ShopCreate = () => {
   const [step, setStep] = useState(1);
+
+  const totalSteps = 4;
+  const progressPercentage = (step / totalSteps) * 100;
 
   // ================= STATE =================
   const [latitude, setLatitude] = useState("");
@@ -111,20 +113,18 @@ const ShopCreate = () => {
       } else {
         toast.error(data.message || "Something went wrong");
       }
-    } catch (err) {
+    } catch {
       toast.error("Server error");
     } finally {
       setIsSubmitting(false);
     }
   };
-  const totalSteps = 4;
-const progressPercentage = (step / totalSteps) * 100;
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 overflow-y-auto">
 
-      {/* ===== LEFT BLUE PANEL ===== */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 text-white items-center justify-center p-16">
+      {/* LEFT PANEL */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white items-center justify-center p-16">
         <div>
           <h1 className="text-4xl font-bold mb-6">
             Build Your Business 🚀
@@ -135,78 +135,117 @@ const progressPercentage = (step / totalSteps) * 100;
         </div>
       </div>
 
-      {/* ===== RIGHT FORM ===== */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center p-6">
+      {/* RIGHT FORM */}
+      <div className="flex w-full lg:w-1/2 justify-center p-6">
         <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-8">
 
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="h-2 bg-gray-200 rounded-full">
+              <div
+                className="h-2 bg-blue-700 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+          </div>
+
           <h2 className="text-lg font-semibold mb-6">
-            Step {step} of 4 — Shop Registration
+            Step {step} of {totalSteps} — Shop Registration
           </h2>
 
-          {/* STEP 1 */}
-          {step === 1 && (
-            <div className="space-y-4">
-              <Input placeholder="Owner Name" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} />
-              <Input placeholder="Business Type" value={businessType} onChange={(e) => setBusinessType(e.target.value)} />
-              <Textarea placeholder="Business Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-              <Button onClick={() => setStep(2)} className="w-full">Next →</Button>
-            </div>
-          )}
+          <div className="space-y-4">
 
-          {/* STEP 2 */}
-          {step === 2 && (
-            <div className="space-y-4">
-              <Input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
-              <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-              <Input placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-              <Textarea placeholder="Shop Address" value={address} onChange={(e) => setAddress(e.target.value)} />
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-                <Button onClick={() => setStep(3)}>Next →</Button>
-              </div>
-            </div>
-          )}
+            {step === 1 && (
+              <>
+                <Input placeholder="Owner Name" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} />
 
-          {/* STEP 3 */}
-          {step === 3 && (
-            <div className="space-y-4">
-              <Input placeholder="GST Registration Number (Optional)" value={gstNumber} onChange={(e) => setGstNumber(e.target.value)} />
-              <Input placeholder="Years of Operation (Optional)" value={yearsOfOperation} onChange={(e) => setYearsOfOperation(e.target.value)} />
-              <Input placeholder="Shop & Establishment License Number" value={shopLicenseNumber} onChange={(e) => setShopLicenseNumber(e.target.value)} />
-              <Input placeholder="Udyam Registration (MSME) Number" value={udyamNumber} onChange={(e) => setUdyamNumber(e.target.value)} />
-              <Input placeholder="FSSAI License Number" value={fssaiNumber} onChange={(e) => setFssaiNumber(e.target.value)} />
-              <Input placeholder="Trade License Number" value={tradeLicenseNumber} onChange={(e) => setTradeLicenseNumber(e.target.value)} />
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-                <Button onClick={() => setStep(4)}>Next →</Button>
-              </div>
-            </div>
-          )}
+                <select
+                  value={businessType}
+                  onChange={(e) => setBusinessType(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  <option value="">Select Business Type</option>
+                  <option>Grocery Store</option>
+                  <option>Food & Beverages</option>
+                  <option>Pharmacy</option>
+                  <option>Clothing Store</option>
+                  <option>Electronics</option>
+                  <option>Salon</option>
+                  <option>Hardware Store</option>
+                  <option>Other</option>
+                </select>
 
-          {/* STEP 4 */}
-          {step === 4 && (
-            <div className="space-y-4">
-              <Button
-                variant="outline"
-                onClick={handleFetchLocation}
-                disabled={isFetching}
-                className="flex items-center gap-2"
+                <Textarea placeholder="Business Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <Input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Input placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <Textarea placeholder="Shop Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <Input placeholder="GST Number (Optional)" value={gstNumber} onChange={(e) => setGstNumber(e.target.value)} />
+                <Input placeholder="Years of Operation (Optional)" value={yearsOfOperation} onChange={(e) => setYearsOfOperation(e.target.value)} />
+                <Input placeholder="Shop License Number" value={shopLicenseNumber} onChange={(e) => setShopLicenseNumber(e.target.value)} />
+                <Input placeholder="Udyam Number" value={udyamNumber} onChange={(e) => setUdyamNumber(e.target.value)} />
+                <Input placeholder="FSSAI Number" value={fssaiNumber} onChange={(e) => setFssaiNumber(e.target.value)} />
+                <Input placeholder="Trade License Number" value={tradeLicenseNumber} onChange={(e) => setTradeLicenseNumber(e.target.value)} />
+              </>
+            )}
+
+            {step === 4 && (
+              <>
+                <button
+                  onClick={handleFetchLocation}
+                  disabled={isFetching}
+                  className="px-4 py-1.5 text-sm border border-blue-600 text-blue-600 rounded-md bg-white hover:bg-blue-50 transition flex items-center gap-2"
+                >
+                  <MapPin size={14} />
+                  {isFetching ? "Detecting..." : "Detect Location"}
+                </button>
+
+                <Input value={latitude} readOnly placeholder="Latitude" />
+                <Input value={longitude} readOnly placeholder="Longitude" />
+              </>
+            )}
+          </div>
+
+          {/* NAVIGATION BUTTONS */}
+          <div className="flex justify-between mt-8">
+
+            {step > 1 && (
+              <button
+                onClick={() => setStep(step - 1)}
+                className="px-4 py-1.5 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition"
               >
-                <MapPin size={16} />
-                {isFetching ? "Detecting..." : "Detect My Location"}
-              </Button>
+                ← Back
+              </button>
+            )}
 
-              <Input value={latitude} readOnly placeholder="Latitude" />
-              <Input value={longitude} readOnly placeholder="Longitude" />
+            {step < totalSteps ? (
+              <button
+                onClick={() => setStep(step + 1)}
+                className="ml-auto px-5 py-1.5 text-sm border border-blue-600 text-blue-600 rounded-md bg-white hover:bg-blue-50 transition"
+              >
+                Next →
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="ml-auto px-5 py-1.5 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 transition"
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+            )}
 
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(3)}>Back</Button>
-                <Button onClick={handleSubmit} disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Submit Shop"}
-                </Button>
-              </div>
-            </div>
-          )}
+          </div>
 
         </div>
       </div>

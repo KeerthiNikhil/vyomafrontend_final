@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
@@ -9,7 +10,7 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-  CartesianGrid
+  CartesianGrid,
 } from "recharts";
 
 interface Payment {
@@ -41,7 +42,7 @@ const monthlyData = [
 ];
 
 const Payments = () => {
-  const [payments] = useState<Payment[]>([
+  const [payments, setPayments] = useState<Payment[]>([
     {
       id: 1,
       orderId: "#1024",
@@ -66,73 +67,148 @@ const Payments = () => {
       method: "COD",
       status: "Pending",
     },
+    {
+      id: 4,
+      orderId: "#1027",
+      amount: 950,
+      date: "17 Mar 2025",
+      method: "UPI",
+      status: "Pending",
+    },
   ]);
+
+  const [showPending, setShowPending] = useState(false);
 
   const totalRevenue = payments
     .filter((p) => p.status === "Paid")
     .reduce((acc, p) => acc + p.amount, 0);
 
+  const pendingPayments = payments.filter(
+    (p) => p.status === "Pending"
+  );
+
+  const handleMarkAsPaid = (id: number) => {
+    setPayments((prev) =>
+      prev.map((payment) =>
+        payment.id === id
+          ? { ...payment, status: "Paid" }
+          : payment
+      )
+    );
+  };
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
 
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-3xl font-bold">
-          Payments
-        </h1>
-        <p className="text-muted-foreground text-sm sm:text-base">
+        <h1 className="text-3xl font-bold">Payments</h1>
+        <p className="text-gray-500">
           Track your earnings and revenue analytics
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
-        <Card className="rounded-xl shadow-sm bg-white">
-          <CardContent className="p-3 sm:p-4">
-            <p className="text-muted-foreground text-xs sm:text-sm">
-              Total Revenue
-            </p>
-            <h2 className="text-lg sm:text-2xl font-bold text-green-600 mt-1">
+        <Card className="bg-white">
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">Total Revenue</p>
+            <h2 className="text-2xl font-bold text-green-600">
               ₹{totalRevenue}
             </h2>
           </CardContent>
         </Card>
 
-        <Card className="rounded-xl shadow-sm bg-white">
-          <CardContent className="p-3 sm:p-4">
-            <p className="text-muted-foreground text-xs sm:text-sm">
+        <Card className="bg-white">
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">
               Total Transactions
             </p>
-            <h2 className="text-lg sm:text-2xl font-bold mt-1">
+            <h2 className="text-2xl font-bold">
               {payments.length}
             </h2>
           </CardContent>
         </Card>
 
-        <Card className="rounded-xl shadow-sm bg-white col-span-2 lg:col-span-1">
-          <CardContent className="p-3 sm:p-4">
-            <p className="text-muted-foreground text-xs sm:text-sm">
+        <Card
+          onClick={() => setShowPending(!showPending)}
+          className={`cursor-pointer transition ${
+            showPending
+              ? "bg-orange-50 border border-orange-400"
+              : "bg-white hover:shadow-md"
+          }`}
+        >
+          <CardContent className="p-4">
+            <p className="text-gray-500 text-sm">
               Pending Payments
             </p>
-            <h2 className="text-lg sm:text-2xl font-bold text-orange-500 mt-1">
-              {payments.filter(p => p.status === "Pending").length}
+            <h2 className="text-2xl font-bold text-orange-500">
+              {pendingPayments.length}
             </h2>
           </CardContent>
         </Card>
 
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      {/* Pending Table */}
+      {showPending && (
+        <Card className="bg-white">
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
+              Pending Payment Details
+            </h2>
 
-        {/* Weekly Chart */}
-        <Card className="rounded-xl shadow-sm">
-          <CardContent className="p-4 sm:p-6">
-            <h2 className="font-semibold mb-4 text-sm sm:text-base">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left">
+                  <th className="py-2">Order ID</th>
+                  <th>Date</th>
+                  <th>Method</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {pendingPayments.map((payment) => (
+                  <tr key={payment.id} className="border-b">
+                    <td className="py-2">
+                      {payment.orderId}
+                    </td>
+                    <td>{payment.date}</td>
+                    <td>{payment.method}</td>
+                    <td className="text-orange-600 font-semibold">
+                      ₹{payment.amount}
+                    </td>
+                    <td>
+                      <Button
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={() =>
+                          handleMarkAsPaid(payment.id)
+                        }
+                      >
+                        Mark as Paid
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <Card className="bg-white">
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
               Weekly Revenue
             </h2>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={250}>
               <BarChart data={weeklyData}>
                 <XAxis dataKey="day" />
                 <YAxis />
@@ -147,13 +223,12 @@ const Payments = () => {
           </CardContent>
         </Card>
 
-        {/* Monthly Chart */}
-        <Card className="rounded-xl shadow-sm">
-          <CardContent className="p-4 sm:p-6">
-            <h2 className="font-semibold mb-4 text-sm sm:text-base">
+        <Card className="bg-white">
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
               Monthly Revenue
             </h2>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={250}>
               <LineChart data={monthlyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />

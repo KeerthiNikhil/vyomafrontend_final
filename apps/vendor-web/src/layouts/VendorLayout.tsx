@@ -2,30 +2,34 @@ import { Outlet, NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
-  Store,
-  Layers,
-  Package,
-  ClipboardList,
-  MessageSquare,
-  Users,
-  CreditCard,
-  LogOut,
   User,
-  Menu
+  Store,
+  Package,
+  Layers,
+  ClipboardList,
+  CreditCard,
+  Truck,
+  MessageSquare,
+  ChevronDown,
+  ChevronRight,
+  LogOut,
+  Menu,
 } from "lucide-react";
 
 const VendorLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  const [openProducts, setOpenProducts] = useState(false);
+  const [openCategories, setOpenCategories] = useState(false);
+  const [openOrders, setOpenOrders] = useState(false);
+  const [openDelivery, setOpenDelivery] = useState(false);
+
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-
-      if (!mobile) {
-        setSidebarOpen(true);
-      }
+      if (!mobile) setSidebarOpen(true);
     };
 
     checkMobile();
@@ -36,7 +40,7 @@ const VendorLayout = () => {
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
 
-      {/* Overlay */}
+      {/* Overlay for Mobile */}
       {isMobile && sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40"
@@ -54,41 +58,119 @@ const VendorLayout = () => {
             : "relative"
         }`}
       >
-        <div className="flex flex-col h-full w-64 bg-blue-900 text-white">
+        <div className="flex flex-col h-screen w-64 bg-blue-900 text-white overflow-y-auto">
 
           {/* Logo */}
           <div className="px-6 py-6 border-b border-blue-800">
             <h1 className="text-2xl font-bold">VYOMA</h1>
           </div>
 
-          {/* Links */}
-          <div className="flex-1 px-4 py-6 space-y-2">
+          {/* Navigation */}
+          <div className="flex-1 px-4 py-6 space-y-2 text-sm">
 
-            <SidebarLink name="Dashboard" path="/vendor/dashboard" icon={<LayoutDashboard size={18} />} />
             <SidebarLink
-  name="Profile"
-  path="/vendor/profile"
-  icon={<User size={18} />}
-/>
-            <SidebarLink name="Create Shop" path="/vendor/shop-create" icon={<Store size={18} />} />
-            <SidebarLink name="Categories" path="/vendor/categories" icon={<Store size={18} />} />
-            <SidebarLink name="Disable Products" path="/vendor/disabled-products" icon={<Layers size={18} />} />
-            <SidebarLink name="Products" path="/vendor/products" icon={<Package size={18} />} />
-            <SidebarLink name="Pending Orders" path="/vendor/pending-orders" icon={<ClipboardList size={18} />} />
+              name="Dashboard"
+              path="/vendor/dashboard"
+              icon={<LayoutDashboard size={18} />}
+            />
+
             <SidebarLink
-  name="Delivered Orders"
-  path="/vendor/delivered-orders"
-  icon={<ClipboardList size={18} />}
-/>
-            <SidebarLink name="Reviews" path="/vendor/reviews" icon={<MessageSquare size={18} />} />
-            <SidebarLink name="Customers" path="/vendor/customers" icon={<Users size={18} />} />
-            <SidebarLink name="Payments" path="/vendor/payments" icon={<CreditCard size={18} />} />
-            
+              name="Profile"
+              path="/vendor/profile"
+              icon={<User size={18} />}
+            />
+
+            <SidebarLink
+              name="Create Shop"
+              path="/vendor/shop-create"
+              icon={<Store size={18} />}
+            />
+
+            {/* PRODUCTS */}
+            <ExpandableMenu
+              title="Products"
+              icon={<Package size={18} />}
+              isOpen={openProducts}
+              setIsOpen={setOpenProducts}
+            >
+              <SidebarLink
+                name="Add Product"
+                path="/vendor/products/add"
+              />
+              <SidebarLink
+                name="Manage Product"
+                path="/vendor/products/manage"
+              />
+            </ExpandableMenu>
+
+            {/* CATEGORY */}
+            <ExpandableMenu
+              title="Category"
+              icon={<Layers size={18} />}
+              isOpen={openCategories}
+              setIsOpen={setOpenCategories}
+            >
+              <SidebarLink
+                name="Add Category"
+                path="/vendor/category/add"
+              />
+              <SidebarLink
+                name="Edit Category"
+                path="/vendor/category/edit"
+              />
+            </ExpandableMenu>
+
+            {/* ORDERS */}
+            <ExpandableMenu
+              title="Orders"
+              icon={<ClipboardList size={18} />}
+              isOpen={openOrders}
+              setIsOpen={setOpenOrders}
+            >
+              <SidebarLink
+                name="Pending Orders"
+                path="/vendor/orders/pending"
+              />
+              <SidebarLink
+                name="Delivered Orders"
+                path="/vendor/orders/delivered"
+              />
+            </ExpandableMenu>
+
+            <SidebarLink
+              name="Payments"
+              path="/vendor/payments"
+              icon={<CreditCard size={18} />}
+            />
+
+            {/* DELIVERY */}
+            <ExpandableMenu
+              title="Delivery"
+              icon={<Truck size={18} />}
+              isOpen={openDelivery}
+              setIsOpen={setOpenDelivery}
+            >
+              <SidebarLink
+                name="Delivery Boys"
+                path="/vendor/delivery/boys"
+              />
+              <SidebarLink
+                name="Assign Delivery"
+                path="/vendor/delivery/assign"
+              />
+            </ExpandableMenu>
+
+            <SidebarLink
+              name="Reviews"
+              path="/vendor/reviews"
+              icon={<MessageSquare size={18} />}
+            />
+
           </div>
 
           {/* Logout */}
           <div className="p-4 border-t border-blue-800">
-            <button className="w-full flex items-center gap-2 bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-lg">
+            <button className="w-full flex items-center gap-2 bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-lg transition">
               <LogOut size={16} />
               Logout
             </button>
@@ -97,7 +179,7 @@ const VendorLayout = () => {
         </div>
       </div>
 
-      {/* Main */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col">
 
         {isMobile && (
@@ -113,26 +195,29 @@ const VendorLayout = () => {
           <Outlet />
         </main>
       </div>
+
     </div>
   );
 };
 
 export default VendorLayout;
 
+/* ---------- Reusable Components ---------- */
+
 const SidebarLink = ({
   name,
   path,
-  icon
+  icon,
 }: {
   name: string;
   path: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }) => {
   return (
     <NavLink to={path}>
       {({ isActive }) => (
         <div
-          className={`flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer transition ${
+          className={`flex items-center gap-3 px-4 py-2 rounded-lg transition cursor-pointer ${
             isActive ? "bg-white/20" : "hover:bg-white/10"
           }`}
         >
@@ -143,3 +228,38 @@ const SidebarLink = ({
     </NavLink>
   );
 };
+
+const ExpandableMenu = ({
+  title,
+  icon,
+  isOpen,
+  setIsOpen,
+  children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
+}) => {
+  return (
+    <div>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-2 rounded-lg hover:bg-white/10 transition"
+      >
+        <div className="flex items-center gap-3">
+          {icon}
+          {title}
+        </div>
+        {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+      </button>
+
+      {isOpen && (
+        <div className="ml-8 mt-2 space-y-1 text-sm">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};  

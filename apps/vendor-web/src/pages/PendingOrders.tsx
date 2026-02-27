@@ -1,122 +1,293 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
   CartesianGrid,
 } from "recharts";
 
-const pendingTrend = [
-  { day: "Mon", orders: 4 },
-  { day: "Tue", orders: 6 },
-  { day: "Wed", orders: 5 },
-  { day: "Thu", orders: 8 },
+interface Order {
+  id: number;
+  orderId: string;
+  date: string;
+  discount: number;
+  amount: number;
+  status: "Pending" | "Processing" | "Delivered";
+}
+
+const ordersTrend = [
+  { day: "Mon", orders: 5 },
+  { day: "Tue", orders: 8 },
+  { day: "Wed", orders: 6 },
+  { day: "Thu", orders: 10 },
   { day: "Fri", orders: 7 },
-  { day: "Sat", orders: 9 },
-  { day: "Sun", orders: 6 },
+  { day: "Sat", orders: 12 },
+  { day: "Sun", orders: 9 },
+];
+
+const revenueTrend = [
+  { day: "Mon", revenue: 1200 },
+  { day: "Tue", revenue: 1800 },
+  { day: "Wed", revenue: 900 },
+  { day: "Thu", revenue: 2200 },
+  { day: "Fri", revenue: 1600 },
+  { day: "Sat", revenue: 2500 },
+  { day: "Sun", revenue: 2000 },
 ];
 
 const PendingOrders = () => {
-  return (
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+  const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
-      {/* Page Header */}
+  const [orders, setOrders] = useState<Order[]>([
+    {
+      id: 1,
+      orderId: "#5001",
+      date: "27 Mar 2025",
+      discount: 50,
+      amount: 1200,
+      status: "Pending",
+    },
+    {
+      id: 2,
+      orderId: "#5002",
+      date: "26 Mar 2025",
+      discount: 0,
+      amount: 850,
+      status: "Processing",
+    },
+    {
+      id: 3,
+      orderId: "#5003",
+      date: "25 Mar 2025",
+      discount: 100,
+      amount: 2000,
+      status: "Pending",
+    },
+  ]);
+
+  const pendingOrders = orders.filter(
+    (o) => o.status === "Pending"
+  );
+
+  const filteredOrders = pendingOrders.filter((order) =>
+    order.orderId.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const pendingCount = pendingOrders.length;
+
+  const totalRevenue = orders.reduce(
+    (acc, o) => acc + o.amount,
+    0
+  );
+
+  /* ✅ Mark as Delivered */
+  const handleMarkDelivered = (id: number) => {
+    setOrders(
+      orders.map((order) =>
+        order.id === id
+          ? { ...order, status: "Delivered" }
+          : order
+      )
+    );
+  };
+
+  /* 🚚 Assign Delivery */
+  const handleAssignDelivery = (orderId: string) => {
+    alert(`Assign delivery for ${orderId}`);
+  };
+
+  return (
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">
-          Pending Orders
-        </h1>
-        <p className="text-gray-500 text-sm">
-          Manage and track all pending deliveries
+        <h1 className="text-3xl font-bold">Pending Orders</h1>
+        <p className="text-gray-500">
+          Monitor incoming orders & performance
         </p>
       </div>
 
-      {/* Animated Warning Alert */}
-      <div className="animate-pulse bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg shadow">
-        ⚠ You have 6 pending orders. Update tracking details to avoid delays.
-      </div>
+      {/* Warning Alert */}
+      {pendingCount > 0 && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded">
+          <p className="text-yellow-800 font-medium">
+            ⚠ You have {pendingCount} pending orders that need attention.
+          </p>
+        </div>
+      )}
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-gray-500 text-sm">Total Pending</p>
-            <h2 className="text-2xl font-bold text-yellow-600 mt-1">6</h2>
+            <p className="text-sm text-gray-500">
+              Total Orders
+            </p>
+            <h2 className="text-2xl font-bold">
+              {orders.length}
+            </h2>
+          </CardContent>
+        </Card>
+
+        {/* CLICKABLE PENDING CARD */}
+        <Card
+          onClick={() => setShowModal(true)}
+          className="cursor-pointer hover:shadow-lg transition"
+        >
+          <CardContent className="p-4">
+            <p className="text-sm text-gray-500">
+              Pending Orders
+            </p>
+            <h2 className="text-2xl font-bold text-orange-500">
+              {pendingCount}
+            </h2>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-gray-500 text-sm">Total Discount</p>
-            <h2 className="text-2xl font-bold mt-1">₹450</h2>
+            <p className="text-sm text-gray-500">
+              Total Revenue
+            </p>
+            <h2 className="text-2xl font-bold text-green-600">
+              ₹{totalRevenue}
+            </h2>
+          </CardContent>
+        </Card>
+
+      </div>
+
+      {/* Graph Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
+              Weekly Order Trend
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={ordersTrend}>
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="orders" fill="#3b82f6" radius={[6,6,0,0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <p className="text-gray-500 text-sm">Average Processing Time</p>
-            <h2 className="text-2xl font-bold mt-1">2.5 Days</h2>
+          <CardContent className="p-6">
+            <h2 className="font-semibold mb-4">
+              Revenue Trend
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={revenueTrend}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
       </div>
 
-      {/* Trend Graph */}
-      <Card>
-        <CardContent className="p-6">
-          <h2 className="font-semibold mb-4">
-            Weekly Pending Trend
-          </h2>
+      {/* 🔥 MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-11/12 max-w-5xl rounded-xl shadow-lg p-6">
 
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={pendingTrend}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="orders"
-                stroke="#f59e0b"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">
+                Pending Orders Details
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-500 hover:text-black text-lg"
+              >
+                ✕
+              </button>
+            </div>
 
-      {/* Orders Table */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100 text-gray-600">
-            <tr>
-              <th className="p-3 text-left">Order ID</th>
-              <th className="p-3 text-left">Order Date</th>
-              <th className="p-3 text-left">Discount</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Tracking ID</th>
-              <th className="p-3 text-left">Update</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-t hover:bg-gray-50 transition">
-              <td className="p-3">#2001</td>
-              <td className="p-3">22 Feb 2026</td>
-              <td className="p-3">₹50</td>
-              <td className="p-3 text-yellow-600 font-medium">Pending</td>
-              <td className="p-3">TRK12345</td>
-              <td className="p-3">
-                <button className="bg-blue-900 hover:bg-blue-800 text-white px-3 py-1 rounded text-xs">
-                  Update
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <Input
+              placeholder="Search by Order ID..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="mb-4 max-w-xs"
+            />
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left">
+                    <th className="py-3">Order ID</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredOrders.map((order) => (
+                    <tr key={order.id} className="border-b hover:bg-gray-50">
+                      <td className="py-3 font-medium">
+                        {order.orderId}
+                      </td>
+                      <td>{order.date}</td>
+                      <td>₹{order.amount}</td>
+                      <td>
+                        <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">
+                          Pending
+                        </span>
+                      </td>
+                      <td className="flex gap-2">
+
+                        <Button
+                          size="sm"
+                          className="bg-blue-900 hover:bg-blue-800"
+                          onClick={() =>
+                            handleAssignDelivery(order.orderId)
+                          }
+                        >
+                          Assign Delivery
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-green-600 border-green-500 hover:bg-green-50"
+                          onClick={() =>
+                            handleMarkDelivered(order.id)
+                          }
+                        >
+                          Mark as Delivered
+                        </Button>
+
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );
