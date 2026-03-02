@@ -7,6 +7,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import logo from "@/assets/images/logo.jpg.png"
 
 const Navbar = () => {
+  const userName = localStorage.getItem("name");
   const { cart } = useCart();
   const { wishlist } = useWishlist();
 
@@ -85,15 +86,26 @@ const Navbar = () => {
               </Button>
             </Link>
 
-            {/* 👤 Login */}
-            <Link to="/login">
-              <Button
-                variant="ghost"
-                className="p-2 rounded-full hover:bg-blue-50 transition"
-              >
-                <User className="w-5 h-5 text-gray-700" />
-              </Button>
-            </Link>
+            {/* 👤 User / Login */}
+{userName ? (
+  <div className="flex items-center gap-2">
+    <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+      {userName.charAt(0).toUpperCase()}
+    </div>
+    <span className="hidden sm:block text-sm font-medium">
+      Hi, {userName}
+    </span>
+  </div>
+) : (
+  <Link to="/login">
+    <Button
+      variant="ghost"
+      className="p-2 rounded-full hover:bg-blue-50 transition"
+    >
+      <User className="w-5 h-5 text-gray-700" />
+    </Button>
+  </Link>
+)}
 
             {/* 🛒 Cart */}
             <Link to="/cart">
