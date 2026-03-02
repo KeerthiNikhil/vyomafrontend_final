@@ -1,115 +1,220 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 const Profile = () => {
-  const [shopName, setShopName] = useState("Vyoma Store");
-  const [email, setEmail] = useState("vendor@gmail.com");
-  const [phone, setPhone] = useState("9876543210");
-  const [address, setAddress] = useState("Mangalore, Karnataka");
-  const [password, setPassword] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
-  const handleUpdate = () => {
-    toast.success("Profile updated successfully ✅");
+  const [profile, setProfile] = useState({
+    shopName: "Vyoma Store",
+    email: "vendor@gmail.com",
+    phone: "9876543210",
+    address: "Mangalore, Karnataka",
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setProfile({ ...profile, [field]: value });
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
 
-      {/* HEADER */}
+      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold">
           Profile Settings
         </h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-gray-500">
           Manage your shop account information
         </p>
       </div>
 
-      {/* PROFILE CARD */}
-      <Card className="shadow-md rounded-2xl">
-        <CardContent className="p-6 flex items-center gap-6">
+     {/* PROFILE OVERVIEW */}
+<Card>
+  <CardContent className="p-6 flex items-center justify-between">
 
-          {/* Avatar */}
-          <div className="h-20 w-20 rounded-full bg-blue-700 text-white flex items-center justify-center text-2xl font-bold shadow">
-            V
+    {/* LEFT SIDE */}
+    <div className="flex items-center gap-5">
+
+      {/* Avatar */}
+      <div className="relative">
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-full flex items-center justify-center text-2xl font-semibold shadow-md">
+          V
+        </div>
+
+        <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+      </div>
+
+      {/* Store Info */}
+      <div className="space-y-1">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Vyoma Store
+        </h2>
+
+        <p className="text-sm text-gray-500">
+          vendor@gmail.com
+        </p>
+
+        <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+          Active Account
+        </span>
+      </div>
+
+    </div>
+
+    {/* RIGHT SIDE BUTTON */}
+    <div>
+      <Button
+        variant="outline"
+        size="sm"
+        className="px-4"
+        onClick={() => setEditMode(!editMode)}
+      >
+        {editMode ? "Cancel" : "Edit Profile"}
+      </Button>
+    </div>
+
+  </CardContent>
+</Card>
+      {/* ACCOUNT DETAILS */}
+      <Card>
+        <CardContent className="p-6 space-y-6">
+
+          <h2 className="text-lg font-semibold">
+            Account Information
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+
+            <div>
+              <label className="text-sm text-gray-500">
+                Shop Name
+              </label>
+              <Input
+                value={profile.shopName}
+                disabled={!editMode}
+                onChange={(e) =>
+                  handleChange("shopName", e.target.value)
+                }
+              />
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-500">
+                Email
+              </label>
+              <Input
+                value={profile.email}
+                disabled={!editMode}
+                onChange={(e) =>
+                  handleChange("email", e.target.value)
+                }
+              />
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-500">
+                Phone
+              </label>
+              <Input
+                value={profile.phone}
+                disabled={!editMode}
+                onChange={(e) =>
+                  handleChange("phone", e.target.value)
+                }
+              />
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-500">
+                Address
+              </label>
+              <Input
+                value={profile.address}
+                disabled={!editMode}
+                onChange={(e) =>
+                  handleChange("address", e.target.value)
+                }
+              />
+            </div>
+
           </div>
 
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold">{shopName}</h2>
-            <p className="text-gray-500 text-sm">{email}</p>
-            <p className="text-gray-500 text-sm">{phone}</p>
-          </div>
-
-          <Button size="sm" variant="outline" className="flex items-center gap-2">
-            <Pencil size={14} />
-            Edit
-          </Button>
+          {editMode && (
+            <div className="flex justify-end">
+              <Button className="bg-blue-900 hover:bg-blue-800">
+                Save Changes
+              </Button>
+            </div>
+          )}
 
         </CardContent>
       </Card>
 
-      {/* ACCOUNT DETAILS */}
-      <Card className="shadow-md rounded-2xl">
-        <CardContent className="p-6 space-y-6">
+      {/* STORE STATS */}
+      <div className="grid md:grid-cols-3 gap-6">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-gray-500 text-sm">
+              Total Products
+            </p>
+            <h2 className="text-2xl font-bold">
+              48
+            </h2>
+          </CardContent>
+        </Card>
 
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-gray-500 text-sm">
+              Total Orders
+            </p>
+            <h2 className="text-2xl font-bold">
+              326
+            </h2>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-gray-500 text-sm">
+              Total Revenue
+            </p>
+            <h2 className="text-2xl font-bold text-green-600">
+              ₹85,240
+            </h2>
+          </CardContent>
+        </Card>
+
+      </div>
+
+      {/* SECURITY */}
+      <Card>
+        <CardContent className="p-6 space-y-4">
+
+          <h2 className="text-lg font-semibold">
+            Security Settings
+          </h2>
+
+          <div className="flex justify-between items-center">
             <div>
-              <label className="text-sm text-gray-500">Shop Name</label>
-              <Input
-                value={shopName}
-                onChange={(e) => setShopName(e.target.value)}
-              />
+              <p className="font-medium">
+                Change Password
+              </p>
+              <p className="text-sm text-gray-500">
+                Update your account password regularly
+              </p>
             </div>
 
-            <div>
-              <label className="text-sm text-gray-500">Email</label>
-              <Input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm text-gray-500">Phone</label>
-              <Input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm text-gray-500">Address</label>
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-
-          </div>
-
-          {/* PASSWORD SECTION */}
-          <div className="pt-6 border-t">
-            <h3 className="font-semibold mb-4">Change Password</h3>
-            <div className="flex gap-4">
-              <Input
-                type="password"
-                placeholder="New Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* SAVE BUTTON */}
-          <div className="flex justify-end pt-4">
-            <Button className="bg-blue-700 hover:bg-blue-800">
-              Save Changes
+            <Button variant="outline">
+              Change
             </Button>
+          </div>
+
+          <div className="text-sm text-gray-500">
+            Last login: Today at 2:45 PM
           </div>
 
         </CardContent>

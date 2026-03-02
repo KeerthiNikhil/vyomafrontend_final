@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { MapPin } from "lucide-react";
@@ -6,7 +6,6 @@ import { toast } from "sonner";
 
 const ShopCreate = () => {
   const [step, setStep] = useState(1);
-
   const totalSteps = 4;
   const progressPercentage = (step / totalSteps) * 100;
 
@@ -26,13 +25,17 @@ const ShopCreate = () => {
   const [address, setAddress] = useState("");
 
   const [gstNumber, setGstNumber] = useState("");
-  const [yearsOfOperation, setYearsOfOperation] = useState("");
-  const [shopLicenseNumber, setShopLicenseNumber] = useState("");
   const [udyamNumber, setUdyamNumber] = useState("");
-  const [fssaiNumber, setFssaiNumber] = useState("");
   const [tradeLicenseNumber, setTradeLicenseNumber] = useState("");
+  const [fssaiNumber, setFssaiNumber] = useState("");
 
-  // ================= FETCH LOCATION =================
+  useEffect(() => {
+    if (businessType !== "Food & Beverages") {
+      setFssaiNumber("");
+    }
+  }, [businessType]);
+
+  // ================= LOCATION =================
   const handleFetchLocation = () => {
     if (!navigator.geolocation) {
       toast.error("Geolocation not supported");
@@ -46,6 +49,7 @@ const ShopCreate = () => {
         setLatitude(position.coords.latitude.toString());
         setLongitude(position.coords.longitude.toString());
         setIsFetching(false);
+        toast.success("Location detected successfully ✅");
       },
       () => {
         toast.error("Unable to retrieve location");
@@ -64,17 +68,13 @@ const ShopCreate = () => {
       !password ||
       !phone ||
       !address ||
-      !shopLicenseNumber ||
+      !latitude ||
+      !longitude ||
       !udyamNumber ||
-      !fssaiNumber ||
-      !tradeLicenseNumber
+      !tradeLicenseNumber ||
+      (businessType === "Food & Beverages" && !fssaiNumber)
     ) {
       toast.error("Please fill all required fields");
-      return;
-    }
-
-    if (!latitude || !longitude) {
-      toast.error("Please detect your shop location");
       return;
     }
 
@@ -97,8 +97,6 @@ const ShopCreate = () => {
             latitude,
             longitude,
             gstNumber,
-            yearsOfOperation,
-            shopLicenseNumber,
             udyamNumber,
             fssaiNumber,
             tradeLicenseNumber,
@@ -121,23 +119,23 @@ const ShopCreate = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 overflow-y-auto">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
 
       {/* LEFT PANEL */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white items-center justify-center p-16">
-        <div>
-          <h1 className="text-4xl font-bold mb-6">
+      <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center p-8 lg:p-16">
+        <div className="text-center lg:text-left max-w-md">
+          <h1 className="text-2xl lg:text-4xl font-bold mb-4 lg:mb-6">
             Build Your Business 🚀
           </h1>
-          <p className="text-lg text-blue-100">
+          <p className="text-sm lg:text-lg text-blue-100">
             Start your digital journey and reach more local customers with Vyoma.
           </p>
         </div>
       </div>
 
-      {/* RIGHT FORM */}
-      <div className="flex w-full lg:w-1/2 justify-center p-6">
-        <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-8">
+      {/* RIGHT PANEL */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 lg:p-8">
 
           {/* Progress Bar */}
           <div className="mb-6">
@@ -155,9 +153,14 @@ const ShopCreate = () => {
 
           <div className="space-y-4">
 
+            {/* STEP 1 */}
             {step === 1 && (
               <>
-                <Input placeholder="Owner Name" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} />
+                <Input
+                  placeholder="Owner Name"
+                  value={ownerName}
+                  onChange={(e) => setOwnerName(e.target.value)}
+                />
 
                 <select
                   value={businessType}
@@ -175,38 +178,52 @@ const ShopCreate = () => {
                   <option>Other</option>
                 </select>
 
-                <Textarea placeholder="Business Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                <Textarea
+                  placeholder="Business Description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
               </>
             )}
 
+            {/* STEP 2 */}
             {step === 2 && (
               <>
-                <Input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <Input placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                <Textarea placeholder="Shop Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+                <Input
+                  type="email"
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Input
+                  placeholder="Phone Number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
               </>
             )}
 
+            {/* STEP 3 */}
             {step === 3 && (
               <>
-                <Input placeholder="GST Number (Optional)" value={gstNumber} onChange={(e) => setGstNumber(e.target.value)} />
-                <Input placeholder="Years of Operation (Optional)" value={yearsOfOperation} onChange={(e) => setYearsOfOperation(e.target.value)} />
-                <Input placeholder="Shop License Number" value={shopLicenseNumber} onChange={(e) => setShopLicenseNumber(e.target.value)} />
-                <Input placeholder="Udyam Number" value={udyamNumber} onChange={(e) => setUdyamNumber(e.target.value)} />
-                <Input placeholder="FSSAI Number" value={fssaiNumber} onChange={(e) => setFssaiNumber(e.target.value)} />
-                <Input placeholder="Trade License Number" value={tradeLicenseNumber} onChange={(e) => setTradeLicenseNumber(e.target.value)} />
-              </>
-            )}
+                <Textarea
+                  placeholder="Shop Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
 
-            {step === 4 && (
-              <>
                 <button
                   onClick={handleFetchLocation}
                   disabled={isFetching}
-                  className="px-4 py-1.5 text-sm border border-blue-600 text-blue-600 rounded-md bg-white hover:bg-blue-50 transition flex items-center gap-2"
+                  className="px-4 py-2 text-sm border border-blue-600 text-blue-600 rounded-md bg-white hover:bg-blue-50 transition flex items-center gap-2"
                 >
-                  <MapPin size={14} />
+                  <MapPin size={16} />
                   {isFetching ? "Detecting..." : "Detect Location"}
                 </button>
 
@@ -214,15 +231,46 @@ const ShopCreate = () => {
                 <Input value={longitude} readOnly placeholder="Longitude" />
               </>
             )}
+
+            {/* STEP 4 */}
+            {step === 4 && (
+              <>
+                <Input
+                  placeholder="GST Number (Optional)"
+                  value={gstNumber}
+                  onChange={(e) => setGstNumber(e.target.value)}
+                />
+                <Input
+                  placeholder="Udyam Number"
+                  value={udyamNumber}
+                  onChange={(e) => setUdyamNumber(e.target.value)}
+                />
+                <Input
+                  placeholder="FSSAI Number"
+                  value={fssaiNumber}
+                  onChange={(e) => setFssaiNumber(e.target.value)}
+                  disabled={businessType !== "Food & Beverages"}
+                  className={
+                    businessType !== "Food & Beverages"
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }
+                />
+                <Input
+                  placeholder="Trade License Number"
+                  value={tradeLicenseNumber}
+                  onChange={(e) => setTradeLicenseNumber(e.target.value)}
+                />
+              </>
+            )}
           </div>
 
-          {/* NAVIGATION BUTTONS */}
+          {/* NAVIGATION */}
           <div className="flex justify-between mt-8">
-
             {step > 1 && (
               <button
                 onClick={() => setStep(step - 1)}
-                className="px-4 py-1.5 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition"
+                className="px-4 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition"
               >
                 ← Back
               </button>
@@ -231,7 +279,7 @@ const ShopCreate = () => {
             {step < totalSteps ? (
               <button
                 onClick={() => setStep(step + 1)}
-                className="ml-auto px-5 py-1.5 text-sm border border-blue-600 text-blue-600 rounded-md bg-white hover:bg-blue-50 transition"
+                className="ml-auto px-5 py-2 text-sm border border-blue-600 text-blue-600 rounded-md bg-white hover:bg-blue-50 transition"
               >
                 Next →
               </button>
@@ -239,12 +287,11 @@ const ShopCreate = () => {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="ml-auto px-5 py-1.5 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 transition"
+                className="ml-auto px-5 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 transition"
               >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             )}
-
           </div>
 
         </div>

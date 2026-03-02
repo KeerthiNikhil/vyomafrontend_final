@@ -72,18 +72,24 @@ const VendorLayout = () => {
               name="Dashboard"
               path="/vendor/dashboard"
               icon={<LayoutDashboard size={18} />}
+              closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
             />
 
             <SidebarLink
               name="Profile"
               path="/vendor/profile"
               icon={<User size={18} />}
+              closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
             />
 
             <SidebarLink
               name="Create Shop"
               path="/vendor/shop-create"
               icon={<Store size={18} />}
+              closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
             />
 
             {/* PRODUCTS */}
@@ -96,10 +102,14 @@ const VendorLayout = () => {
               <SidebarLink
                 name="Add Product"
                 path="/vendor/products/add"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
               <SidebarLink
                 name="Manage Product"
                 path="/vendor/products/manage"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
             </ExpandableMenu>
 
@@ -113,10 +123,14 @@ const VendorLayout = () => {
               <SidebarLink
                 name="Add Category"
                 path="/vendor/category/add"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
               <SidebarLink
                 name="Edit Category"
                 path="/vendor/category/edit"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
             </ExpandableMenu>
 
@@ -130,10 +144,14 @@ const VendorLayout = () => {
               <SidebarLink
                 name="Pending Orders"
                 path="/vendor/orders/pending"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
               <SidebarLink
                 name="Delivered Orders"
                 path="/vendor/orders/delivered"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
             </ExpandableMenu>
 
@@ -141,6 +159,8 @@ const VendorLayout = () => {
               name="Payments"
               path="/vendor/payments"
               icon={<CreditCard size={18} />}
+              closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
             />
 
             {/* DELIVERY */}
@@ -153,10 +173,14 @@ const VendorLayout = () => {
               <SidebarLink
                 name="Delivery Boys"
                 path="/vendor/delivery/boys"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
               <SidebarLink
                 name="Assign Delivery"
                 path="/vendor/delivery/assign"
+                closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
               />
             </ExpandableMenu>
 
@@ -164,6 +188,8 @@ const VendorLayout = () => {
               name="Reviews"
               path="/vendor/reviews"
               icon={<MessageSquare size={18} />}
+              closeSidebar={() => setSidebarOpen(false)}
+  isMobile={isMobile}
             />
 
           </div>
@@ -208,13 +234,24 @@ const SidebarLink = ({
   name,
   path,
   icon,
+  closeSidebar,
+  isMobile,
 }: {
   name: string;
   path: string;
   icon?: React.ReactNode;
+  closeSidebar?: () => void;
+  isMobile?: boolean;
 }) => {
   return (
-    <NavLink to={path}>
+    <NavLink
+      to={path}
+      onClick={() => {
+        if (isMobile && closeSidebar) {
+          closeSidebar();
+        }
+      }}
+    >
       {({ isActive }) => (
         <div
           className={`flex items-center gap-3 px-4 py-2 rounded-lg transition cursor-pointer ${
