@@ -43,16 +43,17 @@ const Navbar = () => {
           {/* DESKTOP SEARCH */}
           <div className="hidden md:flex items-center w-[420px] relative">
             <Search className="absolute left-4 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search shops or products..."
-              className="
-                pl-11 pr-4 rounded-full
-                bg-gray-100
-                border border-transparent
-                focus:ring-2 focus:ring-blue-200
-                focus:outline-none
-              "
-            />
+           <Input
+  placeholder="Search shops or products..."
+  className="
+    pl-11 pr-4 rounded-full
+    bg-gray-100
+    border-0
+    outline-none
+    focus:outline-none
+    shadow-none
+  "
+/>
           </div>
 
           {/* ICONS */}
@@ -143,15 +144,16 @@ const Navbar = () => {
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Search shops or products..."
-              className="
-                pl-11 pr-4 rounded-full
-                bg-gray-100
-                border border-transparent
-                focus:ring-2 focus:ring-blue-200
-                focus:outline-none
-              "
-            />
+  placeholder="Search shops or products..."
+  className="
+    pl-11 pr-4 rounded-full
+    bg-gray-100
+    border-0
+    outline-none
+    focus:outline-none
+    shadow-none
+  "
+/>
           </div>
         </div>
 

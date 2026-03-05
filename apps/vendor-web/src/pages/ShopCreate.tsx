@@ -13,6 +13,7 @@ const ShopCreate = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [shopName, setShopName] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [businessType, setBusinessType] = useState("");
   const [description, setDescription] = useState("");
@@ -65,6 +66,7 @@ const ShopCreate = () => {
       setIsSubmitting(true);
 
       const formData = new FormData();
+      formData.append("shopName", shopName);
       formData.append("ownerName", ownerName);
       formData.append("businessType", businessType);
       formData.append("description", description);
@@ -102,9 +104,9 @@ const ShopCreate = () => {
     if (step === 1)
       return (
         <>
-          <h1 className="text-4xl font-bold mb-6">Build Your Business 🚀</h1>
-          <p className="text-lg text-blue-100">
-            Enter your core business details to get started.
+          <h1 className="text-3xl font-bold mb-4">Build Your Shop 🚀</h1>
+          <p className="text-blue-100">
+            Enter your business details to start selling products.
           </p>
         </>
       );
@@ -112,8 +114,8 @@ const ShopCreate = () => {
     if (step === 2)
       return (
         <>
-          <h1 className="text-4xl font-bold mb-6">Set Your Location 📍</h1>
-          <p className="text-lg text-blue-100">
+          <h1 className="text-3xl font-bold mb-4">Set Your Location 📍</h1>
+          <p className="text-blue-100">
             Help customers find your shop easily.
           </p>
         </>
@@ -121,8 +123,8 @@ const ShopCreate = () => {
 
     return (
       <>
-        <h1 className="text-4xl font-bold mb-6">Verification Details 📄</h1>
-        <p className="text-lg text-blue-100">
+        <h1 className="text-3xl font-bold mb-4">Verification Details 📄</h1>
+        <p className="text-blue-100">
           Add legal information to complete shop setup.
         </p>
       </>
@@ -130,15 +132,15 @@ const ShopCreate = () => {
   };
 
   return (
-    <div className="flex flex-1 min-h-screen">
+    <div className="flex flex-col lg:flex-row min-h-screen">
 
-      {/* BLUE INFO */}
-      <div className="w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center p-16 min-h-screen">
+      {/* LEFT INFO PANEL */}
+      <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center p-10">
         <div className="max-w-md">{renderBlueInfo()}</div>
       </div>
 
       {/* FORM */}
-      <div className="w-1/2 flex items-center justify-center p-12 bg-gray-100 min-h-screen">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-gray-100">
         <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 min-h-[620px] flex flex-col justify-between">
 
           <div className="space-y-5">
@@ -146,42 +148,99 @@ const ShopCreate = () => {
             {/* STEP 1 */}
             {step === 1 && (
               <>
-                <Input placeholder="Owner Name" value={ownerName} onChange={(e)=>setOwnerName(e.target.value)} />
-                <select value={businessType} onChange={(e)=>setBusinessType(e.target.value)} className="w-full border rounded-lg px-3 py-2 text-sm">
+                <Input
+                  placeholder="Shop Name"
+                  value={shopName}
+                  onChange={(e)=>setShopName(e.target.value)}
+                />
+
+                <Input
+                  placeholder="Owner Name"
+                  value={ownerName}
+                  onChange={(e)=>setOwnerName(e.target.value)}
+                />
+
+                <select
+                  value={businessType}
+                  onChange={(e)=>setBusinessType(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 text-sm"
+                >
                   <option value="">Select Business Type</option>
-                  <option>Grocery Store</option>
                   <option>Food & Beverages</option>
-                  <option>Pharmacy</option>
-                  <option>Clothing Store</option>
+                  <option>Clothing</option>
                   <option>Electronics</option>
-                  <option>Salon</option>
-                  <option>Hardware Store</option>
-                  <option>Other</option>
+                  <option>Pharmacy</option>
+                  <option>Beauty & Personal Care</option>
+                  <option>Grocery</option>
+                  <option>Home Appliances</option>
+                  <option>Sports & Fitness</option>
+                  <option>Books</option>
+                  <option>Toys</option>
                 </select>
-                <Textarea placeholder="Business Description" value={description} onChange={(e)=>setDescription(e.target.value)} />
-                <Input type="email" placeholder="Business Email" value={email} onChange={(e)=>setEmail(e.target.value)} />
-                <Input placeholder="Shop Contact Number" value={phone} onChange={(e)=>setPhone(e.target.value)} />
+
+                <Textarea
+                  placeholder="Business Description"
+                  value={description}
+                  onChange={(e)=>setDescription(e.target.value)}
+                />
+
+                <Input
+                  type="email"
+                  placeholder="Business Email"
+                  value={email}
+                  onChange={(e)=>setEmail(e.target.value)}
+                />
+
+                <Input
+                  placeholder="Shop Contact Number"
+                  value={phone}
+                  onChange={(e)=>setPhone(e.target.value)}
+                />
               </>
             )}
 
             {/* STEP 2 */}
             {step === 2 && (
               <>
-                <Textarea placeholder="Shop Address" value={address} onChange={(e)=>setAddress(e.target.value)} />
-                <button onClick={handleFetchLocation} className="px-4 py-2 border border-blue-600 text-blue-600 rounded-md flex items-center gap-2">
+                <Textarea
+                  placeholder="Shop Address"
+                  value={address}
+                  onChange={(e)=>setAddress(e.target.value)}
+                />
+
+                <button
+                  onClick={handleFetchLocation}
+                  className="px-4 py-2 border border-blue-600 text-blue-600 rounded-md flex items-center gap-2"
+                >
                   <MapPin size={16}/> Detect Location
                 </button>
+
                 <Input value={latitude} readOnly placeholder="Latitude"/>
                 <Input value={longitude} readOnly placeholder="Longitude"/>
-                <input type="file" accept="image/*" onChange={(e)=> e.target.files && setShopImage(e.target.files[0])}/>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e)=> e.target.files && setShopImage(e.target.files[0])}
+                />
               </>
             )}
 
             {/* STEP 3 */}
             {step === 3 && (
               <>
-                <Input placeholder="GST Number (Optional)" value={gstNumber} onChange={(e)=>setGstNumber(e.target.value)} />
-                <Input placeholder="Udyam Number" value={udyamNumber} onChange={(e)=>setUdyamNumber(e.target.value)} />
+                <Input
+                  placeholder="GST Number (Optional)"
+                  value={gstNumber}
+                  onChange={(e)=>setGstNumber(e.target.value)}
+                />
+
+                <Input
+                  placeholder="Udyam Number"
+                  value={udyamNumber}
+                  onChange={(e)=>setUdyamNumber(e.target.value)}
+                />
+
                 <Input
                   placeholder="FSSAI Number"
                   value={fssaiNumber}
@@ -189,29 +248,46 @@ const ShopCreate = () => {
                   disabled={businessType !== "Food & Beverages"}
                   className={businessType !== "Food & Beverages" ? "bg-gray-100 cursor-not-allowed" : ""}
                 />
-                <Input placeholder="Trade License Number" value={tradeLicenseNumber} onChange={(e)=>setTradeLicenseNumber(e.target.value)} />
+
+                <Input
+                  placeholder="Trade License Number"
+                  value={tradeLicenseNumber}
+                  onChange={(e)=>setTradeLicenseNumber(e.target.value)}
+                />
               </>
             )}
 
           </div>
 
-          {/* BUTTON SECTION (fixed bottom) */}
+          {/* BUTTONS */}
           <div className="flex justify-between mt-6">
+
             {step > 1 && (
-              <button onClick={()=>setStep(step-1)} className="px-4 py-2 border rounded-md">
+              <button
+                onClick={()=>setStep(step-1)}
+                className="px-4 py-2 border rounded-md"
+              >
                 ← Back
               </button>
             )}
 
             {step < 3 ? (
-              <button onClick={()=>setStep(step+1)} className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md">
+              <button
+                onClick={()=>setStep(step+1)}
+                className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+              >
                 Next →
               </button>
             ) : (
-              <button onClick={handleSubmit} disabled={isSubmitting} className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md">
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+              >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             )}
+
           </div>
 
         </div>

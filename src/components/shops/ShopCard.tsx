@@ -1,8 +1,10 @@
-import { MapPin, Phone } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Shop {
   _id: string;
-  ownerName: string;
+  shopName: string;
+  ownerName?: string;
   businessType: string;
   address: string;
   phone: string;
@@ -10,57 +12,80 @@ interface Shop {
 }
 
 interface ShopCardProps {
-  shop?: Shop;
+  shop: Shop;
   isLive?: boolean;
 }
 
 const ShopCard = ({ shop, isLive = false }: ShopCardProps) => {
-  // 🛡 Prevent crash if shop is undefined
-  if (!shop) return null;
+
+  const navigate = useNavigate();
 
   const imageUrl = shop.shopImage
-    ? `http://localhost:8000${shop.shopImage}`
-    : "https://via.placeholder.com/400x300?text=Shop+Image";
+    ? shop.shopImage.startsWith("http")
+      ? shop.shopImage
+      : `http://localhost:8000${shop.shopImage}`
+    : "https://via.placeholder.com/400x300?text=Shop";
+    <img
+  src={imageUrl}
+  alt={shop.shopName}
+  onError={(e:any)=>{
+    e.target.src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136";
+  }}
+  className="w-full h-full object-cover"
+/>
 
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer">
+    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
 
-      {/* IMAGE SECTION */}
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={shop.ownerName}
-          className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-        />
+      {/* IMAGE */}
+      <div className="relative h-44 w-full overflow-hidden">
+  <img
+    src={imageUrl}
+    alt={shop.shopName}
+    className="w-full h-full object-cover transition duration-300 hover:scale-105"
+  />
 
-        {/* Business Type Badge */}
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
-          {shop.businessType}
-        </div>
+  <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-xs font-medium shadow">
+    {shop.businessType}
+  </div>
 
-        {/* 🔥 LIVE Badge */}
+
+        {/* LIVE badge */}
         {isLive && (
-          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold animate-pulse shadow">
+          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
             LIVE
           </div>
         )}
       </div>
 
-      {/* DETAILS SECTION */}
-      <div className="p-5 space-y-2">
+      {/* CONTENT */}
+      <div className="p-4">
 
-        <h2 className="text-lg font-bold text-gray-800">
-          {shop.ownerName}
-        </h2>
+        {/* SHOP NAME */}
+        <h3 className="text-sm sm:text-base font-semibold mb-1">
+          {shop.shopName}
+        </h3>
 
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <MapPin size={14} />
-          <span className="truncate">{shop.address}</span>
+        {/* LOCATION */}
+        <div className="flex items-center text-gray-500 text-xs sm:text-sm mb-3">
+          <MapPin size={14} className="mr-1" />
+          {shop.address}
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Phone size={14} />
-          {shop.phone}
+        {/* BOTTOM */}
+        <div className="flex items-center justify-between">
+
+          <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
+            ⭐ 4.5
+          </span>
+
+          <button
+            onClick={() => navigate(`/shop/${shop._id}`)}
+            className="bg-black text-white text-xs px-4 py-1.5 rounded-md hover:bg-gray-800 transition"
+          >
+            View
+          </button>
+
         </div>
 
       </div>

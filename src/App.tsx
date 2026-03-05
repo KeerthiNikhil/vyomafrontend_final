@@ -1,10 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
-import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider } from "@/context/WishlistContext";
 
 import Home from "./pages/Home";
-import ShopDetails from "./pages/ShopDetails";
+import ShopProducts from "./pages/ShopProducts";
 import CategoryProducts from "@/pages/CategoryProducts";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
@@ -13,41 +11,49 @@ import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import ProductDetails from "@/pages/ProductDetails";
 import Wishlist from "@/pages/Wishlist";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
-    <CartProvider>
-      <WishlistProvider>
-        <BrowserRouter>
-          <Routes>
-            
-            {/* Pages WITH navbar */}
-            <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
-             <Route path="/wishlist" element={<Wishlist />} />
-             <Route path="/shop/:id" element={<ShopDetails />} />
-             <Route
-  path="/shop/:id/category/:slug"
-  element={<CategoryProducts />}
-/>
+    <BrowserRouter>
 
-             
-            </Route>
+      <Routes>
 
-            {/* <Route path="/shop/:id" element={<ShopDetails />} />
-             <Route path="/category/:slug" element={<CategoryProducts />} /> */}
-             
+        <Route element={<MainLayout />}>
 
-          </Routes>
-        </BrowserRouter>
-      </WishlistProvider>
-    </CartProvider>
+          {/* Home */}
+          <Route path="/" element={<Home />} />
+
+          {/* Shop Page */}
+          <Route path="/shop/:id" element={<ShopProducts />} />
+          <Route path="/search" element={<SearchPage />} />
+
+          {/* Category inside shop */}
+          <Route
+            path="/shop/:id/category/:slug"
+            element={<CategoryProducts />}
+          />
+
+          {/* Product Details */}
+          <Route path="/product/:id" element={<ProductDetails />} />
+
+          {/* Cart + Wishlist */}
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+
+          {/* Checkout */}
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+
+          {/* Auth */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+        </Route>
+
+      </Routes>
+
+    </BrowserRouter>
   );
 }
 

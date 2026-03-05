@@ -22,7 +22,7 @@ const MidAdCarousel = () => {
   )
 
   return (
-    <section className="mt-2">
+    <section className="my-10">
       <div className="max-w-7xl mx-auto space-y-3">
 
         {/* ⭐ TOP BANNERS */}
@@ -56,7 +56,7 @@ const MidAdCarousel = () => {
             <CarouselContent>
               {carouselAds.map((img, index) => (
                 <CarouselItem key={index}>
-                  <div className="relative w-full aspect-[3/1] bg-gray-100">
+                  <div className="relative w-full h-[220px] bg-gray-100">
                     <img
                       src={img}
                       alt="Advertisement"

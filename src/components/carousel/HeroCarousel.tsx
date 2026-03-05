@@ -36,12 +36,12 @@ const HeroCarousel = () => {
               <CarouselItem key={index}>
                 
                 {/* ⭐ Aspect ratio preserves full image */}
-                <div className="relative w-full aspect-[3/1] bg-gray-100">
+                <div className="relative w-full h-[340px] md:h-[380px]">
 
                   <img
                     src={img}
                     alt={`Banner ${index + 1}`}
-                    className="absolute inset-0 w-full h-full object-contain"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
 
                 </div>

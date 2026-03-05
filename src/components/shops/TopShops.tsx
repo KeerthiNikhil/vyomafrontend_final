@@ -1,63 +1,72 @@
-import ShopCard from "./ShopCard";
+import ShopCard from "./ShopCard"
 
-import shop1 from "@/assets/images/cafe.jpg";
-import shop2 from "@/assets/images/coffee.jpg";
-import shop3 from "@/assets/images/general.jpg";
-import shop4 from "@/assets/images/hotel.jpg";
+import shop1 from "@/assets/images/shops/shop1.jpg"
+import shop2 from "@/assets/images/shops/shop2.jpg"
+import shop3 from "@/assets/images/shops/shop3.jpg"
+import shop4 from "@/assets/images/shops/shop4.jpg"
+import shop5 from "@/assets/images/shops/shop5.jpg"
 
 const shops = [
-  { name: "Cafe", image: shop1 },
-  { name: "Coffee shop", image: shop2 },
-  { name: "Street Food", image: shop3 },
-  { name: "Restaurant", image: shop4 },
-  { name: "Cafe", image: shop1 },
-  { name: "Coffee shop", image: shop2 },
-];
+  {
+    _id: "1",
+    ownerName: "Sri Lakshmi Stores",
+    businessType: "General Store",
+    address: "Hampankatta, Mangalore",
+    phone: "1234567890",
+    shopImage: shop1,
+  },
+  {
+    _id: "2",
+    ownerName: "Apollo Pharmacy",
+    businessType: "Pharmacy",
+    address: "Bejai, Mangalore",
+    phone: "1234567890",
+    shopImage: shop2,
+  },
+  {
+    _id: "3",
+    ownerName: "Fresh Mart",
+    businessType: "Super Market",
+    address: "Surathkal",
+    phone: "1234567890",
+    shopImage: shop3,
+  },
+  {
+    _id: "4",
+    ownerName: "Daily Needs",
+    businessType: "Groceries",
+    address: "Kankanady",
+    phone: "1234567890",
+    shopImage: shop4,
+  },
+  {
+    _id: "5",
+    ownerName: "Quick Buy",
+    businessType: "Retail",
+    address: "Bendoor",
+    phone: "1234567890",
+    shopImage: shop5,
+  },
+]
 
 const TopShops = () => {
   return (
-    <section className="mt-6 mb-8">
+    <section className="py-10">
+      <div className="max-w-7xl mx-auto px-4">
 
-  {/* Header */}
-  <div className="flex items-center justify-between mb-4">
-    <h2 className="text-xl sm:text-2xl font-bold text-royal">
-      Top Shops
-    </h2>
-  </div>
+        <h2 className="text-2xl font-bold mb-6">
+          Top Shops
+        </h2>
 
-  {/* Scroll Row */}
- <div
-  className="
-    flex gap-5.5
-    overflow-x-auto
-    scrollbar-hide
-    snap-x snap-mandatory
-    scroll-smooth
-    pb-2
-    ml-1
-  "
-  style={{ WebkitOverflowScrolling: "touch" }}
->
-  {shops.map((shop, index) => (
-    <div
-      key={index}
-      className={`
-        snap-start flex-shrink-0
-        w-[130px] sm:w-[170px]
-        ${index === 0 ? "ml-1" : ""}
-        ${index === shops.length - 1 ? "mr-1" : ""}
-      `}
-    >
-      <ShopCard name={shop.name} image={shop.image} />
-    </div>
-  ))}
-</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+          {shops.map((shop) => (
+            <ShopCard key={shop._id} shop={shop} />
+          ))}
+        </div>
 
+      </div>
+    </section>
+  )
+}
 
-
-
-</section>
-  );
-};
-
-export default TopShops;
+export default TopShops

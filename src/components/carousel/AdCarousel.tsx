@@ -21,8 +21,8 @@ const AdCarousel = () => {
   )
 
   return (
-    <section className="mb-10">
-      <div className="max-w-7xl mx-auto">
+    <section className="mb-8">
+      <div className="max-w-7xl mx-auto px-4">
 
         <div className="rounded-2xl overflow-hidden shadow-lg">
 
@@ -36,12 +36,12 @@ const AdCarousel = () => {
                 <CarouselItem key={index}>
 
                   {/* ⭐ Maintain 1200x400 ratio */}
-                  <div className="relative w-full aspect-[3/1] bg-gray-100">
+                  <div className="relative w-full h-[300px] bg-gray-100">
 
                     <img
                       src={img}
                       alt={`Advertisement ${index + 1}`}
-                      className="absolute inset-0 w-full h-full object-contain"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
 
                   </div>
