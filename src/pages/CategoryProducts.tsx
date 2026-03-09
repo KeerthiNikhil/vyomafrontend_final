@@ -102,7 +102,7 @@ const CategoryProducts = () => {
           ))}
         </div>
 
-      </div>
+      </div>  
     </section>
   );
 };

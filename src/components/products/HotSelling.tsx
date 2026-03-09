@@ -11,8 +11,12 @@ const HotSelling = () => {
 
         <div className="relative overflow-hidden">
           <div className="marquee flex">
+
             {[...products, ...products].map((item, index) => (
-              <div key={index} className="mr-6 shrink-0">
+              <div
+                key={index}
+                className="mr-6 shrink-0 w-[200px] sm:w-[220px]"
+              >
                 <ProductCard
                   id={item.id}
                   name={item.name}
@@ -22,6 +26,7 @@ const HotSelling = () => {
                 />
               </div>
             ))}
+
           </div>
         </div>
       </div>

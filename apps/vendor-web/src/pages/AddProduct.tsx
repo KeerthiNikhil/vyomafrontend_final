@@ -9,303 +9,436 @@ const AddProduct = () => {
 
   const token = localStorage.getItem("token");
 
-  /* SHOP */
+  const [uploadType,setUploadType] = useState("single");
 
-  const [shops, setShops] = useState<any[]>([]);
-  const [shopId, setShopId] = useState("");
+  const [shops,setShops] = useState<any[]>([]);
+  const [shopId,setShopId] = useState("");
 
-  /* PRODUCT */
+  const [name,setName] = useState("");
+  const [category,setCategory] = useState("");
+  const [price,setPrice] = useState("");
+  const [stock,setStock] = useState("");
+  const [description,setDescription] = useState("");
 
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [description, setDescription] = useState("");
-  const [discountType, setDiscountType] = useState("");
-  const [discountValue, setDiscountValue] = useState("");
+  const [discountType,setDiscountType] = useState("");
+  const [discountValue,setDiscountValue] = useState("");
 
-  /* IMAGES */
+  const [units,setUnits] = useState("");
 
-  const [images, setImages] = useState<File[]>([]);
+  const [images,setImages] = useState<File[]>([]);
 
-  /* CATEGORY FIELDS */
+  const [file,setFile] = useState<any>(null);
 
-  const [expiryDate, setExpiryDate] = useState("");
-  const [weight, setWeight] = useState("");
-  const [size, setSize] = useState("");
-  const [brand, setBrand] = useState("");
-  const [warranty, setWarranty] = useState("");
-  const [modelNumber, setModelNumber] = useState("");
-  const [manufacturer, setManufacturer] = useState("");
-  const [skinType, setSkinType] = useState("");
-  const [author, setAuthor] = useState("");
-  const [ageGroup, setAgeGroup] = useState("");
-  const [material, setMaterial] = useState("");
+  const [expiryDate,setExpiryDate] = useState("");
+  const [weight,setWeight] = useState("");
+  const [size,setSize] = useState("");
+  const [brand,setBrand] = useState("");
+  const [modelNumber,setModelNumber] = useState("");
+  const [author,setAuthor] = useState("");
+  const [ageGroup,setAgeGroup] = useState("");
+  const [material,setMaterial] = useState("");
 
   /* ================= GET SHOPS ================= */
 
-  useEffect(() => {
-    const fetchShops = async () => {
-      try {
+  useEffect(()=>{
+
+    const fetchShops = async()=>{
+
+      try{
+
         const res = await axios.get(
           "http://localhost:8000/api/v1/shops/my-shops",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          {headers:{Authorization:`Bearer ${token}`}}
         );
 
         setShops(res.data.data);
-      } catch (error) {
+
+      }catch{
+
         toast.error("Failed to load shops");
+
       }
+
     };
 
     fetchShops();
-  }, []);
+
+  },[]);
+
 
   /* ================= HANDLE IMAGE ================= */
 
-  const handleImages = (e: any) => {
+  const handleImages = (e:any)=>{
 
-    const files = Array.from(e.target.files);
+  const files = Array.from(e.target.files);
 
-    if (files.length > 4) {
-      toast.error("Maximum 4 images allowed");
-      return;
-    }
+  const newImages = [...images, ...files];
 
-    setImages(files);
-  };
+  if(newImages.length > 4){
 
-  /* ================= SUBMIT ================= */
+    toast.error("Maximum 4 images allowed");
+    return;
 
-  const handleSubmit = async () => {
+  }
 
-    if (!shopId || !name || !category || !price || !stock) {
+  setImages(newImages);
+
+};
+
+  /* ================= SINGLE PRODUCT ================= */
+
+  const handleSubmit = async()=>{
+
+    if(!shopId || !name || !category || !price || !stock){
+
       toast.error("Fill required fields");
       return;
+
     }
 
-    try {
+    try{
 
       const formData = new FormData();
 
-      formData.append("shop", shopId);
-      formData.append("name", name);
-      formData.append("category", category);
-      formData.append("price", price);
-      formData.append("stock", stock);
-      formData.append("description", description);
-      formData.append("discountType", discountType);
-      formData.append("discountValue", discountValue);
+      formData.append("shop",shopId);
+      formData.append("name",name);
+      formData.append("category",category);
+      formData.append("price",price);
+      formData.append("stock",stock);
+      formData.append("description",description);
+      formData.append("discountType",discountType);
+      formData.append("discountValue",discountValue);
+      formData.append("units",units);
 
-      /* images */
-
-      images.forEach((img) => {
-        formData.append("images", img);
+      images.forEach((img)=>{
+        formData.append("images",img);
       });
 
-      /* dynamic fields */
-
-      formData.append("expiryDate", expiryDate);
-      formData.append("weight", weight);
-      formData.append("size", size);
-      formData.append("brand", brand);
-      formData.append("modelNumber", modelNumber);
-      formData.append("warranty", warranty);
-      formData.append("manufacturer", manufacturer);
-      formData.append("skinType", skinType);
-      formData.append("author", author);
-      formData.append("ageGroup", ageGroup);
-      formData.append("material", material);
+      formData.append("expiryDate",expiryDate);
+      formData.append("weight",weight);
+      formData.append("size",size);
+      formData.append("brand",brand);
+      formData.append("modelNumber",modelNumber);
+      formData.append("author",author);
+      formData.append("ageGroup",ageGroup);
+      formData.append("material",material);
 
       await axios.post(
         "http://localhost:8000/api/v1/products",
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+          headers:{
+            Authorization:`Bearer ${token}`,
+            "Content-Type":"multipart/form-data"
+          }
         }
       );
 
       toast.success("Product Added Successfully 🚀");
 
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Product creation failed");
+    }catch(error:any){
+
+      toast.error(
+        error.response?.data?.message || "Product creation failed"
+      );
+
     }
+
   };
 
-  return (
+
+  /* ================= BULK UPLOAD ================= */
+
+  const handleBulkUpload = async()=>{
+
+    if(!shopId){
+
+      toast.error("Select shop");
+      return;
+
+    }
+
+    if(!file){
+
+      toast.error("Select Excel file");
+      return;
+
+    }
+
+    try{
+
+      const formData = new FormData();
+
+      formData.append("file",file);
+      formData.append("shopId",shopId);
+
+      await axios.post(
+        "http://localhost:8000/api/v1/products/bulk-upload",
+        formData,
+        {
+          headers:{
+            Authorization:`Bearer ${token}`,
+            "Content-Type":"multipart/form-data"
+          }
+        }
+      );
+
+      toast.success("Products uploaded successfully 🚀");
+
+    }catch{
+
+      toast.error("Upload failed");
+
+    }
+
+  };
+
+
+  return(
+
     <div className="max-w-4xl mx-auto p-6 space-y-6">
 
       <h1 className="text-3xl font-bold text-gray-800">
         Add Product
       </h1>
 
-      <div className="bg-white shadow-md rounded-xl p-8 space-y-5 border">
 
-        {/* SHOP SELECT */}
+{/* SWITCH */}
 
-        <select
-          value={shopId}
-          onChange={(e) => setShopId(e.target.value)}
-          className="w-full border rounded-md px-3 py-2"
-        >
-          <option value="">Select Shop</option>
+<div className="flex gap-4 mb-4">
 
-          {shops.map((shop) => (
-            <option key={shop._id} value={shop._id}>
-              {shop.shopName}
-            </option>
-          ))}
+<Button
+onClick={()=>setUploadType("single")}
+className={`${uploadType==="single"
+? "bg-blue-600 text-white"
+: "bg-gray-200"} px-6 py-2`}
+>
 
-        </select>
+📦 Single Product
 
-        {/* PRODUCT NAME */}
+</Button>
 
-        <Input
-          placeholder="Product Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
 
-        {/* CATEGORY */}
+<Button
+onClick={()=>setUploadType("bulk")}
+className={`${uploadType==="bulk"
+? "bg-blue-600 text-white"
+: "bg-gray-200"} px-6 py-2`}
+>
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full border rounded-md px-3 py-2"
-        >
-          <option value="">Select Category</option>
+📊 Bulk Upload
 
-          <option value="food">Food & Beverages</option>
-          <option value="clothing">Clothing</option>
-          <option value="electronics">Electronics</option>
-          <option value="pharmacy">Pharmacy</option>
-          <option value="beauty">Beauty & Personal Care</option>
-          <option value="grocery">Grocery</option>
-          <option value="home">Home Appliances</option>
-          <option value="sports">Sports & Fitness</option>
-          <option value="books">Books</option>
-          <option value="toys">Toys</option>
-        </select>
+</Button>
 
-        {/* PRICE + STOCK */}
+</div>
 
-        <div className="grid md:grid-cols-2 gap-4">
 
-          <Input
-            type="number"
-            placeholder="Price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
 
-          <Input
-            type="number"
-            placeholder="Stock"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-          />
+{/* ================= BULK UPLOAD ================= */}
 
-        </div>
+{uploadType==="bulk" &&(
 
-        {/* DESCRIPTION */}
+<div className="bg-white shadow-md rounded-xl p-8 space-y-5 border">
 
-        <Textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+<h2 className="text-lg font-semibold">
 
-        {/* DISCOUNT */}
+Upload Excel File
 
-        <div className="grid md:grid-cols-2 gap-4">
+</h2>
 
-          <select
-            value={discountType}
-            onChange={(e) => setDiscountType(e.target.value)}
-            className="border rounded-md px-3 py-2"
-          >
-            <option value="">Discount Type</option>
-            <option value="percentage">Percentage</option>
-            <option value="flat">Flat</option>
-          </select>
 
-          <Input
-            type="number"
-            placeholder="Discount Value"
-            value={discountValue}
-            onChange={(e) => setDiscountValue(e.target.value)}
-          />
+<select
+value={shopId}
+onChange={(e)=>setShopId(e.target.value)}
+className="w-full border rounded-md px-3 py-2"
+>
 
-        </div>
+<option value="">Select Shop</option>
 
-        {/* IMAGES */}
+{shops.map((shop)=>(
+<option key={shop._id} value={shop._id}>
+{shop.shopName}
+</option>
+))}
 
-        <div>
+</select>
 
-          <p className="text-sm font-medium text-gray-600">
-            Upload Product Images (Max 4)
-          </p>
 
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImages}
-            className="w-full border rounded-md px-3 py-2"
-          />
+<input
+type="file"
+accept=".xlsx,.csv"
+onChange={(e:any)=>setFile(e.target.files[0])}
+className="border p-2 rounded w-full"
+/>
 
-        </div>
 
-        {/* CATEGORY FIELDS */}
+<Button
+onClick={handleBulkUpload}
+>
 
-        {category === "food" && (
-          <>
-            <Input type="date" value={expiryDate} onChange={(e)=>setExpiryDate(e.target.value)} />
-            <Input placeholder="Weight" value={weight} onChange={(e)=>setWeight(e.target.value)} />
-          </>
-        )}
+Upload Products
 
-        {category === "clothing" && (
-          <>
-            <Input placeholder="Size" value={size} onChange={(e)=>setSize(e.target.value)} />
-            <Input placeholder="Material" value={material} onChange={(e)=>setMaterial(e.target.value)} />
-          </>
-        )}
+</Button>
 
-        {category === "electronics" && (
-          <>
-            <Input placeholder="Brand" value={brand} onChange={(e)=>setBrand(e.target.value)} />
-            <Input placeholder="Model Number" value={modelNumber} onChange={(e)=>setModelNumber(e.target.value)} />
-          </>
-        )}
+</div>
 
-        {category === "books" && (
-          <Input placeholder="Author" value={author} onChange={(e)=>setAuthor(e.target.value)} />
-        )}
+)}
 
-        {category === "toys" && (
-          <Input placeholder="Age Group" value={ageGroup} onChange={(e)=>setAgeGroup(e.target.value)} />
-        )}
 
-        <div className="flex justify-end pt-4">
 
-          <Button
-            onClick={handleSubmit}
-            className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2"
-          >
-            Add Product
-          </Button>
+{/* ================= SINGLE PRODUCT ================= */}
 
-        </div>
+{uploadType==="single" &&(
 
-      </div>
-    </div>
-  );
+<div className="bg-white shadow-md rounded-xl p-8 space-y-5 border">
+
+<select
+value={shopId}
+onChange={(e)=>setShopId(e.target.value)}
+className="w-full border rounded-md px-3 py-2"
+>
+
+<option value="">Select Shop</option>
+
+{shops.map((shop)=>(
+<option key={shop._id} value={shop._id}>
+{shop.shopName}
+</option>
+))}
+
+</select>
+
+
+<Input
+placeholder="Product Name"
+value={name}
+onChange={(e)=>setName(e.target.value)}
+/>
+
+
+<select
+value={category}
+onChange={(e)=>setCategory(e.target.value)}
+className="w-full border rounded-md px-3 py-2"
+>
+
+<option value="">Select Category</option>
+<option value="food">Food</option>
+<option value="clothing">Clothing</option>
+<option value="electronics">Electronics</option>
+<option value="books">Books</option>
+<option value="toys">Toys</option>
+
+</select>
+
+
+<div className="grid md:grid-cols-2 gap-4">
+
+<Input
+type="number"
+placeholder="Price"
+value={price}
+onChange={(e)=>setPrice(e.target.value)}
+/>
+
+<Input
+type="number"
+placeholder="Stock"
+value={stock}
+onChange={(e)=>setStock(e.target.value)}
+/>
+
+</div>
+
+
+<Textarea
+placeholder="Description"
+value={description}
+onChange={(e)=>setDescription(e.target.value)}
+/>
+
+
+<Input
+placeholder="Units (example: 500g,1kg or S,M,L)"
+value={units}
+onChange={(e)=>setUnits(e.target.value)}
+/>
+
+
+<div className="grid md:grid-cols-2 gap-4">
+
+<select
+value={discountType}
+onChange={(e)=>setDiscountType(e.target.value)}
+className="border rounded-md px-3 py-2"
+>
+
+<option value="">Discount Type</option>
+<option value="percentage">Percentage</option>
+<option value="flat">Flat</option>
+
+</select>
+
+<Input
+type="number"
+placeholder="Discount Value"
+value={discountValue}
+onChange={(e)=>setDiscountValue(e.target.value)}
+/>
+
+</div>
+
+
+<div>
+
+<p className="text-sm font-medium text-gray-600">
+
+Upload Product Images (Max 4)
+
+</p>
+
+<input
+type="file"
+multiple
+accept="image/*"
+onChange={handleImages}
+className="w-full border rounded-md px-3 py-2"
+/>
+<div className="flex gap-3 mt-3 flex-wrap">
+
+{images.map((img,index)=>(
+<img
+key={index}
+src={URL.createObjectURL(img)}
+className="w-16 h-16 object-cover rounded-md border"
+/>
+))}
+
+</div>
+</div>
+
+
+<div className="flex justify-end pt-4">
+
+<Button
+onClick={handleSubmit}
+className="bg-blue-700 text-white px-6 py-2"
+>
+
+Add Product
+
+</Button>
+
+</div>
+
+</div>
+
+)}
+
+</div>
+
+);
+
 };
 
 export default AddProduct;

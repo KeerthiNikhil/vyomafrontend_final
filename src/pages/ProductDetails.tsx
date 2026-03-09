@@ -1,204 +1,256 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
-import { Minus, Plus, Star } from "lucide-react";
+import { useState,useEffect } from "react";
+import { Minus,Plus,Star } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/data/products";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
-const ProductDetails = () => {
-  const { id } = useParams();
-  const { addToCart } = useCart();
-  const [qty, setQty] = useState(1);
+const ProductDetails = ()=>{
 
-  const product = products.find((p) => p.id === Number(id));
+const {id} = useParams();
+const {addToCart} = useCart();
 
-  if (!product) {
-    return <div className="p-10 text-center">Product not found</div>;
-  }
+const [product,setProduct] = useState<any>(null);
+const [loading,setLoading] = useState(true);
 
-  const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      
-    });
-  };
+const [qty,setQty] = useState(1);
+const [activeImage,setActiveImage] = useState(0);
+const [selectedUnit,setSelectedUnit] = useState("");
 
-  return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+useEffect(()=>{
 
-      <div className="grid lg:grid-cols-3 gap-8">
+const fetchProduct = async()=>{
 
-        {/* LEFT IMAGE SECTION */}
-        <div className="bg-white rounded-xl p-6 shadow-sm">
-          <div className="h-[350px] flex items-center justify-center">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="h-full object-contain"
-            />
-          </div>
+try{
 
-          {/* Thumbnail Row */}
-          <div className="flex gap-3 mt-4">
-            <div className="w-16 h-16 border rounded-md" />
-            <div className="w-16 h-16 border rounded-md" />
-            <div className="w-16 h-16 border rounded-md" />
-          </div>
-        </div>
+const res = await axios.get(
+`http://localhost:8000/api/v1/products/${id}`
+);
 
-        {/* CENTER PRODUCT INFO */}
-        <div className="space-y-5">
+setProduct(res.data.data);
 
-          <h1 className="text-2xl font-bold">{product.name}</h1>
+}catch(err){
 
-          {/* Rating */}
-          <div className="flex items-center gap-2 text-yellow-500">
-            <Star size={18} fill="currentColor" />
-            <span className="text-sm text-gray-700">4.4 (78 reviews)</span>
-          </div>
+console.log(err);
 
-          {/* Price */}
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold text-black">
-              ₹{product.price}
-            </span>
-            <span className="text-gray-400 line-through">
-              ₹{product.price + 500}
-            </span>
-            <span className="text-green-600 text-sm font-medium">
-              20% off
-            </span>
-          </div>
+}
 
-          {/* Quantity */}
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium">Quantity:</span>
-            <div className="flex items-center border rounded-md">
-              <button
-                onClick={() => setQty(Math.max(1, qty - 1))}
-                className="px-3 py-1"
-              >
-                <Minus size={16} />
-              </button>
-              <span className="px-4">{qty}</span>
-              <button
-                onClick={() => setQty(qty + 1)}
-                className="px-3 py-1"
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-          </div>
+setLoading(false);
 
-          {/* Buttons */}
-          <div className="flex gap-4">
-            <Button
-              onClick={handleAddToCart}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Add to Cart
-            </Button>
+};
 
-            <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white">
-              Buy Now
-            </Button>
-          </div>
+fetchProduct();
 
-          {/* Features Accordion */}
-          <div className="border rounded-xl divide-y mt-6">
-            <details className="p-4 cursor-pointer">
-              <summary className="font-medium">Description</summary>
-              <p className="text-sm text-gray-600 mt-2">
-                {product.description}
-              </p>
-            </details>
+},[id]);
 
-            <details className="p-4 cursor-pointer">
-              <summary className="font-medium">Specifications</summary>
-              <p className="text-sm text-gray-600 mt-2">
-                Weight: {product.weight}
-              </p>
-            </details>
+if(loading){
+return <div className="p-10 text-center">Loading product...</div>;
+}
 
-            <details className="p-4 cursor-pointer">
-              <summary className="font-medium">Warranty</summary>
-              <p className="text-sm text-gray-600 mt-2">
-                1 Year Manufacturer Warranty
-              </p>
-            </details>
-          </div>
-        </div>
+if(!product){
+return <div className="p-10 text-center">Product not found</div>;
+}
 
-        {/* RIGHT OFFER BOX */}
-        <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
+const handleAddToCart = ()=>{
 
-          <div className="border rounded-lg p-4">
-            <h3 className="font-semibold mb-3">Available Offers</h3>
-            <p className="text-sm text-gray-600">
-              Buy 2 or more & get extra 5% off
-            </p>
-            <p className="text-sm text-gray-600">
-              Free Delivery Available
-            </p>
-          </div>
+addToCart({
+id:product._id,
+name:product.name,
+price:product.finalPrice,
+image:`http://localhost:8000${product.images?.[0]}`
+});
 
-          <div className="space-y-3">
-            <Button className="w-full bg-blue-600 text-white">
-              Go to Cart
-            </Button>
+};
 
-            <Button className="w-full bg-orange-500 text-white">
-              Buy Now
-            </Button>
-          </div>
+return(
 
-          <div className="border rounded-lg p-4">
-            <h3 className="font-semibold mb-3">Payment Options</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-              <p>✔ UPI</p>
-              <p>✔ Cards</p>
-              <p>✔ COD</p>
-              <p>✔ Net Banking</p>
-            </div>
-          </div>
-        </div>
+<section className="max-w-7xl mx-auto px-4">
 
-      </div>
+<div className="grid lg:grid-cols-3 gap-8">
 
-      {/* REVIEWS SECTION */}
-      <div className="mt-16 bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-xl font-semibold mb-6">
-          Ratings & Reviews
-        </h2>
+{/* IMAGE GALLERY */}
 
-        <div className="flex items-center gap-6 mb-6">
-          <span className="text-3xl font-bold">4.4</span>
-          <span className="text-sm text-gray-600">
-            78 Reviews
-          </span>
-        </div>
+<div className="flex gap-4">
 
-        <div className="space-y-4">
-          <div className="border-t pt-4">
-            <p className="font-medium">Dr. Sharma</p>
-            <p className="text-sm text-gray-600">
-              Excellent product. Very reliable and easy to use.
-            </p>
-          </div>
+<div className="flex flex-col gap-3">
 
-          <div className="border-t pt-4">
-            <p className="font-medium">Dr. Patel</p>
-            <p className="text-sm text-gray-600">
-              Good quality product. Works as expected.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+{product.images?.map((img:string,index:number)=>(
+<img
+key={index}
+onClick={()=>setActiveImage(index)}
+src={`http://localhost:8000${img}`}
+className={`w-16 h-16 object-cover rounded cursor-pointer border
+${activeImage===index?"border-black":"border-gray-200"}`}
+/>
+))}
+
+</div>
+
+<img
+src={`http://localhost:8000${product.images?.[activeImage]}`}
+className="w-[350px] h-[450px] object-cover rounded"
+/>
+
+</div>
+
+{/* PRODUCT INFO */}
+
+<div className="space-y-5">
+
+<h1 className="text-2xl font-bold">
+{product.name}
+</h1>
+
+<div className="flex items-center gap-2 text-yellow-500">
+<Star size={18} fill="currentColor"/>
+<span className="text-sm text-gray-700">
+4.4 (78 reviews)
+</span>
+</div>
+
+{/* PRICE */}
+
+<div className="flex items-center gap-3">
+
+<span className="text-2xl font-bold">
+₹{product.finalPrice}
+</span>
+
+{product.discountValue>0 &&(
+<span className="line-through text-gray-400">
+₹{product.price}
+</span>
+)}
+
+</div>
+
+{/* UNITS */}
+
+{product.units?.length>0 &&(
+
+<div>
+
+<p className="font-medium mb-2">
+Select Unit
+</p>
+
+<div className="flex gap-2">
+
+{product.units.map((u:string)=>(
+<button
+key={u}
+onClick={()=>setSelectedUnit(u)}
+className={`border px-3 py-1 rounded-md
+${selectedUnit===u?"bg-black text-white":"hover:bg-gray-100"}`}
+>
+{u}
+</button>
+))}
+
+</div>
+
+</div>
+
+)}
+
+{/* QTY */}
+
+<div className="flex items-center gap-4">
+
+<span>Quantity</span>
+
+<div className="flex border rounded">
+
+<button
+onClick={()=>setQty(Math.max(1,qty-1))}
+className="px-3"
+>
+<Minus size={16}/>
+</button>
+
+<span className="px-4">{qty}</span>
+
+<button
+onClick={()=>setQty(qty+1)}
+className="px-3"
+>
+<Plus size={16}/>
+</button>
+
+</div>
+
+</div>
+
+{/* BUTTONS */}
+
+<div className="flex gap-4">
+
+<Button
+onClick={handleAddToCart}
+className="flex-1 bg-blue-600 text-white"
+>
+Add to Cart
+</Button>
+
+<Button className="flex-1 bg-orange-500 text-white">
+Buy Now
+</Button>
+
+</div>
+
+{/* DESCRIPTION */}
+
+<div className="border rounded-xl divide-y">
+
+<details className="p-4">
+<summary>Description</summary>
+<p className="text-sm mt-2">
+{product.description}
+</p>
+</details>
+
+<details className="p-4">
+<summary>Specifications</summary>
+<p className="text-sm">
+Category: {product.category}
+</p>
+<p className="text-sm">
+Stock: {product.stock}
+</p>
+</details>
+
+</div>
+
+</div>
+
+{/* RIGHT BOX */}
+
+<div className="bg-white shadow rounded-xl p-6 space-y-6">
+
+<h3 className="font-semibold">
+Available Offers
+</h3>
+
+<p className="text-sm">
+Buy 2 & get 5% extra off
+</p>
+
+<Button className="w-full bg-blue-600 text-white">
+Go to Cart
+</Button>
+
+<Button className="w-full bg-orange-500 text-white">
+Buy Now
+</Button>
+
+</div>
+
+</div>
+
+</section>
+
+);
+
 };
 
 export default ProductDetails;

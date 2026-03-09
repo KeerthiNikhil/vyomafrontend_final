@@ -16,23 +16,30 @@ const ProductCard: React.FC<Props> = ({
   weight,
   originalPrice,
 }) => {
+
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 w-60">
+    <div className="bg-white rounded-xl shadow-sm p-4 w-full flex flex-col">
 
-      <img
-        src={image}
-        alt={name}
-        className="h-40 w-full object-cover rounded-lg"
-      />
+      {/* Product Image */}
+      <div className="w-full aspect-[4/3] overflow-hidden rounded-lg">
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
+      {/* Product Name */}
       <h3 className="mt-3 font-semibold">{name}</h3>
 
+      {/* Weight */}
       {weight && (
         <p className="text-sm text-gray-500">{weight}</p>
       )}
 
       {/* Price */}
       <div className="mt-2">
+
         {originalPrice && (
           <p className="text-sm text-gray-400 line-through">
             ₹ {originalPrice}
@@ -50,11 +57,17 @@ const ProductCard: React.FC<Props> = ({
             )}% OFF
           </p>
         )}
+
       </div>
 
-      <button className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
-        Add to Cart
-      </button>
+      {/* Add to Cart Button */}
+      <div className="mt-3">
+        <button
+          className="w-full bg-blue-600 text-white text-sm py-2 rounded-md hover:bg-blue-700"
+        >
+          Add to Cart
+        </button>
+      </div>
 
     </div>
   );

@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    
-<footer className="bg-blue-900 text-gray-200">
+    <footer className="bg-blue-900 text-gray-200">
 
       {/* Top Section */}
       <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
@@ -69,12 +68,20 @@ const Footer = () => {
             <li>Udupi</li>
           </ul>
         </div>
+
       </div>
 
       {/* Bottom Bar */}
       <div className="border-t border-blue-800 py-4 text-center text-sm text-gray-300">
-        © {new Date().getFullYear()} VYOMA. All rights reserved.
+        <p>
+          © {new Date().getFullYear()} VYOMA Marketplace. All Rights Reserved.
+        </p>
+
+        <p className="mt-1">
+          Developed by • Email: vinyasagroup@gmail.com
+        </p>
       </div>
+
     </footer>
   );
 };

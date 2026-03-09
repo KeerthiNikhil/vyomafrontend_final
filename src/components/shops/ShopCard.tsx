@@ -25,14 +25,7 @@ const ShopCard = ({ shop, isLive = false }: ShopCardProps) => {
       ? shop.shopImage
       : `http://localhost:8000${shop.shopImage}`
     : "https://via.placeholder.com/400x300?text=Shop";
-    <img
-  src={imageUrl}
-  alt={shop.shopName}
-  onError={(e:any)=>{
-    e.target.src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136";
-  }}
-  className="w-full h-full object-cover"
-/>
+   
 
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">

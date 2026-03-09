@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -21,6 +21,7 @@ interface Order {
   discount: number;
   amount: number;
   status: "Pending" | "Processing" | "Delivered";
+  deliveryBoy?: string;
 }
 
 const ordersTrend = [
@@ -44,6 +45,8 @@ const revenueTrend = [
 ];
 
 const PendingOrders = () => {
+  const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -55,6 +58,7 @@ const PendingOrders = () => {
       discount: 50,
       amount: 1200,
       status: "Pending",
+      deliveryBoy: "Rahul",
     },
     {
       id: 2,
@@ -74,9 +78,7 @@ const PendingOrders = () => {
     },
   ]);
 
-  const pendingOrders = orders.filter(
-    (o) => o.status === "Pending"
-  );
+  const pendingOrders = orders.filter((o) => o.status === "Pending");
 
   const filteredOrders = pendingOrders.filter((order) =>
     order.orderId.toLowerCase().includes(search.toLowerCase())
@@ -84,30 +86,31 @@ const PendingOrders = () => {
 
   const pendingCount = pendingOrders.length;
 
-  const totalRevenue = orders.reduce(
-    (acc, o) => acc + o.amount,
-    0
-  );
+  const totalRevenue = orders.reduce((acc, o) => acc + o.amount, 0);
 
-  /* ✅ Mark as Delivered */
+  /* Mark as Delivered */
   const handleMarkDelivered = (id: number) => {
     setOrders(
       orders.map((order) =>
-        order.id === id
-          ? { ...order, status: "Delivered" }
-          : order
+        order.id === id ? { ...order, status: "Delivered" } : order
       )
     );
   };
 
-  /* 🚚 Assign Delivery */
-  const handleAssignDelivery = (orderId: string) => {
-    alert(`Assign delivery for ${orderId}`);
+  /* Navigate to Assign Delivery Page */
+  const handleAssignDelivery = (order: Order) => {
+    navigate("/vendor/delivery/assign", {
+      state: {
+        orderId: order.orderId,
+        amount: order.amount,
+        date: order.date,
+        deliveryBoy: order.deliveryBoy || null,
+      },
+    });
   };
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Pending Orders</h1>
@@ -116,7 +119,7 @@ const PendingOrders = () => {
         </p>
       </div>
 
-      {/* Warning Alert */}
+      {/* Warning */}
       {pendingCount > 0 && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded">
           <p className="text-yellow-800 font-medium">
@@ -127,27 +130,19 @@ const PendingOrders = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">
-              Total Orders
-            </p>
-            <h2 className="text-2xl font-bold">
-              {orders.length}
-            </h2>
+            <p className="text-sm text-gray-500">Total Orders</p>
+            <h2 className="text-2xl font-bold">{orders.length}</h2>
           </CardContent>
         </Card>
 
-        {/* CLICKABLE PENDING CARD */}
         <Card
           onClick={() => setShowModal(true)}
           className="cursor-pointer hover:shadow-lg transition"
         >
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">
-              Pending Orders
-            </p>
+            <p className="text-sm text-gray-500">Pending Orders</p>
             <h2 className="text-2xl font-bold text-orange-500">
               {pendingCount}
             </h2>
@@ -156,25 +151,19 @@ const PendingOrders = () => {
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">
-              Total Revenue
-            </p>
+            <p className="text-sm text-gray-500">Total Revenue</p>
             <h2 className="text-2xl font-bold text-green-600">
               ₹{totalRevenue}
             </h2>
           </CardContent>
         </Card>
-
       </div>
 
-      {/* Graph Section */}
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
         <Card>
           <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">
-              Weekly Order Trend
-            </h2>
+            <h2 className="font-semibold mb-4">Weekly Order Trend</h2>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={ordersTrend}>
                 <XAxis dataKey="day" />
@@ -188,32 +177,34 @@ const PendingOrders = () => {
 
         <Card>
           <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">
-              Revenue Trend
-            </h2>
+            <h2 className="font-semibold mb-4">Revenue Trend</h2>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={revenueTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
       </div>
 
-      {/* 🔥 MODAL */}
+      {/* Pending Orders Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white w-11/12 max-w-5xl rounded-xl shadow-lg p-6">
-
+          <div className="bg-white w-11/12 max-w-6xl rounded-xl shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 Pending Orders Details
               </h2>
+
               <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-500 hover:text-black text-lg"
@@ -237,6 +228,7 @@ const PendingOrders = () => {
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Status</th>
+                    <th>Delivery</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -244,39 +236,48 @@ const PendingOrders = () => {
                 <tbody>
                   {filteredOrders.map((order) => (
                     <tr key={order.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 font-medium">
-                        {order.orderId}
-                      </td>
+                      <td className="py-3 font-medium">{order.orderId}</td>
+
                       <td>{order.date}</td>
+
                       <td>₹{order.amount}</td>
+
                       <td>
                         <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">
                           Pending
                         </span>
                       </td>
-                      <td className="flex gap-2">
 
-                        <Button
-                          size="sm"
-                          className="bg-blue-900 hover:bg-blue-800"
-                          onClick={() =>
-                            handleAssignDelivery(order.orderId)
-                          }
+                      <td>
+                        {order.deliveryBoy ? (
+                          <span className="text-blue-600 font-medium">
+                            {order.deliveryBoy}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">
+                            Not Assigned
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="flex gap-4 items-center">
+                        <button
+                          className="text-blue-600 hover:underline text-sm"
+                          onClick={() => handleAssignDelivery(order)}
                         >
-                          Assign Delivery
-                        </Button>
+                          {order.deliveryBoy
+                            ? "Reassign Delivery"
+                            : "Assign Delivery"}
+                        </button>
 
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="text-green-600 border-green-500 hover:bg-green-50"
+                        <button
+                          className="text-green-600 hover:underline text-sm"
                           onClick={() =>
                             handleMarkDelivered(order.id)
                           }
                         >
                           Mark as Delivered
-                        </Button>
-
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -284,11 +285,9 @@ const PendingOrders = () => {
 
               </table>
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   );
 };
