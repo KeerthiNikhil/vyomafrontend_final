@@ -1,256 +1,291 @@
 import { useParams } from "react-router-dom";
-import { useState,useEffect } from "react";
-import { Minus,Plus,Star } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Minus, Plus, Star, Heart } from "lucide-react";
+
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 
-const ProductDetails = ()=>{
+import StockIndicator from "@/components/products/StockIndicator";
+import EmiCalculator from "@/components/products/EmiCalculator";
+
+const ProductDetails = () => {
+  const { id } = useParams();
+  const { addToCart } = useCart();
+
+  const [product, setProduct] = useState<any>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [qty, setQty] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
+  const [wishlist, setWishlist] = useState(false);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/v1/products/${id}`
+        );
+
+        const productData = res.data.data;
+        setProduct(productData);
+
+        const related = await axios.get(
+          `http://localhost:8000/api/v1/products/shop/${productData.shop}`
+        );
+
+        setRelatedProducts(related.data.data || []);
+      } catch (err) {
+        console.log(err);
+      }
+
+      setLoading(false);
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
+  if (!product) return <div className="p-10 text-center">Not found</div>;
+
+  const images = product.images || [];
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: product._id,
+      name: product.name,
+      price: product.finalPrice,
+      image: `http://localhost:8000${images?.[0]}`
+    });
+  };
+
+  const deliveryDate = new Date();
+  deliveryDate.setDate(deliveryDate.getDate() + 3);
+
+  const formattedDate = deliveryDate.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long"
+  });
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 py-6">
+
+      {/* MAIN GRID */}
+      <div className="grid lg:grid-cols-3 gap-8">
+
+        {/* LEFT → IMAGE */}
+        <div className="flex flex-col items-center gap-4">
+
+          <div className="relative">
+            <button
+              onClick={() => setWishlist(!wishlist)}
+              className="absolute right-3 top-3 bg-white p-2 rounded-full shadow"
+            >
+              <Heart className={wishlist ? "text-red-500 fill-red-500" : ""}/>
+            </button>
+
+            <img
+              onClick={() => setShowPreview(true)}
+              src={
+                images?.[activeImage]
+                  ? `http://localhost:8000${images[activeImage]}`
+                  : "/placeholder.png"
+              }
+              className="w-[320px] h-[420px] object-contain bg-white rounded-lg"
+            />
+          </div>
+
+          {/* THUMBNAILS */}
+          <div className="flex gap-2">
+            {images.map((img: string, i: number) => (
+              <img
+                key={i}
+                src={`http://localhost:8000${img}`}
+                onClick={() => setActiveImage(i)}
+                className={`w-16 h-16 rounded cursor-pointer border ${
+                  activeImage === i ? "border-black" : ""
+                }`}
+              />
+            ))}
+          </div>
+
+        </div>
+
+        {/* CENTER → PRODUCT INFO */}
+        <div className="space-y-5">
+
+          <h1 className="text-2xl font-bold">{product.name}</h1>
+
+          <div className="flex items-center gap-2 text-yellow-500">
+            <Star size={16} fill="currentColor"/>
+            <span className="text-sm text-gray-600">
+              4.4 (78 reviews)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-3xl font-bold">
+              ₹{product.finalPrice}
+            </span>
 
-const {id} = useParams();
-const {addToCart} = useCart();
+            {product.discountValue > 0 && (
+              <span className="line-through text-gray-400">
+                ₹{product.price}
+              </span>
+            )}
+          </div>
 
-const [product,setProduct] = useState<any>(null);
-const [loading,setLoading] = useState(true);
+          <StockIndicator stock={product.stock} />
 
-const [qty,setQty] = useState(1);
-const [activeImage,setActiveImage] = useState(0);
-const [selectedUnit,setSelectedUnit] = useState("");
+          <EmiCalculator price={product.finalPrice} />
 
-useEffect(()=>{
+          {/* QTY */}
+          <div className="flex items-center gap-4">
+            <span>Quantity</span>
 
-const fetchProduct = async()=>{
+            <div className="flex border rounded">
+              <button onClick={() => setQty(Math.max(1, qty - 1))}>
+                <Minus size={16}/>
+              </button>
 
-try{
+              <span className="px-4">{qty}</span>
+
+              <button onClick={() => setQty(qty + 1)}>
+                <Plus size={16}/>
+              </button>
+            </div>
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex gap-4">
+            <Button onClick={handleAddToCart} className="flex-1 bg-blue-600">
+              Add to Cart
+            </Button>
+
+            <Button className="flex-1 bg-orange-500">
+              Buy Now
+            </Button>
+          </div>
 
-const res = await axios.get(
-`http://localhost:8000/api/v1/products/${id}`
-);
+          {/* ACCORDION */}
+          <div className="bg-white border rounded-lg divide-y">
 
-setProduct(res.data.data);
-
-}catch(err){
-
-console.log(err);
-
-}
-
-setLoading(false);
-
-};
-
-fetchProduct();
-
-},[id]);
-
-if(loading){
-return <div className="p-10 text-center">Loading product...</div>;
-}
-
-if(!product){
-return <div className="p-10 text-center">Product not found</div>;
-}
-
-const handleAddToCart = ()=>{
-
-addToCart({
-id:product._id,
-name:product.name,
-price:product.finalPrice,
-image:`http://localhost:8000${product.images?.[0]}`
-});
-
-};
-
-return(
-
-<section className="max-w-7xl mx-auto px-4">
-
-<div className="grid lg:grid-cols-3 gap-8">
-
-{/* IMAGE GALLERY */}
-
-<div className="flex gap-4">
-
-<div className="flex flex-col gap-3">
-
-{product.images?.map((img:string,index:number)=>(
-<img
-key={index}
-onClick={()=>setActiveImage(index)}
-src={`http://localhost:8000${img}`}
-className={`w-16 h-16 object-cover rounded cursor-pointer border
-${activeImage===index?"border-black":"border-gray-200"}`}
-/>
-))}
-
-</div>
-
-<img
-src={`http://localhost:8000${product.images?.[activeImage]}`}
-className="w-[350px] h-[450px] object-cover rounded"
-/>
-
-</div>
-
-{/* PRODUCT INFO */}
-
-<div className="space-y-5">
-
-<h1 className="text-2xl font-bold">
-{product.name}
-</h1>
-
-<div className="flex items-center gap-2 text-yellow-500">
-<Star size={18} fill="currentColor"/>
-<span className="text-sm text-gray-700">
-4.4 (78 reviews)
-</span>
-</div>
-
-{/* PRICE */}
-
-<div className="flex items-center gap-3">
-
-<span className="text-2xl font-bold">
-₹{product.finalPrice}
-</span>
-
-{product.discountValue>0 &&(
-<span className="line-through text-gray-400">
-₹{product.price}
-</span>
-)}
-
-</div>
-
-{/* UNITS */}
-
-{product.units?.length>0 &&(
-
-<div>
-
-<p className="font-medium mb-2">
-Select Unit
-</p>
-
-<div className="flex gap-2">
-
-{product.units.map((u:string)=>(
-<button
-key={u}
-onClick={()=>setSelectedUnit(u)}
-className={`border px-3 py-1 rounded-md
-${selectedUnit===u?"bg-black text-white":"hover:bg-gray-100"}`}
->
-{u}
-</button>
-))}
-
-</div>
-
-</div>
-
-)}
-
-{/* QTY */}
-
-<div className="flex items-center gap-4">
-
-<span>Quantity</span>
-
-<div className="flex border rounded">
-
-<button
-onClick={()=>setQty(Math.max(1,qty-1))}
-className="px-3"
->
-<Minus size={16}/>
-</button>
-
-<span className="px-4">{qty}</span>
-
-<button
-onClick={()=>setQty(qty+1)}
-className="px-3"
->
-<Plus size={16}/>
-</button>
-
-</div>
-
-</div>
-
-{/* BUTTONS */}
-
-<div className="flex gap-4">
-
-<Button
-onClick={handleAddToCart}
-className="flex-1 bg-blue-600 text-white"
->
-Add to Cart
-</Button>
-
-<Button className="flex-1 bg-orange-500 text-white">
-Buy Now
-</Button>
-
-</div>
-
-{/* DESCRIPTION */}
-
-<div className="border rounded-xl divide-y">
-
-<details className="p-4">
-<summary>Description</summary>
-<p className="text-sm mt-2">
-{product.description}
-</p>
-</details>
-
-<details className="p-4">
-<summary>Specifications</summary>
-<p className="text-sm">
-Category: {product.category}
-</p>
-<p className="text-sm">
-Stock: {product.stock}
-</p>
-</details>
-
-</div>
-
-</div>
-
-{/* RIGHT BOX */}
-
-<div className="bg-white shadow rounded-xl p-6 space-y-6">
-
-<h3 className="font-semibold">
-Available Offers
-</h3>
-
-<p className="text-sm">
-Buy 2 & get 5% extra off
-</p>
-
-<Button className="w-full bg-blue-600 text-white">
-Go to Cart
-</Button>
-
-<Button className="w-full bg-orange-500 text-white">
-Buy Now
-</Button>
-
-</div>
-
-</div>
-
-</section>
-
-);
-
+            <details className="p-4 cursor-pointer">
+              <summary className="font-semibold text-sm">
+                Description
+              </summary>
+
+              <p className="text-sm text-gray-600 mt-2">
+                {product.description || "No description available"}
+              </p>
+            </details>
+
+            <details className="p-4 cursor-pointer">
+              <summary className="font-semibold text-sm">
+                Specifications
+              </summary>
+
+              <div className="text-sm text-gray-600 mt-2 space-y-1">
+                <p>Category: {product.category || "N/A"}</p>
+                <p>Stock: {product.stock}</p>
+                <p>Brand: {product.brand || "N/A"}</p>
+              </div>
+            </details>
+
+          </div>
+
+        </div>
+
+        {/* RIGHT → BUY BOX */}
+        <div className="sticky top-20 h-fit">
+
+          <div className="bg-white shadow-lg rounded-xl p-6 space-y-4">
+
+            <h3 className="font-semibold text-lg">
+              Available Offers
+            </h3>
+
+            <p className="text-sm">
+              Buy 2 & get 5% extra off
+            </p>
+
+            <p className="text-green-600 text-sm">
+              Delivery by <b>{formattedDate}</b>
+            </p>
+
+            <Button className="w-full bg-blue-600">
+              Go to Cart
+            </Button>
+
+            <Button className="w-full bg-orange-500">
+              Buy Now
+            </Button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* RELATED PRODUCTS */}
+      <div className="mt-10">
+        <h3 className="text-lg font-semibold mb-4">
+          You may also like
+        </h3>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+          {relatedProducts.slice(0,5).map((item:any) => (
+
+            <div
+              key={item._id}
+              className="bg-white rounded-lg border hover:shadow-md transition p-2 cursor-pointer"
+            >
+
+              <div className="w-full h-40 flex items-center justify-center bg-white rounded-md">
+                <img
+                  src={
+                    item.images?.[0]
+                      ? `http://localhost:8000${item.images[0]}`
+                      : "/placeholder.png"
+                  }
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              <p className="mt-2 text-sm font-medium line-clamp-2">
+                {item.name}
+              </p>
+
+              <p className="text-sm font-semibold text-green-600">
+                ₹{item.finalPrice}
+              </p>
+
+            </div>
+
+          ))}
+
+        </div>
+      </div>
+
+      {/* FULLSCREEN IMAGE */}
+      {showPreview && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center"
+          onClick={() => setShowPreview(false)}
+        >
+          <img
+            src={`http://localhost:8000${images[activeImage]}`}
+            className="max-h-[90vh]"
+          />
+        </div>
+      )}
+
+    </section>
+  );
 };
 
 export default ProductDetails;

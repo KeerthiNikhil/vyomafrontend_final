@@ -18,29 +18,30 @@ const NearbyShops = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  let isMounted = true;
 
-    const fetchShops = async () => {
+  const fetchShops = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/api/v1/shops"
+      );
 
-      try {
-
-        const res = await axios.get(
-          "http://localhost:8000/api/v1/shops"
-        );
-
-        if (res.data.success) {
-          setShops(res.data.data);
-        }
-
-      } catch (error) {
-        console.error("Fetch shops error:", error);
+      if (isMounted && res.data.success) {
+        setShops(res.data.data);
       }
+    } catch (error) {
+      console.error("Fetch shops error:", error);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
 
-      setLoading(false);
-    };
+  fetchShops();
 
-    fetchShops();
-
-  }, []);
+  return () => {
+    isMounted = false;
+  };
+}, []);
 
   return (
     <section className="pt-0 pb-8 bg-royal-light mb-4">

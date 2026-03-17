@@ -1,5 +1,8 @@
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import React from "react";
+
+
 
 interface Shop {
   _id: string;
@@ -17,31 +20,49 @@ interface ShopCardProps {
 }
 
 const ShopCard = ({ shop, isLive = false }: ShopCardProps) => {
-
   const navigate = useNavigate();
 
-  const imageUrl = shop.shopImage
-    ? shop.shopImage.startsWith("http")
-      ? shop.shopImage
-      : `http://localhost:8000${shop.shopImage}`
-    : "https://via.placeholder.com/400x300?text=Shop";
-   
+  <img
+  src={
+    shop.shopImage
+      ? `http://localhost:8000${shop.shopImage}`
+      : "/placeholder.png"
+  }
+  alt={shop.shopName}
+  onError={(e) => {
+    e.currentTarget.src = "/placeholder.png";
+  }}
+  className="w-full h-40 object-cover rounded-t-xl bg-gray-100"
+/>
+
+  const openShop = () => {
+    navigate(`/shop/${shop._id}`);
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
-
+    <div
+      onClick={openShop}
+      className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden cursor-pointer"
+    >
       {/* IMAGE */}
       <div className="relative h-44 w-full overflow-hidden">
-  <img
-    src={imageUrl}
-    alt={shop.shopName}
-    className="w-full h-full object-cover transition duration-300 hover:scale-105"
-  />
+        <img
+  src={
+    shop.shopImage
+      ? `http://localhost:8000${shop.shopImage}`
+      : "/placeholder.png"
+  }
+  alt={shop.shopName}
+  onError={(e) => {
+    e.currentTarget.src = "/placeholder.png";
+  }}
+  className="w-full h-40 object-cover rounded-t-xl bg-gray-100"
+/>
 
-  <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-xs font-medium shadow">
-    {shop.businessType}
-  </div>
-
+        {/* CATEGORY */}
+        <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-xs font-medium shadow">
+          {shop.businessType}
+        </div>
 
         {/* LIVE badge */}
         {isLive && (
@@ -53,7 +74,6 @@ const ShopCard = ({ shop, isLive = false }: ShopCardProps) => {
 
       {/* CONTENT */}
       <div className="p-4">
-
         {/* SHOP NAME */}
         <h3 className="text-sm sm:text-base font-semibold mb-1">
           {shop.shopName}
@@ -67,23 +87,23 @@ const ShopCard = ({ shop, isLive = false }: ShopCardProps) => {
 
         {/* BOTTOM */}
         <div className="flex items-center justify-between">
-
           <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
             ⭐ 4.5
           </span>
 
           <button
-            onClick={() => navigate(`/shop/${shop._id}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              openShop();
+            }}
             className="bg-black text-white text-xs px-4 py-1.5 rounded-md hover:bg-gray-800 transition"
           >
             View
           </button>
-
         </div>
-
       </div>
     </div>
   );
 };
 
-export default ShopCard;
+export default React.memo(ShopCard);

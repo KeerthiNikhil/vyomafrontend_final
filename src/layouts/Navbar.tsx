@@ -1,26 +1,43 @@
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { User, ShoppingCart, Search, Heart, LogOut } from "lucide-react";
+
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+
+import logo from "@/assets/images/logo.jpg.png";
 
 const Navbar = () => {
-  const { cart } = useCart();
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const totalItems = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const navigate = useNavigate();
+
+  const { cart } = useCart();
+  const { wishlist } = useWishlist();
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [user, setUser] = useState<{
     name: string;
     role: string;
   } | null>(null);
 
+  /* Cart Count */
+
+  const totalItems = cart.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  /* Wishlist Count */
+
+  const wishlistCount = wishlist.length;
+
+  /* Get User */
+
   useEffect(() => {
+
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -29,98 +46,269 @@ const Navbar = () => {
         role: localStorage.getItem("role") || "",
       });
     }
+
   }, []);
 
+  /* Logout */
+
   const handleLogout = () => {
+
     localStorage.clear();
     setUser(null);
     navigate("/");
+
   };
 
+  /* Search */
+
   const handleSearch = (e: React.FormEvent) => {
+
     e.preventDefault();
 
     if (!searchQuery.trim()) return;
 
     navigate(`/search?q=${searchQuery}`);
+
+    setSearchQuery("");
+
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="h-16 flex items-center justify-between">
 
-          {/* LOGO */}
-          <Link to="/" className="text-2xl font-extrabold text-blue-700">
-            VYOMA
-          </Link>
+<header className="sticky top-0 z-50 bg-white shadow-sm">
 
-          {/* SEARCH */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex items-center w-[420px] relative"
-          >
-            <Search className="absolute left-4 text-gray-400 w-4 h-4" />
-            <Input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search shops or products..."
-              className="pl-11 pr-4 rounded-full bg-gray-100"
-            />
-          </form>
+<div className="max-w-7xl mx-auto px-4 sm:px-6">
 
-          {/* RIGHT SECTION */}
-          <div className="flex items-center gap-3">
+{/* TOP ROW */}
 
-            <Link to="/wishlist">
-              <Button variant="ghost" className="p-2 rounded-full">
-                <Heart className="w-5 h-5 text-gray-700" />
-              </Button>
-            </Link>
+<div className="h-16 flex items-center justify-between">
 
-            <Link to="/cart">
-              <Button variant="ghost" className="p-2 rounded-full relative">
-                <ShoppingCart className="w-5 h-5 text-gray-700" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Button>
-            </Link>
+{/* LOGO */}
 
-            {!user && (
-              <Link to="/login">
-                <Button variant="ghost" className="p-2 rounded-full">
-                  <User className="w-5 h-5 text-gray-700" />
-                </Button>
-              </Link>
-            )}
+<Link
+to="/"
+className="flex items-center gap-1 leading-none"
+>
 
-            {user && (
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-sm font-semibold">{user.name}</p>
-                  <p className="text-xs text-gray-500 capitalize">
-                    {user.role}
-                  </p>
-                </div>
+<img
+src={logo}
+alt="Vyoma"
+className="h-10 w-auto object-contain"
+/>
 
-                <Button
-                  onClick={handleLogout}
-                  variant="ghost"
-                  className="p-2 rounded-full"
-                >
-                  <LogOut className="w-5 h-5 text-red-500" />
-                </Button>
-              </div>
-            )}
+<span className="text-xl sm:text-2xl font-extrabold text-blue-900">
+VYOMA
+</span>
 
-          </div>
-        </div>
-      </div>
-    </header>
+</Link>
+
+
+{/* DESKTOP SEARCH */}
+
+<form
+onSubmit={handleSearch}
+className="hidden md:flex items-center w-[420px]"
+>
+
+<div className="flex items-center w-full bg-gray-100 rounded-full px-4">
+
+<Search className="text-gray-400 w-4 h-4 mr-2" />
+
+<Input
+type="text"
+value={searchQuery}
+onChange={(e) => setSearchQuery(e.target.value)}
+placeholder="Search shops or products..."
+className="
+border-none
+ring-0
+focus:ring-0
+focus:outline-none
+bg-transparent
+shadow-none
+"
+/>
+
+</div>
+
+</form>
+
+
+{/* RIGHT SECTION */}
+
+<div className="flex items-center gap-3 sm:gap-5">
+
+
+{/* Wishlist */}
+
+<Link to="/wishlist">
+
+<Button
+variant="ghost"
+className="p-2 rounded-full relative hover:bg-blue-50"
+>
+
+<Heart className="w-5 h-5 text-gray-700" />
+
+{wishlistCount > 0 && (
+
+<span className="
+absolute -top-1 -right-1
+min-w-[18px]
+h-[18px]
+px-1
+bg-red-500
+text-white
+text-[10px]
+font-semibold
+rounded-full
+flex items-center justify-center
+">
+
+{wishlistCount}
+
+</span>
+
+)}
+
+</Button>
+
+</Link>
+
+
+{/* User */}
+
+{!user && (
+
+<Link to="/login">
+
+<Button
+variant="ghost"
+className="p-2 rounded-full hover:bg-blue-50"
+>
+
+<User className="w-5 h-5 text-gray-700" />
+
+</Button>
+
+</Link>
+
+)}
+
+
+{user && (
+
+<div className="flex items-center gap-2">
+
+<div className="
+w-8 h-8
+bg-blue-600
+text-white
+rounded-full
+flex items-center justify-center
+text-sm
+font-semibold
+">
+
+{user.name.charAt(0).toUpperCase()}
+
+</div>
+
+<span className="hidden sm:block text-sm font-medium">
+Hi, {user.name}
+</span>
+
+<Button
+onClick={handleLogout}
+variant="ghost"
+className="p-2 rounded-full"
+>
+
+<LogOut className="w-5 h-5 text-red-500" />
+
+</Button>
+
+</div>
+
+)}
+
+
+{/* Cart */}
+
+<Link to="/cart">
+
+<Button
+variant="ghost"
+className="p-2 rounded-full relative hover:bg-blue-50"
+>
+
+<ShoppingCart className="w-5 h-5 text-gray-700" />
+
+{totalItems > 0 && (
+
+<span className="
+absolute -top-1 -right-1
+min-w-[18px]
+h-[18px]
+px-1
+bg-blue-600
+text-white
+text-[10px]
+font-semibold
+rounded-full
+flex items-center justify-center
+">
+
+{totalItems}
+
+</span>
+
+)}
+
+</Button>
+
+</Link>
+
+</div>
+
+</div>
+
+
+{/* MOBILE SEARCH */}
+
+<div className="md:hidden pb-3">
+
+<form onSubmit={handleSearch}>
+
+<div className="flex items-center bg-gray-100 rounded-full px-4">
+
+<Search className="text-gray-400 w-4 h-4 mr-2" />
+
+<Input
+type="text"
+value={searchQuery}
+onChange={(e) => setSearchQuery(e.target.value)}
+placeholder="Search shops or products..."
+className="
+border-none
+ring-0
+focus:ring-0
+focus:outline-none
+bg-transparent
+shadow-none
+"
+/>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</header>
+
   );
 };
 

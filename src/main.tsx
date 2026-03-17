@@ -9,7 +9,6 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
 
     <CartProvider>
       <WishlistProvider>
@@ -20,6 +19,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
       </WishlistProvider>
     </CartProvider>
-
-  </React.StrictMode>
 );

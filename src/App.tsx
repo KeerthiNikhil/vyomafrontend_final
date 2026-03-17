@@ -10,7 +10,7 @@ import OrderSuccess from "@/pages/OrderSuccess";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import ProductDetails from "@/pages/ProductDetails";
-import Wishlist from "@/pages/Wishlist";
+import Wishlist from "@/components/products/Wishlist";
 import SearchPage from "./pages/SearchPage";
 
 function App() {
@@ -24,6 +24,13 @@ function App() {
           {/* Home */}
           <Route path="/" element={<Home />} />
 
+          {/* Product Details */}
+          <Route path="/product/:id" element={<ProductDetails />} />
+
+          {/* Cart + Wishlist */}
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+
           {/* Shop Page */}
           <Route path="/shop/:id" element={<ShopProducts />} />
           <Route path="/search" element={<SearchPage />} />
@@ -33,13 +40,6 @@ function App() {
             path="/shop/:id/category/:slug"
             element={<CategoryProducts />}
           />
-
-          {/* Product Details */}
-          <Route path="/product/:id" element={<ProductDetails />} />
-
-          {/* Cart + Wishlist */}
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/wishlist" element={<Wishlist />} />
 
           {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />

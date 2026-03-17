@@ -23,12 +23,18 @@ const NearbyShopCard = ({
 
       {/* ⭐ IMAGE */}
       <div className="h-24 sm:h-36 w-full overflow-hidden">
-        <img
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover"
-        />
-      </div>
+       <img
+  src={
+    image
+      ? `http://localhost:8000${image}`
+      : "/placeholder.png"
+  }
+  alt={name}
+  onError={(e) => {
+    e.currentTarget.src = "/placeholder.png";
+  }}
+  className="w-full h-full object-cover bg-gray-100"
+/>
 
       {/* ⭐ CONTENT */}
       <div className="p-2 sm:p-4">

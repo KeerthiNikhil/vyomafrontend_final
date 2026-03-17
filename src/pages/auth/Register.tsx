@@ -4,17 +4,20 @@ import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Swal from "sweetalert2";
+
 const Register = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
     phone: "",
+    role: "user",
   });
 
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -24,17 +27,39 @@ const Register = () => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:8000/api/v1/auth/register", {
-        name: form.name,
-        phone: form.phone,
+      await axios.post("http://localhost:8000/api/v1/auth/register", form);
+
+      Swal.fire({
+        icon: "success",
+        title: "Registration Successful 🎉",
+        text: "You can now login",
       });
 
-      alert("Registered successfully ✅");
       navigate("/login");
+
     } catch (error: any) {
-      console.error(error.response?.data || error.message);
-      alert("Registration failed ❌");
-    } finally {
+
+  if (error.response?.data?.message === "Phone already registered") {
+
+    Swal.fire({
+      icon: "info",
+      title: "Account already exists",
+      text: "Please login instead",
+    });
+
+    navigate("/login");
+
+  } else {
+
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: error.response?.data?.message || "Something went wrong",
+    });
+
+  }
+
+}finally {
       setLoading(false);
     }
   };
@@ -68,6 +93,17 @@ const Register = () => {
               onChange={handleChange}
               required
             />
+
+            {/* Role Selection */}
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="w-full border rounded-md p-2"
+            >
+              <option value="user">User</option>
+              <option value="vendor">Vendor</option>
+            </select>
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Registering..." : "Register"}

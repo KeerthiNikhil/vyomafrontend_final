@@ -8,17 +8,6 @@ const SearchResults = () => {
   const query = searchParams.get("q");
   const [results, setResults] = useState([]);
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      const res = await axios.get(
-        `http://localhost:8000/api/v1/products?search=${query}`
-      );
-      setResults(res.data.data);
-    };
-
-    if (query) fetchResults();
-  }, [query]);
-
   const [loading, setLoading] = useState(false);
 
 useEffect(() => {
