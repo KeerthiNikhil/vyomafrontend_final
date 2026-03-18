@@ -22,6 +22,9 @@ const ProductDetails = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [wishlist, setWishlist] = useState(false);
 
+  const [showPayment, setShowPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -165,9 +168,12 @@ const ProductDetails = () => {
               Add to Cart
             </Button>
 
-            <Button className="flex-1 bg-orange-500">
-              Buy Now
-            </Button>
+           <Button
+  className="flex-1 bg-orange-500"
+  onClick={() => setShowPayment(true)}
+>
+  Buy Now
+</Button>
           </div>
 
           {/* ACCORDION */}
@@ -215,14 +221,6 @@ const ProductDetails = () => {
             <p className="text-green-600 text-sm">
               Delivery by <b>{formattedDate}</b>
             </p>
-
-            <Button className="w-full bg-blue-600">
-              Go to Cart
-            </Button>
-
-            <Button className="w-full bg-orange-500">
-              Buy Now
-            </Button>
 
           </div>
 
@@ -283,6 +281,91 @@ const ProductDetails = () => {
           />
         </div>
       )}
+
+      {showPayment && (
+<div
+  className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  onClick={() => setShowPayment(false)}
+>
+<div
+  className="bg-white w-full max-w-md rounded-xl p-6 space-y-5"
+  onClick={(e) => e.stopPropagation()}
+></div>
+
+    <div className="bg-white w-full max-w-md rounded-xl p-6 space-y-5">
+
+      <h2 className="text-lg font-semibold">Checkout</h2>
+
+      {/* PRODUCT SUMMARY */}
+      <div className="flex items-center gap-3 border p-3 rounded-lg">
+        <img
+          src={`http://localhost:8000${images[0]}`}
+          className="w-14 h-14 object-contain"
+        />
+        <div>
+          <p className="text-sm font-medium">{product.name}</p>
+          <p className="text-sm text-gray-600">
+            ₹{product.finalPrice} × {qty}
+          </p>
+        </div>
+      </div>
+
+      {/* ADDRESS (dummy for now) */}
+      <div className="border p-3 rounded-lg text-sm">
+        <p className="font-medium">Delivery Address</p>
+        <p className="text-gray-600">
+          Mangalore, Karnataka - 575001
+        </p>
+      </div>
+
+      {/* PAYMENT METHODS */}
+      <div className="space-y-2">
+        <p className="font-medium text-sm">Select Payment</p>
+
+        {["COD", "UPI"].map((method) => (
+          <label
+            key={method}
+            className="flex items-center gap-2 border p-2 rounded cursor-pointer"
+          >
+            <input
+              type="radio"
+              checked={paymentMethod === method}
+              onChange={() => setPaymentMethod(method)}
+            />
+            {method === "COD" ? "Cash on Delivery" : "UPI Payment"}
+          </label>
+        ))}
+      </div>
+
+      {/* TOTAL */}
+      <div className="flex justify-between font-semibold">
+        <span>Total</span>
+        <span>₹{product.finalPrice * qty}</span>
+      </div>
+
+      {/* ACTIONS */}
+      <div className="flex gap-3">
+        <button
+          onClick={() => setShowPayment(false)}
+          className="flex-1 border py-2 rounded"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={() => {
+            alert(`Order placed via ${paymentMethod}`);
+            setShowPayment(false);
+          }}
+          className="flex-1 bg-blue-600 text-white py-2 rounded"
+        >
+          Place Order
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
 
     </section>
   );
