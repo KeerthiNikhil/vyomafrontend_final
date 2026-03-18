@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ const Register = () => {
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    role: "user",
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,7 +26,7 @@ const Register = () => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:8000/api/v1/auth/register", form);
+      await axios.post("/auth/register", form);
 
       Swal.fire({
         icon: "success",
@@ -93,17 +92,6 @@ const Register = () => {
               onChange={handleChange}
               required
             />
-
-            {/* Role Selection */}
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full border rounded-md p-2"
-            >
-              <option value="user">User</option>
-              <option value="vendor">Vendor</option>
-            </select>
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Registering..." : "Register"}

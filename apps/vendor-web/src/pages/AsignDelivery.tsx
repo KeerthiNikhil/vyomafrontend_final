@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { deliveryBoysData } from "@/data/deliveryBoysData";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 const Delivery = () => {
   const [selectedBoy, setSelectedBoy] = useState<any>(null);
@@ -21,27 +21,29 @@ const lng = Number(orderData?.lng) || 77.5946;
 
   // ✅ SAVE DELIVERY TO BACKEND
   const handleAssignDelivery = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/api/v1/orders/${orderData.orderId}/assign-delivery`,
-        {
-          deliveryBoy: selectedBoy.name,
-          deliveryBoyId: selectedBoy.id,
-          distance: km,
-          rate,
-          totalDeliveryCost: total,
-        }
-      );
+  try {
+    const payload = {
+      orderId: orderData?.orderId,
+      deliveryBoyId: selectedBoy?.id,
+      km,
+      rate,
+      total,
+      address,
+      lat,
+      lng,
+    };
 
-      alert("✅ Delivery Assigned Successfully");
-    } catch (err: any) {
+    await axios.put("/delivery-boys/assign", payload);
+
+    alert("✅ Delivery Assigned Successfully");
+  } catch (err: any) {
     console.log("ERROR 👉", err.response?.data || err.message);
-      alert(
+
+    alert(
       err.response?.data?.message || "❌ Failed to assign delivery"
     );
-    }
-  };
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">

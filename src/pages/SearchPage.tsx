@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 const SearchPage = () => {
 

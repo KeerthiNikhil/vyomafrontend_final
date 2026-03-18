@@ -4,7 +4,7 @@ import { Minus, Plus, Star, Heart } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 import StockIndicator from "@/components/products/StockIndicator";
 import EmiCalculator from "@/components/products/EmiCalculator";

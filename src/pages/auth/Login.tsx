@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

@@ -25,6 +25,12 @@ const VendorLayout = () => {
   const [openOrders, setOpenOrders] = useState(false);
   const [openDelivery, setOpenDelivery] = useState(false);
 
+  const goToUserApp = () => {
+  const token = localStorage.getItem("token");
+
+  window.location.href = `http://localhost:5173?token=${token}`;
+};
+
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024;
