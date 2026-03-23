@@ -1,17 +1,13 @@
-import axios from "axios";
+import API from "./api";
 
-const API = axios.create({
-  baseURL: "http://localhost:8000/api/v1",
-});
-
+// ✅ Dashboard stats
 export const getAdminStats = async () => {
-  const token = localStorage.getItem("token");
+  const res = await API.get("/admin/dashboard");
+  return res.data.data;
+};
 
-  const res = await API.get("/admin/dashboard", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+// ✅ Vendors list
+export const fetchVendors = async () => {
+  const res = await API.get("/admin/vendors");
   return res.data.data;
 };

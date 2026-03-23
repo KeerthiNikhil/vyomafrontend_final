@@ -1,51 +1,40 @@
-import React, { useState, useEffect, createContext, useContext } from 'react'
+import { createContext, useContext, useState, useEffect } from "react";
 
 interface AuthContextType {
-  isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
+  isAuthenticated: boolean;
+  login: (token: string) => void;
+  logout: () => void;
 }
 
-interface AuthProviderProps {
-  children: React.ReactNode
-}
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+export const AuthProvider = ({ children }: any) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('admin_token')
-    if (token) setIsAuthenticated(true)
-  }, [])
+    const token = localStorage.getItem("adminToken");
+    setIsAuthenticated(!!token);
+  }, []);
 
-  const login = async (email: string, password: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    if (email === 'admin@example.com' && password === 'admin123') {
-      localStorage.setItem('admin_token', 'mock_jwt_token')
-      setIsAuthenticated(true)
-    } else {
-      throw new Error('Invalid credentials')
-    }
-  }
+  const login = (token: string) => {
+    localStorage.setItem("adminToken", token);
+    setIsAuthenticated(true); // ✅ instant update
+  };
 
   const logout = () => {
-    localStorage.removeItem('admin_token')
-    setIsAuthenticated(false)
-  }
+    localStorage.removeItem("adminToken");
+    setIsAuthenticated(false);
+  };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
-  }
-  return context
-}
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};
