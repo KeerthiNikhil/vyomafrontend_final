@@ -6,10 +6,16 @@ import {
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
 
+import banner4 from "@/assets/images/banner4_fruits.jpeg"
+import banner2 from "@/assets/images/banner2.jpeg"
+import banner3 from "@/assets/images/banner3.jpg" 
 import banner1 from "@/assets/images/banner1.jpg"
-import banner2 from "@/assets/images/banner2.jpg.jpeg"
+import banner5 from "@/assets/images/banner5_Furnitures.jpeg"
+import banner6 from "@/assets/images/banner6_Food.jpeg"
+import banner7 from "@/assets/images/banner7_Electronics.jpeg"
+import banner8 from "@/assets/images/banner8_Clothing.jpeg"
 
-const banners = [banner1, banner2]
+const banners = [banner4, banner5,banner6,banner7,banner8,banner1,banner2,banner3,]
 
 const HeroCarousel = () => {
   const autoplay = React.useRef(
@@ -41,8 +47,7 @@ const HeroCarousel = () => {
                   <img
                     src={img}
                     alt={`Banner ${index + 1}`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
+                    className="absolute inset-0 w-full h-full object-contain bg-white md:object-cover"                  />
 
                 </div>
 

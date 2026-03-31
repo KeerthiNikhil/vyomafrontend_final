@@ -6,11 +6,16 @@ import {
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
 
-import img1 from "@/assets/images/banner2.jpg.jpeg"
+import img1 from "@/assets/images/banner2.jpeg"
 import img2 from "@/assets/images/banner1.jpg"
 import img3 from "@/assets/images/banner3.jpg"
+import img4 from "@/assets/images/banner4_fruits.jpeg"
+import img5 from "@/assets/images/banner5_Furnitures.jpeg"
+import img6 from "@/assets/images/banner6_Food.jpeg"
+import img7 from "@/assets/images/banner7_Electronics.jpeg"
+import img8 from "@/assets/images/banner8_Clothing.jpeg"
 
-const ads = [img1, img2, img3]
+const ads = [img1, img2, img3,img4,img5,img6,img7,img8]
 
 const AdCarousel = () => {
   const autoplay = React.useRef(

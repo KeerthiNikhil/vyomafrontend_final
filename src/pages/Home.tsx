@@ -7,42 +7,50 @@ import HotSelling from "@/components/products/HotSelling";
 import Recommended from "@/components/products/Recommended";
 import MidAdCarousel from "@/components/carousel/MidAdCarousel";
 import axios from "@/lib/axios";
-import Swal from "sweetalert2";
+import NotificationCard from "@/components/NotificationCard";
+import { useState } from "react";
+import VendorWarningModal from "@/components/VendorWarningModal";
+import VendorSuccessModal from "@/components/VendorSuccessModal";
+import { toast } from "sonner";
+import VendorEntryModal from "@/components/VendorEntryModal";
 
-const becomeVendor = async () => {
-  try {
-    const res = await axios.put("/vendor/become-vendor");
-
-    await Swal.fire({
-      icon: "success",
-      title: "Now you are a Vendor 🎉",
-    });
-
-    localStorage.setItem("token", res.data.token); // 🔥 IMPORTANT
-localStorage.setItem("role", res.data.user.role);
-    
-    const token = res.data.token; // use fresh vendor token
-
-window.location.href = `http://localhost:5174?token=${token}`;
-
-  } catch {
-    Swal.fire({
-      icon: "error",
-      title: "Failed to become vendor",
-    });
-  }
-};
 const Home = () => {
+const [showNotification, setShowNotification] = useState(true);
+const [showWarning, setShowWarning] = useState(false);
+const [showEntry, setShowEntry] = useState(false);
+
+
+const handleAgree = () => {
+  setShowWarning(false);
+  setShowEntry(true);
+}; 
+
   return (
     <>
+    {showNotification && (
+        <NotificationCard onClose={() => setShowNotification(false)} />
+      )}
       <div className="p-4 text-right">
         <button
-          onClick={becomeVendor}
+          onClick={() => setShowWarning(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
           Become a Vendor
         </button>
       </div>
+
+      {/* 🔥 WARNING MODAL */}
+      <VendorWarningModal
+  open={showWarning}
+  onClose={() => setShowWarning(false)}
+  onConfirm={handleAgree}
+/>
+
+      {/* 🔥 SUCCESS MODAL */}
+      <VendorEntryModal
+  open={showEntry}
+  onClose={() => setShowEntry(false)}
+/>
 
       <HeroCarousel />
       <ServiceHighlights />

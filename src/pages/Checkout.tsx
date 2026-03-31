@@ -1,10 +1,13 @@
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import axios from "@/lib/axios";
+import { toast } from "sonner";
 
 const Checkout = () => {
-  const { cart, clearCart } = useCart();
   const navigate = useNavigate();
+
+   const { cart, fetchCart } = useCart();
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -14,11 +17,23 @@ const Checkout = () => {
   const deliveryFee = 117;
   const total = subtotal + deliveryFee;
 
-  const placeOrder = () => {
-    // later → save order to backend
-    clearCart();
-    navigate("/order-success");
-  };
+const handlePlaceOrder = async () => {
+  try {
+    const res = await axios.post("/orders");
+
+    if (res.data.success) {
+      toast.success("Order placed successfully 🎉");
+
+      // ✅ CLEAR CART
+      await fetchCart(); // or create clearCart API
+
+      navigate("/order-success");
+    }
+
+  } catch (err) {
+    toast.error("Order failed ❌");
+  }
+};
 
   return (
     <section className="bg-gray-100 py-10">
@@ -52,12 +67,12 @@ const Checkout = () => {
             Order Total: ₹{total}
           </p>
 
-          <Button
-            className="w-full mt-6 rounded-full bg-yellow-300 hover:bg-yellow-400"
-            onClick={placeOrder}
-          >
-            Place your order
-          </Button>
+         <Button
+  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black"
+  onClick={handlePlaceOrder}
+>
+  Place your order
+</Button>
         </div>
 
       </div>

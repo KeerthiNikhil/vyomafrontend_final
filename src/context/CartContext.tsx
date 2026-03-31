@@ -2,84 +2,101 @@ import {
   createContext,
   useContext,
   useState,
-  type ReactNode,
+  useEffect,
 } from "react";
+import axios from "@/lib/axios";
+import { toast } from "sonner";
 
-export type CartItem = {
-  id: number;
+
+
+type CartItem = {
+  id: string; // ✅ USE id everywhere
   name: string;
   price: number;
   image: string;
   quantity: number;
+  shop?: string;
 };
 
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (product: Omit<CartItem, "quantity">) => void;
-  removeFromCart: (id: number) => void;
-  increaseQty: (id: number) => void;
-  decreaseQty: (id: number) => void;
+  fetchCart: () => void;
+  addToCart: (item: any) => void;
+  increaseQty: (id: string) => void;
+  decreaseQty: (id: string) => void;
+  removeFromCart: (id: string) => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
+export const CartProvider = ({ children }: any) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // ✅ ADD TO CART
-  const addToCart = (product: Omit<CartItem, "quantity">) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
+  // ✅ FETCH + NORMALIZE DATA
+  const fetchCart = async () => {
+    const res = await axios.get("/cart");
 
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
+    const formatted = res.data.data.map((item: any) => ({
+      id: item.productId, // 🔥 CONVERT HERE
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      quantity: item.quantity,
+    }));
 
-      return [...prev, { ...product, quantity: 1 }];
+    setCart(formatted);
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  // ADD
+  const addToCart = async (item: any) => {
+  try {
+    await axios.post("/cart", {
+      productId: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      shop: item.shop,
     });
+
+    toast.success("Added to cart 🛒");
+
+    fetchCart();
+  } catch (err) {
+    console.error("❌ Add to cart failed", err);
+  } 
+};
+
+  // INC
+  const increaseQty = async (id: string) => {
+    await axios.put("/cart", { productId: id, type: "inc" });
+    fetchCart();
   };
 
-  // ✅ REMOVE COMPLETELY
-  const removeFromCart = (id: number) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  // DEC
+  const decreaseQty = async (id: string) => {
+    await axios.put("/cart", { productId: id, type: "dec" });
+    fetchCart();
   };
 
-  // ✅ INCREASE QTY
-  const increaseQty = (id: number) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-  };
-
-  // ✅ DECREASE QTY
-  const decreaseQty = (id: number) => {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
+  // REMOVE
+  const removeFromCart = async (id: string) => {
+    await axios.delete(`/cart/${id}`);
+    fetchCart();
   };
 
   return (
     <CartContext.Provider
       value={{
         cart,
+        fetchCart,
         addToCart,
-        removeFromCart,
         increaseQty,
         decreaseQty,
+        removeFromCart,
       }}
     >
       {children}
@@ -87,11 +104,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ✅ SAFE HOOK
 export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used inside CartProvider");
-  }
-  return context;
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error("Cart error");
+  return ctx;
 };

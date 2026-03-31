@@ -19,11 +19,17 @@ import Reviews from "../pages/Reviews";
 
 import AsignDelivery from "../pages/AsignDelivery";
 import DeliveryBoys from "../pages/DeliveryBoys";
+import Subscription from "../pages/Subscription";
+import VendorVerify from "@/pages/VendorVerify";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        
+        {/* Login OUTSIDE */}
+        <Route path="/vendor/verify" element={<VendorVerify />} />
+        <Route path="/vendor/login" element={<Navigate to="/vendor/verify" />} />
 
         {/* Vendor Layout */}
         <Route path="/vendor" element={<VendorLayout />}>
@@ -34,7 +40,7 @@ export default function AppRoutes() {
           {/* Dashboard */}
           <Route path="dashboard" element={<ShopDashboard />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="shop-create" element={<ShopCreate />} />
+          <Route path="create-shop" element={<ShopCreate />} />
 
           {/* Products */}
           <Route path="products/add" element={<AddProduct />} />
@@ -57,6 +63,8 @@ export default function AppRoutes() {
 
           {/* Reviews */}
           <Route path="reviews" element={<Reviews />} />
+          
+          <Route path="subscription" element={<Subscription />} />
 
         </Route>
 

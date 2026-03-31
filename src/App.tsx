@@ -12,6 +12,7 @@ import Register from "@/pages/auth/Register";
 import ProductDetails from "@/pages/ProductDetails";
 import Wishlist from "@/components/products/Wishlist";
 import SearchPage from "./pages/SearchPage";
+    
 
 function App() {
   return (

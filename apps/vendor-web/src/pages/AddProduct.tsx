@@ -405,15 +405,28 @@ onChange={handleImages}
 className="w-full border rounded-md px-3 py-2"
 />
 <div className="flex gap-3 mt-3 flex-wrap">
+  {images.map((img, index) => (
+    <div key={index} className="relative">
 
-{images.map((img,index)=>(
-<img
-key={index}
-src={URL.createObjectURL(img)}
-className="w-16 h-16 object-cover rounded-md border"
-/>
-))}
+      {/* IMAGE */}
+      <img
+        src={URL.createObjectURL(img)}
+        className="w-20 h-20 object-cover rounded-md border"
+      />
 
+      {/* ❌ REMOVE BUTTON */}
+      <button
+        onClick={() => {
+          const updated = images.filter((_, i) => i !== index);
+          setImages(updated);
+        }}
+        className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shadow"
+      >
+        ✕
+      </button>
+
+    </div>
+  ))}
 </div>
 </div>
 

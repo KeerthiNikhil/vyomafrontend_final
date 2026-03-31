@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Swal from "sweetalert2";
+import NotificationCard from "@/components/NotificationCard";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,10 +15,7 @@ const Register = () => {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [notification, setNotification] = useState<any>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,60 +25,53 @@ const Register = () => {
 
       await axios.post("/auth/register", form);
 
-      Swal.fire({
-        icon: "success",
-        title: "Registration Successful 🎉",
-        text: "You can now login",
+      setNotification({
+        title: "Registration Successful 🎉",  
+        message: "Your account has been created. Please login to continue.",
+        onAction: () => navigate("/login"),
       });
 
-      navigate("/login");
-
     } catch (error: any) {
-
-  if (error.response?.data?.message === "Phone already registered") {
-
-    Swal.fire({
-      icon: "info",
-      title: "Account already exists",
-      text: "Please login instead",
-    });
-
-    navigate("/login");
-
-  } else {
-
-    Swal.fire({
-      icon: "error",
-      title: "Registration Failed",
-      text: error.response?.data?.message || "Something went wrong",
-    });
-
-  }
-
-}finally {
+      if (error.response?.data?.message === "Phone already registered") {
+        setNotification({
+          title: "Account Exists ⚠️",
+          message: "Please login instead",
+          onAction: () => navigate("/login"),
+        });
+      } else {
+        setNotification({
+          title: "Registration Failed ❌",
+          message: "Try again",
+        });
+      }
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50">
+
+      {notification && (
+        <NotificationCard
+          {...notification}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
       <Card className="w-[400px] shadow-lg rounded-2xl">
         <CardContent className="p-6 space-y-5">
 
-          <div>
-            <h2 className="text-2xl font-bold">Create Account</h2>
-            <p className="text-sm text-muted-foreground">
-              Join Vyoma and start exploring
-            </p>
-          </div>
+          <h2 className="text-2xl font-bold">Create Account</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <Input
               name="name"
               placeholder="Full Name"
               value={form.name}
-              onChange={handleChange}
+              onChange={(e) =>
+                setForm({ ...form, name: e.target.value })
+              }
               required
             />
 
@@ -89,22 +79,16 @@ const Register = () => {
               name="phone"
               placeholder="Mobile Number"
               value={form.phone}
-              onChange={handleChange}
+              onChange={(e) =>
+                setForm({ ...form, phone: e.target.value })
+              }
               required
             />
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Registering..." : "Register"}
             </Button>
-
           </form>
-
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">
-              Login here
-            </Link>
-          </p>
 
         </CardContent>
       </Card>

@@ -15,6 +15,9 @@ import {
   LogOut,
   Menu,
 } from "lucide-react";
+import { IndianRupee } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "@/lib/axios";
 
 const VendorLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,7 +34,12 @@ const VendorLayout = () => {
   window.location.href = `http://localhost:5173?token=${token}`;
 };
 
-  useEffect(() => {
+   const handleVendorLogout = () => {
+    localStorage.removeItem("vendorToken");
+    window.location.href = "/vendor/verify";
+  };
+  
+   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
@@ -43,6 +51,27 @@ const VendorLayout = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  const navigate = useNavigate();
+
+useEffect(() => {
+  const checkVendor = async () => {
+    try {
+      const res = await axios.get("/auth/me");
+
+      // ❌ NOT vendor
+      if (!res.data.user.isVendor) {
+        navigate("/vendor/verify");
+      }
+
+    } catch (err) {
+      // ❌ NOT logged in
+      navigate("/");
+    }
+  };
+
+  checkVendor();
+}, []);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -77,7 +106,7 @@ const VendorLayout = () => {
 
             <SidebarLink name="Dashboard" path="/vendor/dashboard" icon={<LayoutDashboard size={18} />} />
             <SidebarLink name="Profile" path="/vendor/profile" icon={<User size={18} />} />
-            <SidebarLink name="Create Shop" path="/vendor/shop-create" icon={<Store size={18} />} />
+            <SidebarLink name="Create Shop" path="/vendor/create-shop" icon={<Store size={18} />} />
 
             <ExpandableMenu title="Products" icon={<Package size={18} />} isOpen={openProducts} setIsOpen={setOpenProducts}>
               <SidebarLink name="Add Product" path="/vendor/products/add" />
@@ -102,14 +131,22 @@ const VendorLayout = () => {
             </ExpandableMenu>
 
             <SidebarLink name="Reviews" path="/vendor/reviews" icon={<MessageSquare size={18} />} />
+            <SidebarLink 
+               name="Subscription" 
+              path="/vendor/subscription" 
+              icon={<IndianRupee size={18} />} 
+              />
           </div>
 
           {/* Logout */}
           <div className="p-4 border-t border-blue-800">
-            <button className="w-full flex items-center gap-2 bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-lg transition">
-              <LogOut size={16} />
-              Logout
-            </button>
+           <button
+  onClick={handleVendorLogout}
+  className="w-full flex items-center gap-2 bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-lg transition"
+>
+  <LogOut size={16} />
+  Logout
+</button>
           </div>
 
         </div>

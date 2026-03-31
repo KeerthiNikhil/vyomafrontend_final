@@ -18,7 +18,6 @@ const Cart = () => {
     0
   );
 
-  // EMPTY CART
   if (cart.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 text-center">
@@ -35,11 +34,11 @@ const Cart = () => {
   }
 
   return (
-    <section className="bg-gray-100 py-10">
+    <section className="bg-gray-100 py-10 min-h-screen">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* LEFT – CART ITEMS */}
-        <div className="lg:col-span-2 bg-white rounded-lg p-6">
+        {/* LEFT */}
+        <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
           <h2 className="text-2xl font-semibold mb-6">
             Shopping Cart
           </h2>
@@ -47,20 +46,18 @@ const Cart = () => {
           {cart.map((item) => (
             <div
               key={item.id}
-              className="flex gap-4 py-6 border-b-4 border-gray-200 last:border-b-0"
+              className="flex gap-5 py-6 border-b border-gray-200"
             >
-              {/* IMAGE (CLICKABLE) */}
+              {/* IMAGE */}
               <Link to={`/product/${item.id}`}>
                 <img
                   src={item.image}
-                  alt={item.name}
-                  className="w-28 h-28 object-contain  rounded cursor-pointer"
+                  className="w-28 h-28 object-contain bg-gray-50 rounded-lg p-2"
                 />
               </Link>
 
               {/* DETAILS */}
               <div className="flex-1">
-                {/* NAME (CLICKABLE) */}
                 <Link
                   to={`/product/${item.id}`}
                   className="font-medium text-lg hover:text-blue-600"
@@ -72,33 +69,30 @@ const Cart = () => {
                   In stock
                 </p>
 
-                {/* QUANTITY CONTROLS */}
+                {/* QTY */}
                 <div className="flex items-center gap-3 mt-4">
                   <button
                     onClick={() => decreaseQty(item.id)}
-                    className="p-1 border rounded hover:bg-gray-100"
+                    className="w-8 h-8 border rounded"
                   >
                     <Minus size={14} />
                   </button>
 
-                  <span className="px-3 font-medium">
-                    {item.quantity}
-                  </span>
+                  <span className="px-3">{item.quantity}</span>
 
                   <button
                     onClick={() => increaseQty(item.id)}
-                    className="p-1 border rounded hover:bg-gray-100"
+                    className="w-8 h-8 border rounded"
                   >
                     <Plus size={14} />
                   </button>
 
-                  {/* DELETE */}
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className="ml-6 flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                    className="ml-6 flex items-center gap-1 text-red-500"
                   >
                     <Trash2 size={14} />
-                    Delete
+                    Remove
                   </button>
                 </div>
               </div>
@@ -110,24 +104,19 @@ const Cart = () => {
             </div>
           ))}
 
-          {/* SUBTOTAL */}
           <div className="text-right mt-6 font-semibold text-lg">
             Subtotal ({cart.length} items): ₹{subtotal}
           </div>
         </div>
 
-        {/* RIGHT – SUMMARY */}
-        <div className="bg-white rounded-lg p-6 h-fit">
-          <p className="text-green-700 text-sm mb-3">
-            ✔ Your order qualifies for FREE Delivery
-          </p>
-
+        {/* RIGHT */}
+        <div className="bg-white rounded-xl p-6 shadow-sm h-fit sticky top-20">
           <div className="text-lg font-semibold mb-4">
             Subtotal ({cart.length} items): ₹{subtotal}
           </div>
 
           <Button
-            className="w-full rounded-full text-lg py-6 bg-yellow-300 hover:bg-yellow-400 text-black"
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black"
             onClick={() => navigate("/checkout")}
           >
             Proceed to Buy

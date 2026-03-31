@@ -55,14 +55,19 @@ const ProductDetails = () => {
 
   const images = product.images || [];
 
-  const handleAddToCart = () => {
-    addToCart({
-      id: product._id,
-      name: product.name,
-      price: product.finalPrice,
-      image: `http://localhost:8000${images?.[0]}`
-    });
-  };
+  const handleAddToCart = async () => {
+  try {
+    await addToCart({
+  id: product._id,
+  name: product.name,
+  price: product.finalPrice,
+  image: `http://localhost:8000${images?.[0]}`,
+  shop: product.shop, // ✅ ADD THIS
+});
+  } catch (err) {
+    console.log("Add to cart error", err);
+  }
+};
 
   const deliveryDate = new Date();
   deliveryDate.setDate(deliveryDate.getDate() + 3);
