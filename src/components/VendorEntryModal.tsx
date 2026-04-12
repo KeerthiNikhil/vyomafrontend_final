@@ -35,7 +35,7 @@ const VendorEntryModal = ({ open, onClose }: Props) => {
             className="w-full bg-blue-900 hover:bg-blue-800 text-white"
             onClick={() => {
               onClose();
-              navigate("/vendor/verify?type=login"); // ✅ OTP verify instead of login
+              window.location.href = "http://localhost:5174/vendor/verify"; // ✅ OTP verify instead of login
             }}
           >
             Continue as Vendor
@@ -49,7 +49,7 @@ const VendorEntryModal = ({ open, onClose }: Props) => {
             className="w-full"
             onClick={() => {
               onClose();
-              navigate("/vendor/verify?type=create"); // ✅ same flow (verify first)
+              window.location.href = "http://localhost:5174/vendor/verify"; // ✅ same flow (verify first)
             }}
           >
             Create New Shop

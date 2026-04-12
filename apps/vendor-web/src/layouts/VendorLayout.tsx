@@ -59,14 +59,14 @@ useEffect(() => {
     try {
       const res = await axios.get("/auth/me");
 
-      // ❌ NOT vendor
-      if (!res.data.user.isVendor) {
-        navigate("/vendor/verify");
+      // ✅ correct check
+      if (res.data.user.role !== "vendor") {
+        window.location.href = "/vendor/verify";
       }
 
     } catch (err) {
-      // ❌ NOT logged in
-      navigate("/");
+      // ✅ only redirect once safely
+      window.location.href = "/";
     }
   };
 
@@ -103,6 +103,12 @@ useEffect(() => {
 
           {/* Navigation */}
           <div className="flex-1 overflow-y-auto px-4 py-6 space-y-2 text-sm">
+            <button
+  onClick={goToUserApp}
+  className="w-full flex items-center gap-2 px-4 py-2 rounded-lg transition mt-2 bg-blue-500/20 hover:bg-blue-500/30 text-white"
+>
+  🏠 Switch to User App
+</button>
 
             <SidebarLink name="Dashboard" path="/vendor/dashboard" icon={<LayoutDashboard size={18} />} />
             <SidebarLink name="Profile" path="/vendor/profile" icon={<User size={18} />} />

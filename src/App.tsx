@@ -12,9 +12,24 @@ import Register from "@/pages/auth/Register";
 import ProductDetails from "@/pages/ProductDetails";
 import Wishlist from "@/components/products/Wishlist";
 import SearchPage from "./pages/SearchPage";
+import { useEffect } from "react";
+
     
 
 function App() {
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      localStorage.setItem("token", token);
+
+      // ✅ clean URL
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, []);
+
   return (
     <BrowserRouter>
 

@@ -20,7 +20,7 @@ const Login = () => {
   // SEND OTP
   const sendOtp = async () => {
     try {
-      await axios.post("/auth/send-otp", { phone, name });
+      await axios.post("/auth/send-otp", { phone, name,type: "user",});
 
       setNotification({
         title: "OTP Sent 📩",
@@ -45,6 +45,7 @@ const Login = () => {
       phone,
       otp,
       name,
+      type: "user",
     });
 
     const token = res.data.token;

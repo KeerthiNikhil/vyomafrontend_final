@@ -73,6 +73,12 @@ const Navbar = () => {
 
   };
 
+  const goToVendorApp = () => {
+  const token = localStorage.getItem("token");
+
+  window.location.href = `http://localhost:5174/vendor?token=${token}`;
+};
+
   return (
 
 <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -230,6 +236,12 @@ className="p-2 rounded-full"
 
 </div>
 
+)}
+
+{user?.role === "vendor" && (
+  <button onClick={goToVendorApp}>
+    🏪 Switch to Vendor
+  </button>
 )}
 
 

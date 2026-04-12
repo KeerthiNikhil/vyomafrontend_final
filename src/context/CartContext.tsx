@@ -48,8 +48,12 @@ export const CartProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
     fetchCart();
-  }, []);
+  }
+}, []);
 
   // ADD
   const addToCart = async (item: any) => {

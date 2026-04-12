@@ -3,32 +3,87 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { X, Trash2 } from "lucide-react";
 
-const EditCategory = () => {
-  const [categoryName, setCategoryName] = useState("Clothing");
+const categoryOptions = [
+  "Grocery",
+  "Electronics",
+  "Clothing",
+  "Personal Care",
+  "Household",
+];
 
-  const [subCategories, setSubCategories] = useState([
+// optional default subcategories
+const defaultSubCategories: Record<string, string[]> = {
+  Grocery: [
+    "Fruits & Vegetables",
+    "Dairy",
+    "Bakery",
+    "Beverages",
+    "Snacks",
+  ],
+  Electronics: ["Mobiles", "Accessories"],
+  Clothing: ["Men", "Women", "Kids"],
+  "Personal Care": ["Soap", "Shampoo", "Cream"],
+  Household: ["Detergent", "Cleaning"],
+};
+
+const EditCategory = () => {
+  const [categoryName, setCategoryName] = useState<string>("Clothing");
+  const [subCategories, setSubCategories] = useState<string[]>([
     "Men",
     "Women",
     "Kids",
   ]);
+  const [newSubCategory, setNewSubCategory] = useState<string>("");
 
-  const [newSubCategory, setNewSubCategory] = useState("");
+  // ✅ CHANGE CATEGORY
+  const handleCategoryChange = (value: string) => {
+    setCategoryName(value);
+    setSubCategories(defaultSubCategories[value] || []);
+  };
 
+  // ✅ ADD SUBCATEGORY
   const handleAddSubCategory = () => {
-    if (!newSubCategory.trim()) return;
-    setSubCategories([...subCategories, newSubCategory]);
+    const trimmed = newSubCategory.trim();
+    if (!trimmed) return;
+
+    if (subCategories.some(s => s.toLowerCase() === trimmed.toLowerCase())) {
+      alert("Already exists");
+      return;
+    }
+
+    setSubCategories((prev) => [...prev, trimmed]);
     setNewSubCategory("");
   };
 
+  // ✅ REMOVE
   const handleRemoveSubCategory = (index: number) => {
-    setSubCategories(subCategories.filter((_, i) => i !== index));
+    setSubCategories((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleUpdate = () => {
-    console.log("Updated:", categoryName, subCategories);
-  };
+  // ✅ UPDATE
+ const handleUpdate = () => {
+  if (!categoryName.trim()) {
+    alert("Category name required");
+    return;
+  }
 
+  if (subCategories.length === 0) {
+    alert("Add at least one subcategory");
+    return;
+  }
+
+  console.log("Updated:", {
+    categoryName,
+    subCategories,
+  });
+
+  alert("Category updated successfully ✅");
+};
+
+  // ✅ DELETE
   const handleDeleteCategory = () => {
+    if (!window.confirm("Delete this category?")) return;
+
     console.log("Deleted:", categoryName);
   };
 
@@ -39,51 +94,58 @@ const EditCategory = () => {
       <div>
         <h1 className="text-3xl font-bold">Edit Category</h1>
         <p className="text-gray-500 mt-1">
-          Update category name and manage subcategories
+          Update category and subcategories
         </p>
       </div>
 
-      {/* CATEGORY NAME */}
+      {/* CATEGORY SELECT */}
       <div className="bg-white shadow rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold text-lg">Category Name</h2>
+        <h2 className="font-semibold text-lg">Category</h2>
 
-        <Input
+        <select
           value={categoryName}
-          onChange={(e) => setCategoryName(e.target.value)}
-          placeholder="Enter Category Name"
-        />
+          onChange={(e) => handleCategoryChange(e.target.value)}
+          className="w-full border rounded-md p-2"
+        >
+          {categoryOptions.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* SUBCATEGORY SECTION */}
+      {/* SUBCATEGORY */}
       <div className="bg-white shadow rounded-xl p-6 space-y-6">
         <h2 className="font-semibold text-lg">Sub Categories</h2>
 
         <div className="flex gap-3">
           <Input
-            placeholder="Add new subcategory"
+            placeholder="Add subcategory"
             value={newSubCategory}
             onChange={(e) => setNewSubCategory(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAddSubCategory();
+            }}
           />
 
           <Button
             onClick={handleAddSubCategory}
-            className="bg-blue-900 hover:bg-blue-800 text-sm px-5"
+            disabled={!newSubCategory.trim()}
+            className="bg-blue-900 hover:bg-blue-800 px-5"
           >
             Add
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-3 pt-2">
+        <div className="flex flex-wrap gap-3">
           {subCategories.map((sub, index) => (
             <div
               key={index}
               className="flex items-center gap-2 bg-blue-50 text-blue-800 px-4 py-2 rounded-full text-sm"
             >
               {sub}
-              <button
-                onClick={() => handleRemoveSubCategory(index)}
-                className="hover:text-red-500"
-              >
+              <button onClick={() => handleRemoveSubCategory(index)}>
                 <X size={14} />
               </button>
             </div>
@@ -91,16 +153,15 @@ const EditCategory = () => {
         </div>
       </div>
 
-      {/* ACTION BUTTONS */}
+      {/* ACTIONS */}
       <div className="flex justify-between">
-
         <Button
           variant="outline"
           onClick={handleDeleteCategory}
-          className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
+          className="text-red-600 border-red-300"
         >
           <Trash2 size={16} />
-          Delete Category
+          Delete
         </Button>
 
         <Button
@@ -109,7 +170,6 @@ const EditCategory = () => {
         >
           Update
         </Button>
-
       </div>
 
     </div>

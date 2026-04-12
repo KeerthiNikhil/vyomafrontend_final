@@ -34,27 +34,44 @@ const ShopCreate = () => {
     }
   }, [businessType]);
 
-  const handleFetchLocation = () => {
-    if (!navigator.geolocation) {
-      toast.error("Geolocation not supported");
+  const handleFetchLocation = async () => {
+  if (!address) {
+    toast.error("Enter address first");
+    return;
+  }
+
+  try {
+    setIsFetching(true);
+
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+        address + ", India"
+      )}&format=json&limit=1`,
+      {
+        headers: {
+          "User-Agent": "vyoma-app", // 🔥 REQUIRED
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!data || data.length === 0) {
+      toast.error("Address not found ❌");
       return;
     }
 
-    setIsFetching(true);
+    setLatitude(data[0].lat);
+    setLongitude(data[0].lon);
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude.toString());
-        setLongitude(position.coords.longitude.toString());
-        setIsFetching(false);
-        toast.success("Location detected successfully ✅");
-      },
-      () => {
-        toast.error("Unable to retrieve location");
-        setIsFetching(false);
-      }
-    );
-  };
+    toast.success("Location fetched successfully ✅");
+
+  } catch (err) {
+    toast.error("Failed to fetch location ❌");
+  } finally {
+    setIsFetching(false);
+  }
+};
 
   const handleSubmit = async () => {
     if (!shopImage) {

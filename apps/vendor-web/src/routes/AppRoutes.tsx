@@ -23,6 +23,7 @@ import Subscription from "../pages/Subscription";
 import VendorVerify from "@/pages/VendorVerify";
 
 export default function AppRoutes() {
+
   return (
     <BrowserRouter>
       <Routes>
