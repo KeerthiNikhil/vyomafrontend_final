@@ -34,43 +34,50 @@ const ShopCreate = () => {
     }
   }, [businessType]);
 
-  const handleFetchLocation = async () => {
-  if (!address) {
-    toast.error("Enter address first");
+  const handleFetchLocation = () => {
+  if (!navigator.geolocation) {
+    toast.error("Geolocation not supported");
     return;
   }
 
-  try {
-    setIsFetching(true);
+  setIsFetching(true);
 
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-        address + ", India"
-      )}&format=json&limit=1`,
-      {
-        headers: {
-          "User-Agent": "vyoma-app", // 🔥 REQUIRED
-        },
-      }
-    );
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
 
-    const data = await res.json();
+      setLatitude(lat.toString());
+      setLongitude(lng.toString());
 
-    if (!data || data.length === 0) {
-      toast.error("Address not found ❌");
-      return;
+      // 🔥 OPTIONAL: Auto-fill address using reverse geocoding
+      fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+        {
+          headers: {
+            "User-Agent": "vyoma-app",
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.display_name) {
+            setAddress(data.display_name); // ✅ auto address (readonly)
+          }
+        });
+
+      toast.success("Live location detected ✅");
+      setIsFetching(false);
+    },
+    (error) => {
+      toast.error("Please allow location access ❌");
+      setIsFetching(false);
+    },
+    {
+      enableHighAccuracy: true, // 🔥 important
+      timeout: 10000,
     }
-
-    setLatitude(data[0].lat);
-    setLongitude(data[0].lon);
-
-    toast.success("Location fetched successfully ✅");
-
-  } catch (err) {
-    toast.error("Failed to fetch location ❌");
-  } finally {
-    setIsFetching(false);
-  }
+  );
 };
 
   const handleSubmit = async () => {

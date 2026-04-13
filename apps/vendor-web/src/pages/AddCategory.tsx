@@ -1,15 +1,8 @@
 import { useState } from "react";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-
-const categoryOptions = [
-  "Grocery",
-  "Electronics",
-  "Clothing",
-  "Personal Care",
-  "Household Items",
-];
 
 const AddCategory = () => {
   const [categoryName, setCategoryName] = useState("");
@@ -35,29 +28,40 @@ const AddCategory = () => {
     setSubCategories((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // ✅ SUBMIT
-  const handleSubmit = () => {
-  if (!categoryName.trim()) {
-    alert("Please select category");
-    return;
-  }
+  // ✅ SUBMIT (🔥 FIXED)
+  const handleSubmit = async () => {
+    if (!categoryName.trim()) {
+      alert("Enter category name");
+      return;
+    }
 
-  if (subCategories.length === 0) {
-    alert("Add at least one subcategory");
-    return;
-  }
+    if (subCategories.length === 0) {
+      alert("Add at least one subcategory");
+      return;
+    }
 
-  console.log({
-    categoryName,
-    subCategories,
-  });
+    try {
+      await axios.post(
+        "http://localhost:8000/api/v1/categories",
+        {
+          name: categoryName,
+          subCategories,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-  alert("Category created successfully ✅");
+      alert("Category created ✅");
 
-  // reset form
-  setCategoryName("");
-  setSubCategories([]);
-};
+      setCategoryName("");
+      setSubCategories([]);
+    } catch {
+      alert("Failed ❌");
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-10">
@@ -74,19 +78,11 @@ const AddCategory = () => {
       <div className="bg-white shadow rounded-xl p-6 space-y-4">
         <h2 className="font-semibold text-lg">Category</h2>
 
-        {/* Dropdown (10 options) */}
-        <select
+        <Input
+          placeholder="Enter Category Name"
           value={categoryName}
           onChange={(e) => setCategoryName(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2"
-        >
-          <option value="">Select Category</option>
-          {categoryOptions.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       {/* SUBCATEGORY */}

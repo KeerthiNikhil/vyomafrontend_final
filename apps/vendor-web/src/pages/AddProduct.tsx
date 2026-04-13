@@ -37,6 +37,7 @@ const AddProduct = () => {
   const [author,setAuthor] = useState("");
   const [ageGroup,setAgeGroup] = useState("");
   const [material,setMaterial] = useState("");
+  const [categories, setCategories] = useState<any[]>([]);
 
   /* ================= GET SHOPS ================= */
 
@@ -66,7 +67,28 @@ const AddProduct = () => {
   },[]);
 
 
+
   /* ================= HANDLE IMAGE ================= */
+useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/api/v1/categories/my",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setCategories(res.data.data);
+    } catch {
+      toast.error("Failed to load categories");
+    }
+  };
+
+  fetchCategories();
+}, []);
 
   const handleImages = (e:any)=>{
 
@@ -85,6 +107,8 @@ const AddProduct = () => {
 
 };
 
+const [subCategories, setSubCategories] = useState<string[]>([]);
+const [selectedSubCategory, setSelectedSubCategory] = useState("");
   /* ================= SINGLE PRODUCT ================= */
 
   const handleSubmit = async()=>{
@@ -103,6 +127,7 @@ const AddProduct = () => {
       formData.append("shop",shopId);
       formData.append("name",name);
       formData.append("category",category);
+      formData.append("subCategory", selectedSubCategory);
       formData.append("price",price);
       formData.append("stock",stock);
       formData.append("description",description);
@@ -317,18 +342,40 @@ onChange={(e)=>setName(e.target.value)}
 
 
 <select
-value={category}
-onChange={(e)=>setCategory(e.target.value)}
-className="w-full border rounded-md px-3 py-2"
+  value={category}
+  onChange={(e) => {
+    const selected = categories.find(
+      (cat) => cat.name === e.target.value
+    );
+
+    setCategory(e.target.value);
+    setSubCategories(selected?.subCategories || []);
+    setSelectedSubCategory("");
+  }}
+  className="w-full border rounded-md px-3 py-2"
 >
+  <option value="">Select Category</option>
 
-<option value="">Select Category</option>
-<option value="food">Food</option>
-<option value="clothing">Clothing</option>
-<option value="electronics">Electronics</option>
-<option value="books">Books</option>
-<option value="toys">Toys</option>
+  {categories.map((cat) => (
+    <option key={cat._id} value={cat.name}>
+      {cat.name}
+    </option>
+  ))}
+</select>
 
+<select
+  value={selectedSubCategory}
+  onChange={(e) => setSelectedSubCategory(e.target.value)}
+  className="w-full border rounded-md px-3 py-2"
+  disabled={!category}
+>
+  <option value="">Select Subcategory</option>
+
+  {subCategories.map((sub, index) => (
+    <option key={index} value={sub}>
+      {sub}
+    </option>
+  ))}
 </select>
 
 

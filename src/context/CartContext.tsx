@@ -8,7 +8,6 @@ import axios from "@/lib/axios";
 import { toast } from "sonner";
 
 
-
 type CartItem = {
   id: string; // ✅ USE id everywhere
   name: string;
@@ -35,7 +34,7 @@ export const CartProvider = ({ children }: any) => {
   // ✅ FETCH + NORMALIZE DATA
   const fetchCart = async () => {
     const res = await axios.get("/cart");
-
+    
     const formatted = res.data.data.map((item: any) => ({
       id: item.productId, // 🔥 CONVERT HERE
       name: item.name,
@@ -64,14 +63,20 @@ export const CartProvider = ({ children }: any) => {
       price: item.price,
       image: item.image,
       shop: item.shop,
+      quantity: item.quantity || 1, 
     });
 
-    toast.success("Added to cart 🛒");
-
+    toast.success("Added to cart 🛒", {
+  duration: 1500,
+});
     fetchCart();
-  } catch (err) {
+  } catch (err: any) {
     console.error("❌ Add to cart failed", err);
-  } 
+
+    toast.error(
+      err?.response?.data?.message || "Add to cart failed ❌"
+    ); // ✅ SHOW ERROR
+  }
 };
 
   // INC

@@ -1,21 +1,27 @@
 import React from "react";
+import { useCart } from "@/context/CartContext";
 
 interface Props {
   id: string;
   name: string;
   price: number;
   image: string;
+  shop?: string;
   weight?: string;
   originalPrice?: number;
 }
 
 const ProductCard: React.FC<Props> = ({
+  id,
   name,
   price,
   image,
+  shop,
   weight,
   originalPrice,
 }) => {
+
+  const { addToCart } = useCart();
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 w-full flex flex-col">
@@ -63,6 +69,16 @@ const ProductCard: React.FC<Props> = ({
       {/* Add to Cart Button */}
       <div className="mt-3">
         <button
+          onClick={() =>
+            addToCart({
+              id,
+              name,
+              price,
+              image,
+              shop,
+              quantity: 1,
+            })
+          }
           className="w-full bg-blue-600 text-white text-sm py-2 rounded-md hover:bg-blue-700"
         >
           Add to Cart

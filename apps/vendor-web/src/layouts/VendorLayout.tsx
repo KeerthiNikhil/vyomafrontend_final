@@ -34,10 +34,12 @@ const VendorLayout = () => {
   window.location.href = `http://localhost:5173?token=${token}`;
 };
 
-   const handleVendorLogout = () => {
-    localStorage.removeItem("vendorToken");
-    window.location.href = "/vendor/verify";
-  };
+  const handleVendorLogout = () => {
+  localStorage.removeItem("vendorToken");
+
+  // redirect to user app with flag
+  window.location.href = "http://localhost:5173/?showVendorModal=true";
+};
   
    useEffect(() => {
     const checkMobile = () => {

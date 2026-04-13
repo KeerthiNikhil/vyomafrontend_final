@@ -10,6 +10,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 const monthlyData = [
   { month: "Jan", orders: 12, revenue: 4000 },
   { month: "Feb", orders: 18, revenue: 6200 },
@@ -19,6 +22,39 @@ const monthlyData = [
 ];
 
 const ShopDashboard = () => {
+  const [analytics, setAnalytics] = useState<any>(null);
+
+  useEffect(() => {
+  const fetchAnalytics = async () => {
+    const res = await axios.get(
+      "http://localhost:8000/api/v1/products/analytics",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    setAnalytics(res.data.data);
+  };
+
+  fetchAnalytics();
+}, []);
+
+const categoryData = analytics
+  ? Object.entries(analytics.categoryStats).map(([key, value]) => ({
+      name: key,
+      value,
+    }))
+  : [];
+
+const revenueData = analytics
+  ? Object.entries(analytics.revenueStats).map(([key, value]) => ({
+      name: key,
+      value,
+    }))
+  : [];
+
   return (
     <div className="space-y-10">
 
@@ -69,10 +105,46 @@ const ShopDashboard = () => {
         </div>
 
       </div>
+      <div className="grid md:grid-cols-2 gap-8">
+
+  {/* Category Distribution */}
+  <div className="bg-white p-6 rounded-xl shadow">
+    <h2 className="font-semibold mb-4">Products by Category</h2>
+
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={categoryData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="value" />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+
+  {/* Revenue by Category */}
+  <div className="bg-white p-6 rounded-xl shadow">
+    <h2 className="font-semibold mb-4">Revenue by Category</h2>
+
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={revenueData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Line type="monotone" dataKey="value" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+
+</div>
 
     </div>
+    
   );
 };
+
+
 
 const CardItem = ({ title, value }: { title: string; value: string }) => (
   <div className="bg-white p-6 rounded-xl shadow">

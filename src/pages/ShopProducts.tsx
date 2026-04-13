@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useCart } from "@/context/CartContext";
 import axios from "axios";
 
 const ShopProducts = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -147,9 +149,23 @@ src={
                 View
               </button>
 
-              <button className="flex-1 bg-blue-600 text-white text-xs py-1.5 rounded hover:bg-blue-700">
-                Add to Cart
-              </button>
+              <button
+  onClick={() =>
+    addToCart({
+      id: product._id,
+      name: product.name,
+      price: product.finalPrice,
+      image: product.images?.[0]
+        ? `http://localhost:8000${product.images[0]}`
+        : "/placeholder.png",
+      shop: id, // ✅ VERY IMPORTANT
+      quantity: 1,
+    })
+  }
+  className="flex-1 bg-blue-600 text-white text-xs py-1.5 rounded hover:bg-blue-700"
+>
+  Add to Cart
+</button>
 
             </div>
 

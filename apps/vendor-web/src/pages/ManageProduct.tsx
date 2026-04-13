@@ -14,6 +14,8 @@ const ManageProduct = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [subCategory, setSubCategory] = useState("all");
+const [subCategories, setSubCategories] = useState<string[]>([]);
   const [previewImage, setPreviewImage] = useState("");
   const [editProduct, setEditProduct] = useState<any>(null);
 
@@ -40,6 +42,34 @@ const ManageProduct = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/api/v1/categories/my",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setCategories(res.data.data);
+    } catch {
+      toast.error("Failed to load categories");
+    }
+  };
+
+  fetchCategories();
+}, []);
+
+useEffect(() => {
+  const uniqueSubs = [
+    ...new Set(products.map((p) => p.subCategory).filter(Boolean)),
+  ];
+  setSubCategories(uniqueSubs);
+}, [products]);
+
   /* DELETE */
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this product?")) return;
@@ -59,17 +89,20 @@ const ManageProduct = () => {
 
   /* FILTER */
   const filtered = products.filter((p) => {
-    const matchSearch =
-      p.name?.toLowerCase().includes(search.toLowerCase());
+  const matchSearch =
+    p.name?.toLowerCase().includes(search.toLowerCase());
 
-    const matchCategory =
-      category === "all" ||
-      p.category?.name === category ||
-      p.category === category;
+  const matchCategory =
+    category === "all" ||
+    p.category === category ||
+    p.category?.name === category;
 
-    return matchSearch && matchCategory;
-  });
+  const matchSubCategory =
+    subCategory === "all" ||
+    p.subCategory === subCategory;
 
+  return matchSearch && matchCategory && matchSubCategory;
+});
   /* GROUP BY SHOP */
   const groupedProducts = filtered.reduce((acc: any, product: any) => {
     const shopName = product.shop?.shopName || "Other";
@@ -83,6 +116,7 @@ const ManageProduct = () => {
   const openEditModal = (product: any) => {
     setEditProduct(product);
   };
+  const [categories, setCategories] = useState<any[]>([]);
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -106,11 +140,35 @@ const ManageProduct = () => {
             onChange={(e)=>setCategory(e.target.value)}
           >
             <option value="all">All</option>
-            <option value="grocery">Grocery</option>
-            <option value="electronics">Electronics</option>
-            <option value="clothing">Clothing</option>
-            <option value="beauty">Beauty</option>
+            {categories.map((cat) => (
+  <option key={cat._id} value={cat.name}>
+    {cat.name}
+  </option>
+))}
+
+     <option value="all">All</option>
+
+{categories.map((cat) => (
+  <option key={cat._id} value={cat.name}>
+    {cat.name}
+  </option>
+))}
+
           </select>
+
+          <select
+  value={subCategory}
+  onChange={(e) => setSubCategory(e.target.value)}
+  className="border rounded px-3 py-2"
+>
+  <option value="all">All Subcategories</option>
+
+  {subCategories.map((sub, index) => (
+    <option key={index} value={sub}>
+      {sub}
+    </option>
+  ))}
+</select>
 
           <Button
             className="bg-blue-600 text-white"
@@ -164,6 +222,9 @@ const ManageProduct = () => {
                 <h2 className="text-sm font-medium line-clamp-1">
                   {product.name}
                 </h2>
+                <p className="text-xs text-gray-500">
+  {product.category} → {product.subCategory}
+</p>
 
                 {/* PRICE + STOCK */}
                 <div className="flex justify-between text-xs">

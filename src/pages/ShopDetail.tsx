@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { MapPin, Star } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
+import { useCart } from "@/context/CartContext";
 
 /* ---------------- SHOP + PRODUCT DATA ---------------- */
 
@@ -109,6 +110,7 @@ const shops = [
 
 const ShopDetail = () => {
   const { id } = useParams();
+  const { addToCart } = useCart();
 
   const shop = shops.find((s) => s.shopId === id);
 
@@ -196,6 +198,7 @@ const ShopDetail = () => {
               name={product.name}
               price={product.price}
               image={product.image}
+              shop={shop.shopId}
             />
           ))}
 

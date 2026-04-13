@@ -58,12 +58,13 @@ const ProductDetails = () => {
   const handleAddToCart = async () => {
   try {
     await addToCart({
-  id: product._id,
-  name: product.name,
-  price: product.finalPrice,
-  image: `http://localhost:8000${images?.[0]}`,
-  shop: product.shop, // ✅ ADD THIS
-});
+      id: product._id,
+      name: product.name,
+      price: product.finalPrice,
+      image: `http://localhost:8000${images?.[0]}`,
+      shop: product.shop,
+      quantity: qty, // ✅ ADD THIS
+    });
   } catch (err) {
     console.log("Add to cart error", err);
   }
