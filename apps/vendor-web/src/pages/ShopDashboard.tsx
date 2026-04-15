@@ -23,19 +23,31 @@ const monthlyData = [
 
 const ShopDashboard = () => {
   const [analytics, setAnalytics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
   const fetchAnalytics = async () => {
-    const res = await axios.get(
-      "http://localhost:8000/api/v1/products/analytics",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/api/v1/products/analytics",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-    setAnalytics(res.data.data);
+      setAnalytics(res.data.data);
+
+    } catch (err) {
+      console.log("Analytics error 👉", err);
+
+      // ✅ prevent crash
+      setAnalytics(null);
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   fetchAnalytics();

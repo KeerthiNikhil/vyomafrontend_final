@@ -22,6 +22,11 @@ import DeliveryBoys from "../pages/DeliveryBoys";
 import Subscription from "../pages/Subscription";
 import VendorVerify from "@/pages/VendorVerify";
 
+const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+
+const isVendor = token && role === "vendor";
+
 export default function AppRoutes() {
 
   return (
@@ -33,7 +38,12 @@ export default function AppRoutes() {
         <Route path="/vendor/login" element={<Navigate to="/vendor/verify" />} />
 
         {/* Vendor Layout */}
-        <Route path="/vendor" element={<VendorLayout />}>
+        <Route
+  path="/vendor"
+  element={
+    isVendor ? <VendorLayout /> : <Navigate to="/" />
+  }
+>
 
           {/* Default */}
           <Route index element={<ShopDashboard />} />

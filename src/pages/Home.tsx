@@ -15,7 +15,6 @@ import { toast } from "sonner";
 import VendorEntryModal from "@/components/VendorEntryModal";
 
 const Home = () => {
-const [showNotification, setShowNotification] = useState(true);
 const [showWarning, setShowWarning] = useState(false);
 const [showEntry, setShowEntry] = useState(false);
 
@@ -27,9 +26,6 @@ const handleAgree = () => {
 
   return (
     <>
-    {showNotification && (
-        <NotificationCard onClose={() => setShowNotification(false)} />
-      )}
       <div className="p-4 text-right">
         <button
           onClick={() => setShowWarning(true)}

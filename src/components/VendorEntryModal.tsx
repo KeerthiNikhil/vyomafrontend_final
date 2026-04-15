@@ -31,30 +31,29 @@ const VendorEntryModal = ({ open, onClose }: Props) => {
         <div className="space-y-4">
 
           {/* ✅ EXISTING VENDOR */}
-          <Button
-            className="w-full bg-blue-900 hover:bg-blue-800 text-white"
-            onClick={() => {
-              onClose();
-              window.location.href = "http://localhost:5174/vendor/verify"; // ✅ OTP verify instead of login
-            }}
-          >
-            Continue as Vendor
-          </Button>
+<Button
+  className="w-full bg-blue-900 hover:bg-blue-800 text-white"
+  onClick={() => {
+    onClose();
+    window.location.href = "http://localhost:5174/vendor/verify";
+  }}
+>
+  Continue as Vendor
+</Button>
 
-          <div className="text-center text-gray-400 text-sm">OR</div>
+<div className="text-center text-gray-400 text-sm">OR</div>
 
-          {/* ✅ NEW VENDOR */}
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              onClose();
-              window.location.href = "http://localhost:5174/vendor/verify"; // ✅ same flow (verify first)
-            }}
-          >
-            Create New Shop
-          </Button>
-
+{/* ✅ NEW VENDOR */}
+<Button
+  variant="outline"
+  className="w-full"
+  onClick={() => {
+    onClose();
+    window.location.href = "http://localhost:5174/vendor/verify?redirect=create-shop";
+  }}
+>
+  Create New Shop
+</Button>
         </div>
       </DialogContent>
     </Dialog>

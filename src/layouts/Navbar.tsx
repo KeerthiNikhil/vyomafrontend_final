@@ -47,7 +47,7 @@ const Navbar = () => {
       });
     }
 
-  }, []);
+  }, [window.location.pathname]);
 
   /* Logout */
 

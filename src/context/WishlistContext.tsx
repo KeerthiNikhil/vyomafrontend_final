@@ -1,70 +1,60 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from "@/lib/axios";
 
-type WishlistItem = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-};
-
-type WishlistContextType = {
-  wishlist: WishlistItem[];
-  addToWishlist: (item: WishlistItem) => void;
-  removeFromWishlist: (id: number) => void;
-  isInWishlist: (id: number) => boolean;
-};
-
-const WishlistContext = createContext<WishlistContextType | undefined>(
-  undefined
-);
+const WishlistContext = createContext<any>(null);
 
 export const WishlistProvider = ({ children }: any) => {
-  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [wishlist, setWishlist] = useState<any[]>([]);
 
-  // Load from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("wishlist");
-    if (stored) {
-      setWishlist(JSON.parse(stored));
+  // 🔥 FETCH
+  const fetchWishlist = async () => {
+    try {
+      const res = await axios.get("/wishlist");
+      setWishlist(res.data.data || []);
+    } catch (err) {
+      console.log("Wishlist fetch error", err);
     }
+  };
+
+  useEffect(() => {
+    fetchWishlist();
   }, []);
 
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
+  // ➕ ADD
+  // ➕ ADD (instant UI)
+const addToWishlist = async ({ id }: { id: string }) => {
+  setWishlist((prev) => [...prev, { _id: id }]); // instant UI
 
-  const addToWishlist = (item: WishlistItem) => {
-    if (!wishlist.find((p) => p.id === item.id)) {
-      setWishlist([...wishlist, item]);
-    }
-  };
+  try {
+    await axios.post("/wishlist", { productId: id });
+  } catch (err) {
+    fetchWishlist(); // rollback
+  }
+};
 
-  const removeFromWishlist = (id: number) => {
-    setWishlist(wishlist.filter((item) => item.id !== id));
-  };
+// ❌ REMOVE (instant UI)
+const removeFromWishlist = async (id: string) => {
+  setWishlist((prev) => prev.filter((item) => item._id !== id));
 
-  const isInWishlist = (id: number) => {
-    return wishlist.some((item) => item.id === id);
+  try {
+    await axios.delete(`/wishlist/${id}`);
+  } catch (err) {
+    fetchWishlist(); // rollback
+  }
+};
+
+  // ❤️ CHECK
+  const isInWishlist = (id: string) => {
+    return wishlist.some((item) => item._id === id);
   };
 
   return (
     <WishlistContext.Provider
-      value={{
-        wishlist,
-        addToWishlist,
-        removeFromWishlist,
-        isInWishlist,
-      }}
+      value={{ wishlist, addToWishlist, removeFromWishlist, isInWishlist }}
     >
       {children}
     </WishlistContext.Provider>
   );
 };
 
-export const useWishlist = () => {
-  const context = useContext(WishlistContext);
-  if (!context)
-    throw new Error("useWishlist must be used inside WishlistProvider");
-  return context;
-};
+export const useWishlist = () => useContext(WishlistContext);

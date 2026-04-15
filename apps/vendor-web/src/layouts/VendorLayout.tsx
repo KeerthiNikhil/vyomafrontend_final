@@ -34,12 +34,19 @@ const VendorLayout = () => {
   window.location.href = `http://localhost:5173?token=${token}`;
 };
 
+const handleSidebarClose = () => {
+  if (isMobile) {
+    setSidebarOpen(false);
+  }
+};
+
   const handleVendorLogout = () => {
   localStorage.removeItem("vendorToken");
 
   // redirect to user app with flag
   window.location.href = "http://localhost:5173/?showVendorModal=true";
 };
+
   
    useEffect(() => {
     const checkMobile = () => {
@@ -106,43 +113,56 @@ useEffect(() => {
           {/* Navigation */}
           <div className="flex-1 overflow-y-auto px-4 py-6 space-y-2 text-sm">
             <button
-  onClick={goToUserApp}
+  onClick={() => {
+  handleSidebarClose();
+  goToUserApp();
+}}
   className="w-full flex items-center gap-2 px-4 py-2 rounded-lg transition mt-2 bg-blue-500/20 hover:bg-blue-500/30 text-white"
 >
   🏠 Switch to User App
 </button>
 
-            <SidebarLink name="Dashboard" path="/vendor/dashboard" icon={<LayoutDashboard size={18} />} />
-            <SidebarLink name="Profile" path="/vendor/profile" icon={<User size={18} />} />
-            <SidebarLink name="Create Shop" path="/vendor/create-shop" icon={<Store size={18} />} />
+          <SidebarLink 
+  name="Dashboard" 
+  path="/vendor/dashboard" 
+  icon={<LayoutDashboard size={18} />} 
+  onClick={handleSidebarClose}
+/>
+            <SidebarLink 
+  name="Profile" 
+  path="/vendor/profile" 
+  icon={<User size={18} />} 
+  onClick={handleSidebarClose}
+/>
+            <SidebarLink name="Create Shop" path="/vendor/create-shop" icon={<Store size={18} onClick={handleSidebarClose} />} />
 
             <ExpandableMenu title="Products" icon={<Package size={18} />} isOpen={openProducts} setIsOpen={setOpenProducts}>
-              <SidebarLink name="Add Product" path="/vendor/products/add" />
-              <SidebarLink name="Manage Product" path="/vendor/products/manage" />
+              <SidebarLink name="Add Product" path="/vendor/products/add"  onClick={handleSidebarClose}/>
+              <SidebarLink name="Manage Product" path="/vendor/products/manage" onClick={handleSidebarClose} />
             </ExpandableMenu>
 
             <ExpandableMenu title="Category" icon={<Layers size={18} />} isOpen={openCategories} setIsOpen={setOpenCategories}>
-              <SidebarLink name="Add Category" path="/vendor/category/add" />
-              <SidebarLink name="Edit Category" path="/vendor/category/edit" />
+              <SidebarLink name="Add Category" path="/vendor/category/add" onClick={handleSidebarClose}/>
+              <SidebarLink name="Edit Category" path="/vendor/category/edit" onClick={handleSidebarClose} />
             </ExpandableMenu>
 
             <ExpandableMenu title="Orders" icon={<ClipboardList size={18} />} isOpen={openOrders} setIsOpen={setOpenOrders}>
-              <SidebarLink name="Pending Orders" path="/vendor/orders/pending" />
-              <SidebarLink name="Delivered Orders" path="/vendor/orders/delivered" />
+              <SidebarLink name="Pending Orders" path="/vendor/orders/pending" onClick={handleSidebarClose} />
+              <SidebarLink name="Delivered Orders" path="/vendor/orders/delivered" onClick={handleSidebarClose} />
             </ExpandableMenu>
 
-            <SidebarLink name="Payments" path="/vendor/payments" icon={<CreditCard size={18} />} />
+            <SidebarLink name="Payments" path="/vendor/payments" icon={<CreditCard size={18} onClick={handleSidebarClose} />} />
 
             <ExpandableMenu title="Delivery" icon={<Truck size={18} />} isOpen={openDelivery} setIsOpen={setOpenDelivery}>
-              <SidebarLink name="Delivery Boys" path="/vendor/delivery/boys" />
-              <SidebarLink name="Assign Delivery" path="/vendor/delivery/assign" />
+              <SidebarLink name="Delivery Boys" path="/vendor/delivery/boys" onClick={handleSidebarClose} />
+              <SidebarLink name="Assign Delivery" path="/vendor/delivery/assign" onClick={handleSidebarClose} />
             </ExpandableMenu>
 
-            <SidebarLink name="Reviews" path="/vendor/reviews" icon={<MessageSquare size={18} />} />
+            <SidebarLink name="Reviews" path="/vendor/reviews" icon={<MessageSquare size={18} onClick={handleSidebarClose} />} />
             <SidebarLink 
                name="Subscription" 
               path="/vendor/subscription" 
-              icon={<IndianRupee size={18} />} 
+              icon={<IndianRupee size={18}  onClick={handleSidebarClose} />} 
               />
           </div>
 
@@ -192,8 +212,8 @@ useEffect(() => {
 export default VendorLayout;
 
 /* Sidebar Link */
-const SidebarLink = ({ name, path, icon }: any) => (
-  <NavLink to={path}>
+const SidebarLink = ({ name, path, icon, onClick }: any) => (
+  <NavLink to={path} onClick={onClick}>
     {({ isActive }) => (
       <div
         className={`flex items-center gap-3 px-4 py-2 rounded-lg transition cursor-pointer ${

@@ -1,4 +1,5 @@
 import { Bell } from "lucide-react";
+import { createPortal } from "react-dom";
 
 const NotificationCard = ({
   title,
@@ -8,7 +9,7 @@ const NotificationCard = ({
   type,
 }: any) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30">
 
       <div className="bg-[#e6d6b3] p-12 rounded-[45px] shadow-inner">
         <div className="relative w-[420px]">
