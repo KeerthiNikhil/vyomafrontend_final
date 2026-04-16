@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { MapPin } from "lucide-react";
 import { toast } from "sonner";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 const ShopCreate = () => {
   const [step, setStep] = useState(1);
@@ -106,7 +106,7 @@ const ShopCreate = () => {
       formData.append("shopImage", shopImage);
 
       await axios.post(
-        "http://localhost:8000/api/v1/shops/create",
+  "/shops/create",
         formData,
         {
           headers: {

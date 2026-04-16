@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { X, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 

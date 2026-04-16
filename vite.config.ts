@@ -16,10 +16,7 @@ export default defineConfig({
         target: "http://localhost:3000",
         changeOrigin: true,
       },
-      "/vendor": {
-        target: "http://localhost:5174",
-        changeOrigin: true,
-      },
+     
     },
   },
 })

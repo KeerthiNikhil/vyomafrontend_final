@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainLayout from "@/layouts/MainLayout";
+import { useEffect } from "react";
 
+import MainLayout from "@/layouts/MainLayout";
+import VendorLayout from "@/layouts/VendorLayout";
+
+// User pages
 import Home from "./pages/Home";
 import ShopProducts from "./pages/ShopProducts";
 import CategoryProducts from "@/pages/CategoryProducts";
@@ -12,9 +16,23 @@ import Register from "@/pages/auth/Register";
 import ProductDetails from "@/pages/ProductDetails";
 import Wishlist from "@/components/products/Wishlist";
 import SearchPage from "./pages/SearchPage";
-import { useEffect } from "react";
 
-    
+// Vendor pages
+import VendorVerify from "@/pages/vendor/VendorVerify";
+import VendorDashboard from "@/pages/vendor/ShopDashboard";
+import CreateShop from "@/pages/vendor/ShopCreate";
+
+import AddProduct from "@/pages/vendor/AddProduct";
+import ManageProduct from "@/pages/vendor/ManageProduct";
+import AddCategory from "@/pages/vendor/AddCategory";
+import EditCategory from "@/pages/vendor/EditCategory";
+import PendingOrders from "@/pages/vendor/PendingOrders";
+import DeliveredOrders from "@/pages/vendor/DeliveredOrders";
+import Payments from "@/pages/vendor/Payments";
+import DeliveryBoys from "@/pages/vendor/DeliveryBoys";
+import AssignDelivery from "@/pages/vendor/AsignDelivery";
+import Reviews from "@/pages/vendor/Reviews";
+import Subscription from "@/pages/vendor/Subscription";
 
 function App() {
 
@@ -25,50 +43,71 @@ function App() {
     if (token) {
       localStorage.setItem("token", token);
 
-      // ✅ clean URL
+      // clean URL
       window.history.replaceState({}, document.title, "/");
     }
   }, []);
 
   return (
     <BrowserRouter>
-
       <Routes>
 
+        {/* ================= USER ROUTES ================= */}
         <Route element={<MainLayout />}>
 
-          {/* Home */}
           <Route path="/" element={<Home />} />
-
-          {/* Product Details */}
           <Route path="/product/:id" element={<ProductDetails />} />
 
-          {/* Cart + Wishlist */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
 
-          {/* Shop Page */}
           <Route path="/shop/:id" element={<ShopProducts />} />
           <Route path="/search" element={<SearchPage />} />
 
-          {/* Category inside shop */}
           <Route
             path="/shop/:id/category/:slug"
             element={<CategoryProducts />}
           />
 
-          {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
 
-          {/* Auth */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
         </Route>
 
-      </Routes>
+        {/* ================= VENDOR VERIFY (NO LAYOUT) ================= */}
+        <Route path="/vendor/verify" element={<VendorVerify />} />
 
+        {/* ================= VENDOR ROUTES ================= */}
+        <Route path="/vendor" element={<VendorLayout />}>
+         <Route index element={<VendorDashboard />} />
+
+          <Route path="dashboard" element={<VendorDashboard />} />
+          <Route path="/vendor/profile" element={<div>Profile Page</div>} />
+          <Route path="create-shop" element={<CreateShop />} />
+
+          <Route path="products/add" element={<AddProduct />} />
+          <Route path="products/manage" element={<ManageProduct />} />
+
+          <Route path="category/add" element={<AddCategory />} />
+          <Route path="category/edit" element={<EditCategory />} />
+
+          <Route path="orders/pending" element={<PendingOrders />} />
+          <Route path="orders/delivered" element={<DeliveredOrders />} />
+
+          <Route path="payments" element={<Payments />} />
+
+          <Route path="delivery/boys" element={<DeliveryBoys />} />
+          <Route path="delivery/assign" element={<AssignDelivery />} />
+
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="subscription" element={<Subscription />} />
+
+        </Route>
+
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -58,9 +58,10 @@ const AddCategory = () => {
 
       setCategoryName("");
       setSubCategories([]);
-    } catch {
-      alert("Failed ❌");
-    }
+    } catch (err: any) {
+  console.log(err.response?.data); // 🔥 VERY IMPORTANT
+  alert(err.response?.data?.message || "Failed ❌");
+}
   };
 
   return (

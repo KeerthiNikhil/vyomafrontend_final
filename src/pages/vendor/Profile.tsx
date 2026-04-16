@@ -1,21 +1,39 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
 
-  const [profile, setProfile] = useState({
-    shopName: "Vyoma Store",
-    email: "vendor@gmail.com",
-    phone: "9876543210",
-    address: "Mangalore, Karnataka",
-  });
+  const [profile, setProfile] = useState<any>({});
 
   const handleChange = (field: string, value: string) => {
     setProfile({ ...profile, [field]: value });
   };
+
+  useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/api/v1/vendor/profile",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setProfile(res.data.data);
+
+    } catch (err) {
+      console.log("PROFILE ERROR:", err);
+    }
+  };
+
+  fetchProfile();
+}, []);
 
   return (
     <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
@@ -49,12 +67,12 @@ const Profile = () => {
       {/* Store Info */}
       <div className="space-y-1">
         <h2 className="text-xl font-semibold tracking-tight">
-          Vyoma Store
+         {profile.name || "Loading..."} 
         </h2>
 
-        <p className="text-sm text-gray-500">
-          vendor@gmail.com
-        </p>
+      <p className="text-sm text-gray-500">
+  {profile.email || "Loading..."}
+</p>
 
         <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
           Active Account
@@ -92,10 +110,10 @@ const Profile = () => {
                 Shop Name
               </label>
               <Input
-                value={profile.shopName}
+                value={profile.name || ""}
                 disabled={!editMode}
                 onChange={(e) =>
-                  handleChange("shopName", e.target.value)
+                  handleChange("name", e.target.value)
                 }
               />
             </div>
@@ -105,7 +123,7 @@ const Profile = () => {
                 Email
               </label>
               <Input
-                value={profile.email}
+                value={profile.email || ""}
                 disabled={!editMode}
                 onChange={(e) =>
                   handleChange("email", e.target.value)
@@ -118,7 +136,7 @@ const Profile = () => {
                 Phone
               </label>
               <Input
-                value={profile.phone}
+                value={profile.phone || ""}
                 disabled={!editMode}
                 onChange={(e) =>
                   handleChange("phone", e.target.value)
@@ -131,7 +149,7 @@ const Profile = () => {
                 Address
               </label>
               <Input
-                value={profile.address}
+                value={profile.address || ""}
                 disabled={!editMode}
                 onChange={(e) =>
                   handleChange("address", e.target.value)

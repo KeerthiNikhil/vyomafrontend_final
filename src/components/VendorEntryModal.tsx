@@ -35,7 +35,7 @@ const VendorEntryModal = ({ open, onClose }: Props) => {
   className="w-full bg-blue-900 hover:bg-blue-800 text-white"
   onClick={() => {
     onClose();
-    window.location.href = "http://localhost:5174/vendor/verify";
+    navigate("/vendor/verify");
   }}
 >
   Continue as Vendor
@@ -49,7 +49,9 @@ const VendorEntryModal = ({ open, onClose }: Props) => {
   className="w-full"
   onClick={() => {
     onClose();
-    window.location.href = "http://localhost:5174/vendor/verify?redirect=create-shop";
+    navigate("/vendor/verify", {
+  state: { redirectTo: "/vendor/create-shop" },
+});
   }}
 >
   Create New Shop

@@ -11,7 +11,7 @@ const NotificationCard = ({
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30">
 
-      <div className="bg-[#e6d6b3] p-12 rounded-[45px] shadow-inner">
+      <div className="p-4">
         <div className="relative w-[420px]">
 
           <div

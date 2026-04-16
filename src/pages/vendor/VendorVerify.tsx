@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import NotificationCard from "../../../../src/components/NotificationCard";
+import NotificationCard from "@/components/NotificationCard";
 
 const VendorVerify = () => {
   const navigate = useNavigate();
@@ -16,12 +16,29 @@ const VendorVerify = () => {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [loading, setLoading] = useState(false);
+  // ✅ SAFE USER
+let storedUser: any = {};
 
-  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const [phone, setPhone] = useState(storedUser.phone || "");
+try {
+  storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+} catch {
+  storedUser = {};
+}
 
-  const isCreateFlow =
-    location.state?.redirectTo === "/vendor/create-shop";
+const [phone, setPhone] = useState("");
+
+useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (user?.phone) {
+    setPhone(String(user.phone).trim());
+  }
+}, []);
+
+const isCreateFlow =
+  location.state?.redirectTo === "/vendor/create-shop";
+
+
+
 
   // ✅ SEND OTP
   const handleSendOtp = async () => {
@@ -37,10 +54,18 @@ const VendorVerify = () => {
     try {
       setLoading(true);
 
-      await axios.post("/auth/send-otp", {
-        phone,
-        type: "vendor",
-      });
+      await axios.post(
+  "/auth/send-otp",
+  {
+    phone: String(phone).trim(),
+    type: "vendor",
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }
+);
 
       setNotification({
         title: "OTP Sent 📩",
@@ -80,11 +105,19 @@ const VendorVerify = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("/auth/verify-otp", {
-        phone,
-        otp,
-        type: "vendor",
-      });
+      const res = await axios.post(
+  "/auth/verify-otp",
+  {
+    phone: String(phone).trim(),
+    otp,
+    type: "vendor",
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }
+);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.user.role);
@@ -105,6 +138,14 @@ const VendorVerify = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/login"); // or homepage
+  }
+}, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -128,7 +169,7 @@ const VendorVerify = () => {
               <Input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-               disabled={!isCreateFlow && !!storedUser.phone}// 🔥 key logic
+               disabled={false}       
                 placeholder="Enter mobile number"
               />
 

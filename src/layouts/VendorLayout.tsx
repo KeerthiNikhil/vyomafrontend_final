@@ -27,11 +27,10 @@ const VendorLayout = () => {
   const [openCategories, setOpenCategories] = useState(false);
   const [openOrders, setOpenOrders] = useState(false);
   const [openDelivery, setOpenDelivery] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const goToUserApp = () => {
-  const token = localStorage.getItem("token");
-
-  window.location.href = `http://localhost:5173?token=${token}`;
+ const goToUserApp = () => {
+  navigate("/");
 };
 
 const handleSidebarClose = () => {
@@ -41,10 +40,11 @@ const handleSidebarClose = () => {
 };
 
   const handleVendorLogout = () => {
-  localStorage.removeItem("vendorToken");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("role");
 
-  // redirect to user app with flag
-  window.location.href = "http://localhost:5173/?showVendorModal=true";
+  navigate("/?showVendorModal=true");
 };
 
   
@@ -64,26 +64,52 @@ const handleSidebarClose = () => {
   const navigate = useNavigate();
 
 useEffect(() => {
+  let isMounted = true;
+
   const checkVendor = async () => {
     try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+  setCheckingAuth(false);
+  return;
+}
+
       const res = await axios.get("/auth/me");
 
-      // ✅ correct check
-      if (res.data.user.role !== "vendor") {
-        window.location.href = "/vendor/verify";
-      }
+      if (!isMounted) return;
+
+     if (res.data.user.role !== "vendor") {
+  setCheckingAuth(false);
+  return;
+}
 
     } catch (err) {
-      // ✅ only redirect once safely
-      window.location.href = "/";
+      console.log("Auth error 👉", err);
+      console.log("Auth error 👉", err);
+setCheckingAuth(false);
+    } finally {
+      if (isMounted) setCheckingAuth(false);
     }
   };
 
   checkVendor();
+
+  return () => {
+    isMounted = false;
+  };
 }, []);
 
+if (checkingAuth) {
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen">
+      <p>Loading Vendor Panel...</p>
+    </div>
+  );
+}
+
+  return (
+  <div className="flex min-h-screen bg-gray-100">
 
       {/* Overlay */}
       {isMobile && sidebarOpen && (
@@ -103,7 +129,7 @@ useEffect(() => {
             : ""
         }`}
       >
-        <div className="w-64 bg-blue-900 text-white h-screen sticky top-0 flex flex-col">
+      <div className="fixed top-0 left-0 w-64 h-screen bg-blue-900 text-white flex flex-col z-50">
 
           {/* Logo */}
           <div className="px-6 py-6 border-b border-blue-800">
@@ -181,7 +207,7 @@ useEffect(() => {
       </div>
 
       {/* Right Side */}
-      <div className="flex flex-col flex-1 min-h-screen">
+    <div className="flex flex-col flex-1 min-h-screen ml-64">
 
         {isMobile && (
           <header className="flex items-center justify-between p-4 bg-white shadow">
@@ -193,7 +219,7 @@ useEffect(() => {
         )}
 
         {/* Content */}
-        <main className="flex-1 p-8">
+       <main className="flex-1 p-8">
           <Outlet />
         </main>
 

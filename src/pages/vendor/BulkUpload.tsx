@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const BulkUpload = () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "../components/ui/card";
-import { Input } from "../components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {

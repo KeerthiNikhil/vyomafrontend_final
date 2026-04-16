@@ -68,6 +68,7 @@ if (!/^[6-9]\d{9}$/.test(phone)) {
     await axios.post("/auth/send-otp", {
       phone,
       name,
+      type: "user",
     });
 
     setNotification({
@@ -107,10 +108,12 @@ if (!/^[6-9]\d{9}$/.test(phone)) {
 
     const token = res.data.token;
     const user = res.data.user;
+    localStorage.clear(); 
 
     localStorage.setItem("token", token);
     localStorage.setItem("role", user.role);
-    localStorage.setItem("name", user.name);
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
 
     // ✅ STORE LOGIN TIME
     // ✅ STORE LOGIN TIME

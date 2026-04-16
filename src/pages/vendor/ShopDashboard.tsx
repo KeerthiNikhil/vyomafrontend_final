@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 const monthlyData = [
   { month: "Jan", orders: 12, revenue: 4000 },
@@ -53,14 +53,14 @@ const ShopDashboard = () => {
   fetchAnalytics();
 }, []);
 
-const categoryData = analytics
+const categoryData = analytics?.categoryStats
   ? Object.entries(analytics.categoryStats).map(([key, value]) => ({
       name: key,
       value,
     }))
   : [];
 
-const revenueData = analytics
+const revenueData = analytics?.revenueStats
   ? Object.entries(analytics.revenueStats).map(([key, value]) => ({
       name: key,
       value,
@@ -91,29 +91,17 @@ const revenueData = analytics
         {/* Orders Chart */}
         <div className="bg-white p-6 rounded-xl shadow">
           <h2 className="font-semibold mb-4">Monthly Orders</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="orders" stroke="#1e3a8a" />
-            </LineChart>
-          </ResponsiveContainer>
+         <div className="bg-white p-6 rounded-xl shadow">
+  <h2>Dashboard Loaded ✅</h2>
+</div>
         </div>
 
         {/* Revenue Chart */}
         <div className="bg-white p-6 rounded-xl shadow">
           <h2 className="font-semibold mb-4">Monthly Revenue</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="revenue" fill="#2563eb" />
-            </BarChart>
-          </ResponsiveContainer>
+         <div className="bg-white p-6 rounded-xl shadow">
+  <h2>Dashboard Loaded ✅</h2>
+</div>
         </div>
 
       </div>
