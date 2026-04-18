@@ -5,7 +5,7 @@ import { Minus, Plus, Star, Heart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import axios from "@/lib/axios";
-
+import { useWishlist } from "../context/WishlistContext";
 import StockIndicator from "@/components/products/StockIndicator";
 import EmiCalculator from "@/components/products/EmiCalculator";
 
@@ -20,7 +20,9 @@ const ProductDetails = () => {
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
-  const [wishlist, setWishlist] = useState(false);
+ const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+const inWishlist = product ? isInWishlist(product._id) : false;
 
   const [showPayment, setShowPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -89,12 +91,23 @@ const ProductDetails = () => {
         <div className="flex flex-col items-center gap-4">
 
           <div className="relative">
-            <button
-              onClick={() => setWishlist(!wishlist)}
-              className="absolute right-3 top-3 bg-white p-2 rounded-full shadow"
-            >
-              <Heart className={wishlist ? "text-red-500 fill-red-500" : ""}/>
-            </button>
+           <button
+  onClick={() => {
+    if (!product) return;
+
+    inWishlist
+      ? removeFromWishlist(product._id)
+      : addToWishlist({
+          _id: product._id,
+          name: product.name,
+          price: product.finalPrice,
+          image: `http://localhost:8000${images?.[0]}`
+        });
+  }}
+  className="absolute right-3 top-3 bg-white p-2 rounded-full shadow"
+>
+  <Heart className={inWishlist ? "text-red-500 fill-red-500" : ""}/>
+</button>
 
             <img
               onClick={() => setShowPreview(true)}

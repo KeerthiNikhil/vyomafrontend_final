@@ -9,14 +9,15 @@ const ShopProducts = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+ const { wishlist, addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState("");
   const [shop, setShop] = useState<any>(null);
-
+   
+  console.log("wishlist", wishlist);
   useEffect(() => {
   window.scrollTo(0, 0);
 }, [id]);
@@ -160,6 +161,7 @@ const ShopProducts = () => {
         ) : (
           filteredProducts.map((product) => {
             const inWishlist = isInWishlist(product._id);
+      
 
             return (
               <div
@@ -170,29 +172,31 @@ const ShopProducts = () => {
                 <div className="relative overflow-hidden rounded-lg">
 
                   {/* ❤️ Wishlist */}
-                  <button
-                    onClick={() =>
-                      inWishlist
-                        ? removeFromWishlist(product._id)
-                        : addToWishlist({
-                            id: product._id,
-                            name: product.name,
-                            price: product.finalPrice,
-                            image: product.images?.[0]
-                              ? `http://localhost:8000${product.images[0]}`
-                              : "/placeholder.png",
-                          })
-                    }
-                    className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow"
-                  >
-                    <Heart
-                      className={`w-4 h-4 ${
-                        inWishlist
-                          ? "text-red-500 fill-red-500"
-                          : "text-gray-500"
-                      }`}
-                    />
-                  </button>
+              <button
+  onClick={() => {
+    if (!product?._id) return;
+
+    inWishlist
+      ? removeFromWishlist(product._id)
+      : addToWishlist({
+          _id: product._id,
+          name: product.name,
+          price: product.finalPrice,
+          image: product.images?.[0]
+            ? `http://localhost:8000${product.images[0]}`
+            : "/placeholder.png",
+        });
+  }}
+  className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow"
+>
+  <Heart
+    className={`w-4 h-4 ${
+      inWishlist
+        ? "text-red-500 fill-red-500"
+        : "text-gray-500"
+    }`}
+  />
+</button>
 
                   <img
                     onClick={() => navigate(`/product/${product._id}`)}
