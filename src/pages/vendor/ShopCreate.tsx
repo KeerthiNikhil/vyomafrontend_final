@@ -156,16 +156,16 @@ const ShopCreate = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col lg:flex-row h-screen">
 
       {/* LEFT INFO PANEL */}
-      <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center p-10">
+      <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-start justify-center pt-16 overflow-y-auto pt-32 p-10">
         <div className="max-w-md">{renderBlueInfo()}</div>
       </div>
 
       {/* FORM */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-gray-100">
-        <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 min-h-[620px] flex flex-col justify-between">
+      <div className="w-full lg:w-1/2 flex items-start justify-center pt-16 overflow-y-auto pt-32 p-6 bg-gray-100">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8  flex flex-col justify-between">
 
           <div className="space-y-5">
 

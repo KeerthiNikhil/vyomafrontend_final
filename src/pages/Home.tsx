@@ -13,6 +13,7 @@ import VendorWarningModal from "@/components/VendorWarningModal";
 import VendorSuccessModal from "@/components/VendorSuccessModal";
 import { toast } from "sonner";
 import VendorEntryModal from "@/components/VendorEntryModal";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 const [showWarning, setShowWarning] = useState(false);
@@ -23,7 +24,7 @@ const handleAgree = () => {
   setShowWarning(false);
   setShowEntry(true);
 }; 
-
+const navigate = useNavigate();
   return (
     <>
       <div className="p-4 text-right">

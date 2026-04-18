@@ -73,10 +73,8 @@ const Navbar = () => {
 
   };
 
-  const goToVendorApp = () => {
-  const token = localStorage.getItem("token");
-
-  window.location.href = `http://localhost:5174/vendor?token=${token}`;
+ const goToVendorApp = () => {
+  navigate("/vendor/dashboard");
 };
 
   return (
