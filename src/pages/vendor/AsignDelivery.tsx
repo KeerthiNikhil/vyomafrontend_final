@@ -156,6 +156,8 @@ const Delivery = () => {
 
         {/* BUTTON */}
         <Button
+         className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+
           disabled={!selectedBoy || total <= 0}
           onClick={handleAssignDelivery}
         >

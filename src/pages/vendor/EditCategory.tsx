@@ -146,17 +146,24 @@ const EditCategory = () => {
       <div className="bg-white shadow rounded-xl p-6 space-y-4">
         <h2 className="font-semibold text-lg">Select Category</h2>
 
-        <select
-          value={categoryId}
-          onChange={(e) => handleCategoryChange(e.target.value)}
-          className="w-full border rounded-md p-2"
-        >
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+        <div className="relative w-full">
+  <select
+    value={categoryId}
+    onChange={(e) => handleCategoryChange(e.target.value)}
+    className="w-full border rounded-lg px-3 py-2 pr-10 text-sm appearance-none"
+  >
+    {categories.map((cat) => (
+      <option key={cat._id} value={cat._id}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
+
+  {/* Arrow */}
+  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+    ▼
+  </div>
+</div>
       </div>
 
       {/* EDIT NAME */}
@@ -185,7 +192,7 @@ const EditCategory = () => {
 
           <Button
             onClick={handleAddSubCategory}
-            className="bg-blue-900 hover:bg-blue-800 px-5"
+           className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
           >
             Add
           </Button>
@@ -211,7 +218,7 @@ const EditCategory = () => {
         <Button
           variant="outline"
           onClick={handleDeleteCategory}
-          className="text-red-600 border-red-300"
+          className="px-6 py-2 bg-red-700 text-white rounded-md"
         >
           <Trash2 size={16} />
           Delete
@@ -219,7 +226,7 @@ const EditCategory = () => {
 
         <Button
           onClick={handleUpdate}
-          className="bg-blue-900 hover:bg-blue-800 px-6"
+          className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
         >
           Update
         </Button>

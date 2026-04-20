@@ -102,7 +102,8 @@ const AddCategory = () => {
 
           <Button
             onClick={handleAddSubCategory}
-            className="bg-blue-900 hover:bg-blue-800 px-5"
+            className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+
           >
             Add
           </Button>
@@ -127,7 +128,8 @@ const AddCategory = () => {
       {/* SUBMIT */}
       <Button
         onClick={handleSubmit}
-        className="bg-blue-900 hover:bg-blue-800 px-6"
+        className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+
       >
         Submit Category
       </Button>

@@ -149,7 +149,8 @@ setShops(data.shops);
       <Button
         variant="outline"
         size="sm"
-        className="px-4"
+        className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+
         onClick={() => setEditMode(!editMode)}
       >
         {editMode ? "Cancel" : "Edit Profile"}
@@ -242,7 +243,8 @@ if (!selected) return;
           {editMode && (
             <div className="flex justify-end">
               <Button
-  className="bg-blue-900 hover:bg-blue-800"
+  className="ml-auto px-6 py-2 bg-blue-700 text-white rounded-md"
+
   onClick={handleSave}
 >
   Save Changes
