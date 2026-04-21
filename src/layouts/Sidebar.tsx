@@ -9,7 +9,7 @@ import {
   LogOut,
   X
 } from "lucide-react";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 
 interface SidebarProps {
   closeSidebar?: () => void;

@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 
+import "./index.css"
 import MainLayout from "@/layouts/MainLayout";
 import VendorLayout from "@/layouts/VendorLayout";
+import AdminLayout from "@/layouts/AdminLayout";
 
 // User pages
 import Home from "./pages/Home";
@@ -32,6 +34,15 @@ import DeliveryBoys from "@/pages/vendor/DeliveryBoys";
 import AssignDelivery from "@/pages/vendor/AsignDelivery";
 import Reviews from "@/pages/vendor/Reviews";
 import Subscription from "@/pages/vendor/Subscription";
+//=======ADMIN 
+import AdminDashboard from "@/pages/admin/Dashboard";
+import ActiveProducts from "@/pages/admin/ActiveProducts";
+import Banners from "@/pages/admin/Banners";
+import DisabledProducts from "@/pages/admin/DisabledProducts";
+import AdminLogin from "@/pages/admin/Login";
+import AdminPayments from "@/pages/admin/Payments";
+import AdminReviews from "@/pages/admin/Reviews";
+import AdminVendors from"@/pages/admin/Vendors";
 
 function App() {
 
@@ -106,7 +117,23 @@ function App() {
 
         </Route>
 
+         {/* Admin route */}
+        <Route path="/admin" element={<AdminLayout />}>
+
+        <Route index element={<AdminDashboard />} /> {/* /admin */}
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="products/active" element={<ActiveProducts />} />
+        <Route path="banners" element={<Banners/>} />
+        <Route path="products/disabled" element={<DisabledProducts />} />
+        
+        <Route path="payments" element={< AdminPayments/>} />
+        <Route path="reviews" element={<AdminReviews />} />
+        <Route path="vendors" element={<AdminVendors />} />
+        <Route path="login" element={<AdminLogin/>} />
+</Route>
       </Routes>
+
+    
     </BrowserRouter>
   );
 }

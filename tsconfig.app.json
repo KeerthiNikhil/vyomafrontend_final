@@ -30,5 +30,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "apps/vendor-web/src/Components/Shops/CreateShop", "src/context/ProductContext.tsx", "src/layouts/VendorLayout.tsx", "apps/vendor-web/src/pages/Products.tsx", "apps/vendor-web/src/pages/Categories.tsx", "apps/vendor-web/src/pages/Customers.tsx", "src/pages/vendor/DeliveredOrders.tsx", "apps/vendor-web/src/pages/DisabledProducts.tsx", "src/pages/vendor/Payments.tsx", "src/pages/vendor/PendingOrders.tsx", "src/pages/vendor/Reviews.tsx", "src/pages/vendor/Profile.tsx", "src/pages/vendor/ShopDashboard.tsx", "src/pages/auth/Login.tsx", "src/pages/auth/Register.tsx"]
+  "include": ["src", "apps/vendor-web/src/Components/Shops/CreateShop", "src/context/ProductContext.tsx", "src/layouts/VendorLayout.tsx", "apps/vendor-web/src/pages/Products.tsx", "apps/vendor-web/src/pages/Categories.tsx", "apps/vendor-web/src/pages/Customers.tsx", "src/pages/vendor/DeliveredOrders.tsx", "apps/vendor-web/src/pages/DisabledProducts.tsx", "src/pages/vendor/Payments.tsx", "src/pages/vendor/PendingOrders.tsx", "src/pages/vendor/Reviews.tsx", "src/pages/vendor/Profile.tsx", "src/pages/vendor/ShopDashboard.tsx", "src/pages/auth/Login.tsx", "src/pages/auth/Register.tsx", "postcss.config.ts", "tailwind.config.ts"]
 }
