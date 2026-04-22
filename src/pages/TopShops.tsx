@@ -3,7 +3,7 @@ interface Shop {
   ownerName: string;
   businessType: string;
   address: string;
-  shopImage?: string;
+  shopImages?: string[];
 }
 
 interface Props {
@@ -28,7 +28,9 @@ const TopShops = ({ shops, loading }: Props) => {
             {/* ✅ IMAGE */}
             {shop.shopImage && (
               <img
-                src={`http://localhost:8000${shop.shopImage}`}
+                src={`http://localhost:8000${shop.shopImages?.[0]
+  ? `http://localhost:8000${shop.shopImages[0]}`
+  : "/placeholder.png"}`}
                 alt={shop.ownerName}
                 className="w-full h-40 object-cover rounded-lg mb-3"
               />

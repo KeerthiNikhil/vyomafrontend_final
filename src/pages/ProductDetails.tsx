@@ -62,56 +62,62 @@ const ProductDetails = () => {
   });
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-6 pb-24">
+   <section className="max-w-7xl mx-auto px-4 py-6 pb-24 relative">
 
-      <div className="grid lg:grid-cols-12 gap-10">
+      <div className="grid lg:grid-cols-12 gap-10 items-start relative">
 
         {/* LEFT (STICKY IMAGE) */}
-        <div className="lg:col-span-5">
-          <div className="sticky top-24 space-y-4">
+        <div className="lg:col-span-5 self-start">
+  <div className="sticky top-24 h-fit">
 
-            <div className="relative border rounded-2xl p-4 bg-white">
-              <button
-                onClick={() =>
-                  inWishlist
-                    ? removeFromWishlist(product._id)
-                    : addToWishlist({
-                        _id: product._id,
-                        name: product.name,
-                        price: product.finalPrice,
-                        image: images?.[0],
-                      })
-                }
-                className="absolute right-3 top-3 bg-white p-2 rounded-full shadow"
-              >
-                <Heart className={inWishlist ? "text-red-500 fill-red-500" : ""} />
-              </button>
+    <div className="space-y-4">
 
-              <img
-                src={
-                  images?.[activeImage]
-                    ? `http://localhost:8000${images[activeImage]}`
-                    : "/placeholder.png"
-                }
-                className="w-full h-[520px] object-contain"
-              />
-            </div>
+      {/* MAIN IMAGE */}
+      <div className="relative border rounded-2xl p-4 bg-white">
+        <button
+          onClick={() =>
+            inWishlist
+              ? removeFromWishlist(product._id)
+              : addToWishlist({
+                  _id: product._id,
+                  name: product.name,
+                  price: product.finalPrice,
+                  image: images?.[0],
+                })
+          }
+          className="absolute right-3 top-3 bg-white p-2 rounded-full shadow"
+        >
+          <Heart className={inWishlist ? "text-red-500 fill-red-500" : ""} />
+        </button>
 
-            <div className="flex gap-3 overflow-x-auto">
-              {images.map((img: string, i: number) => (
-                <img
-                  key={i}
-                  src={`http://localhost:8000${img}`}
-                  onClick={() => setActiveImage(i)}
-                  className={`w-20 h-20 rounded-lg cursor-pointer border ${
-                    activeImage === i ? "border-blue-500" : "border-gray-200"
-                  }`}
-                />
-              ))}
-            </div>
+        <img
+          src={
+            images?.[activeImage]
+              ? `http://localhost:8000${images[activeImage]}`
+              : "/placeholder.png"
+          }
+          className="w-full h-[520px] object-contain"
+        />
+      </div>
 
-          </div>
-        </div>
+      {/* THUMBNAILS */}
+      <div className="flex gap-3 overflow-x-auto">
+        {images.map((img: string, i: number) => (
+          <img
+            key={i}
+            src={`http://localhost:8000${img}`}
+            onClick={() => setActiveImage(i)}
+            className={`w-20 h-20 rounded-lg cursor-pointer border ${
+              activeImage === i ? "border-blue-500" : "border-gray-200"
+            }`}
+          />
+        ))}
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
         {/* RIGHT (ALL SCROLL CONTENT) */}
         <div className="lg:col-span-7 space-y-8">

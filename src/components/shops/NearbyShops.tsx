@@ -9,7 +9,7 @@ interface Shop {
   businessType: string;
   address: string;
   phone: string;
-  shopImage?: string;
+  shopImages?: string[];
 }
 
 const NearbyShops = () => {

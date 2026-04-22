@@ -26,14 +26,42 @@ const ShopCreate = () => {
   const [tradeLicenseNumber, setTradeLicenseNumber] = useState("");
   const [fssaiNumber, setFssaiNumber] = useState("");
 
-  const [shopImage, setShopImage] = useState<File | null>(null);
-
+  const [shopImages, setShopImages] = useState<File[]>([]);
   useEffect(() => {
     if (businessType !== "Food & Beverages") {
       setFssaiNumber("");
     }
   }, [businessType]);
 
+  const addMoreImages = async () => {
+  if (!shopImages.length) {
+    toast.error("Select images first");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+
+    shopImages.forEach((img) => {
+      formData.append("shopImages", img);
+    });
+
+    await axios.post(
+      `/shops/69a911b0fe07f41eac77ab02/add-images`, // ✅ your shop id
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    toast.success("Images added successfully 🎉");
+  } catch (err) {
+    toast.error("Upload failed ❌");
+  }
+};
   const handleFetchLocation = () => {
   if (!navigator.geolocation) {
     toast.error("Geolocation not supported");
@@ -81,10 +109,10 @@ const ShopCreate = () => {
 };
 
   const handleSubmit = async () => {
-    if (!shopImage) {
-      toast.error("Please upload shop image");
-      return;
-    }
+   if (shopImages.length === 0) {
+  toast.error("Please upload at least one image");
+  return;
+}
 
     try {
       setIsSubmitting(true);
@@ -103,7 +131,9 @@ const ShopCreate = () => {
       formData.append("udyamNumber", udyamNumber);
       formData.append("fssaiNumber", fssaiNumber);
       formData.append("tradeLicenseNumber", tradeLicenseNumber);
-      formData.append("shopImage", shopImage);
+      shopImages.forEach((img) => {
+  formData.append("shopImages", img);
+});
 
       await axios.post(
   "/shops/create",
@@ -123,6 +153,8 @@ const ShopCreate = () => {
       setIsSubmitting(false);
     }
   };
+
+ 
 
   const renderBlueInfo = () => {
     if (step === 1)
@@ -242,22 +274,77 @@ const ShopCreate = () => {
                 <Input value={latitude} readOnly placeholder="Latitude"/>
                 <Input value={longitude} readOnly placeholder="Longitude"/>
 
-                <div className="space-y-2">
+             <div className="space-y-3">
   <label className="text-sm font-medium text-gray-700">
-    Upload Shop Image 🏪
+    Upload Shop Images (Max 3) 🏪
   </label>
 
   <input
-    type="file"
-    accept="image/*"
-    onChange={(e) =>
-      e.target.files && setShopImage(e.target.files[0])
+  type="file"
+  accept="image/*"
+  multiple
+ onChange={(e) => {
+  if (!e.target.files) return;
+
+  const newFiles = Array.from(e.target.files);
+
+  setShopImages((prev) => {
+    const combined = [...prev, ...newFiles];
+
+    if (combined.length > 3) {
+      toast.error("Max 3 images allowed");
+      return prev;
     }
-    className="w-full border rounded-md px-3 py-2"
-  />
+
+    return combined;
+  });
+}}
+  className="w-full border rounded-md px-3 py-2"
+/>
+
+<div className="flex gap-3">
+  {shopImages.map((file, index) => (
+    <div key={index} className="relative">
+      <img
+        src={URL.createObjectURL(file)}
+        className="h-16 w-16 object-cover rounded-lg border"
+      />
+
+      <button
+        onClick={() =>
+          setShopImages((prev) =>
+            prev.filter((_, i) => i !== index)
+          )
+        }
+        className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1"
+      >
+        ✕
+      </button>
+    </div>
+  ))}
+</div>
+
+{/* PREVIEW */}
+<div className="flex gap-3">
+  {shopImages.map((file, index) => (
+    <img
+      key={index}
+      src={URL.createObjectURL(file)}
+      className="h-16 w-16 object-cover rounded-lg border"
+    />
+  ))}
+</div>
+
+{/* 👉 BUTTON BELOW */}
+<button
+  onClick={addMoreImages}
+  className="w-full bg-blue-600 text-white py-2 rounded-md mt-2"
+>
+  Upload Images
+</button>
 
   <p className="text-xs text-gray-500">
-    Please upload a clear image of your shop (logo or storefront)
+    Upload up to 3 images (used for shop banner carousel)
   </p>
 </div>
               </>

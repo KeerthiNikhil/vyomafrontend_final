@@ -43,7 +43,9 @@ const SearchPage = () => {
           <div key={shop._id} className="border p-3 rounded">
 
             <img
-              src={`http://localhost:8000${shop.shopImage}`}
+              src={`http://localhost:8000${shop.shopImages?.[0]
+  ? `http://localhost:8000${shop.shopImages[0]}`
+  : "/placeholder.png"}`}
               className="h-32 w-full object-cover rounded"
             />
 
