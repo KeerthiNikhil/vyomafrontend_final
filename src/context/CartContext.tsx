@@ -36,12 +36,14 @@ export const CartProvider = ({ children }: any) => {
     const res = await axios.get("/cart");
     
     const formatted = res.data.data.map((item: any) => ({
-      id: item.productId, // 🔥 CONVERT HERE
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      quantity: item.quantity,
-    }));
+  id: item.productId,
+  name: item.name,
+  price: item.price,
+   image: item.image?.startsWith("http")
+  ? item.image.replace("//uploads", "/uploads")
+  : `http://localhost:8000${item.image}`,
+  quantity: item.quantity,
+}));
 
     setCart(formatted);
   };
@@ -58,13 +60,15 @@ export const CartProvider = ({ children }: any) => {
   const addToCart = async (item: any) => {
   try {
     await axios.post("/cart", {
-      productId: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      shop: item.shop,
-      quantity: item.quantity || 1, 
-    });
+  productId: item.id,
+  name: item.name,
+  price: item.price,
+  image: item.image?.startsWith("http")
+  ? item.image.replace("//uploads", "/uploads")
+  : `http://localhost:8000${item.image}`,
+  shop: item.shop,
+  quantity: item.quantity || 1,
+});
 
     toast.success("Added to cart 🛒", {
   duration: 1500,
