@@ -62,15 +62,33 @@ const originalPrice = Number(
   product.price || 0
 );
 
-const currentPrice = Number(
-  selectedUnit?.price ||
-  product.finalPrice ||
-  product.price ||
-  0
-);
+const variantPrice =
+  Number(selectedUnit?.price || product.price);
 
-const savedAmount =
-  originalPrice - currentPrice;
+let currentPrice = variantPrice;
+
+if (
+  product.discountType === "percentage"
+) {
+  currentPrice =
+    variantPrice -
+    (variantPrice *
+      Number(product.discountValue || 0)) /
+      100;
+}
+
+if (
+  product.discountType === "flat"
+) {
+  currentPrice =
+    variantPrice -
+    Number(product.discountValue || 0);
+}
+
+const savedAmount = Math.max(
+  0,
+  originalPrice - currentPrice
+);
 
 const discountPercent =
   originalPrice > 0
@@ -81,18 +99,35 @@ const discountPercent =
     : 0;
 
   const handleAddToCart = async () => {
-    await addToCart({
-      id: product._id,
-      name: product.name,
-      price: selectedUnit?.price || product.finalPrice,
-unit: selectedUnit?.label || "",
-      image: images?.[0],
-      shop: product.shop?._id || product.shop,
-      deliveryFee:
-  product.deliveryFee || 0,
-      quantity: qty,
-    });
-  };
+  await addToCart({
+    id: product._id,
+    name: product.name,
+
+    // discounted price
+    price: currentPrice,
+
+    // original MRP
+    originalPrice:
+      Number(
+        selectedUnit?.price ||
+        product.price
+      ),
+
+    unit:
+      selectedUnit?.label || "",
+
+    image: images?.[0],
+
+    shop:
+      product.shop?._id ||
+      product.shop,
+
+    deliveryFee:
+      product.deliveryFee || 0,
+
+    quantity: qty,
+  });
+};
 const handleGoToCart = async () => {
   navigate("/cart");
 };

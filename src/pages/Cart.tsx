@@ -24,6 +24,13 @@ const Cart = () => {
     decreaseQty,
     removeFromCart,
   } = useCart();
+  console.log(
+  cart.map(item => ({
+    name: item.name,
+    price: item.price,
+    originalPrice: item.originalPrice
+  }))
+);
 
   const subtotal = Number(
   cart
@@ -158,8 +165,16 @@ const total = Number(
     </h3>
 
     {(() => {
-      const mrp = Math.round(subtotal * 1.35);
-      const saved = Math.round(mrp - subtotal);
+      const actualMrp = cart.reduce(
+  (sum, item) =>
+    sum +
+    (item.originalPrice || item.price) *
+      item.quantity,
+  0
+);
+
+const saved =
+  actualMrp - subtotal;
       const finalDelivery =
   subtotal > 499
     ? 0
@@ -187,7 +202,7 @@ const total =
                 </span>
 
                 <span className="line-through text-gray-400 text-[11px] mr-2">
-                  ₹{formatPrice(mrp)}
+                  ₹{formatPrice(actualMrp)}
                 </span>
 
                 <span className="font-semibold text-[12px] text-slate-800">

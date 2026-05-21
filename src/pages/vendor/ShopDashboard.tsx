@@ -69,6 +69,7 @@ const ShopDashboard = () => {
             },
           }
         );
+        console.log("ORDERS =", ordersRes.data);
 
         setOrders(ordersRes.data.data || []);
 

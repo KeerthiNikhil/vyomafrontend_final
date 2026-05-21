@@ -12,6 +12,7 @@ type CartItem = {
   id: string;
   name: string;
   price: number;
+   originalPrice?: number;
   image: string;
   quantity: number;
   shop?: string;
@@ -40,6 +41,7 @@ export const CartProvider = ({ children }: any) => {
   id: item.productId,
   name: item.name,
   price: item.price,
+   originalPrice: item.originalPrice,
    image: item.image?.startsWith("http")
   ? item.image.replace("//uploads", "/uploads")
   : `http://localhost:8000${item.image}`,
@@ -66,6 +68,7 @@ export const CartProvider = ({ children }: any) => {
   productId: item.id,
   name: item.name,
   price: item.price,
+  originalPrice: item.originalPrice,
   image: item.image?.startsWith("http")
   ? item.image.replace("//uploads", "/uploads")
   : `http://localhost:8000${item.image}`,

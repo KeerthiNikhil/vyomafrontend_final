@@ -76,7 +76,7 @@ useEffect(() => {
     image: item.image,
     quantity: item.quantity,
     price: item.price,
-    shop: item.shop?._id,
+    shop: item.shop,
   })),
 });
 
@@ -118,7 +118,7 @@ useEffect(() => {
     image: item.image,
     quantity: item.quantity,
     price: item.price,
-    shop: item.shop?._id,
+    shop: item.shop,
   })),
 });
 
