@@ -295,10 +295,7 @@ const Footer = () => {
             All rights reserved.
           </p>
 
-          <p>
-            Built with ❤️ in Karnataka
-          </p>
-
+         
         </div>
 
       </div>
